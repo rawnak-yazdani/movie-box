@@ -1,4 +1,4 @@
-package io.welldev.dao;
+package io.welldev.service;
 
 import io.welldev.model.Actor;
 import io.welldev.model.Movie;
@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import java.util.List;
 
 @RequiredArgsConstructor

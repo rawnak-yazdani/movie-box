@@ -1,4 +1,4 @@
-package io.welldev.dao;
+package io.welldev.service;
 
 import io.welldev.model.Director;
 import lombok.RequiredArgsConstructor;

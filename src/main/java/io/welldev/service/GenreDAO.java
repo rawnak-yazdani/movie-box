@@ -1,7 +1,6 @@
-package io.welldev.dao;
+package io.welldev.service;
 
 import io.welldev.model.Genre;
-import io.welldev.model.Movie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

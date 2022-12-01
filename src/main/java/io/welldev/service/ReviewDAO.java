@@ -1,6 +1,5 @@
-package io.welldev.dao;
+package io.welldev.service;
 
-import io.welldev.model.Genre;
 import io.welldev.model.Review;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

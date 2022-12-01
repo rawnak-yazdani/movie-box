@@ -1,25 +1,18 @@
 package io.welldev;
 
-import io.welldev.dao.*;
-
-import io.welldev.model.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
-public class illuminatiHibernateMain {
+public class MovieBoxMain {
 
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("io.welldev.config");
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(io.welldev.config.WebConfig.class);
 
-        ActorDAO actorDAO = context.getBean(ActorDAO.class);
-        DirectorDAO directorDAO = context.getBean(DirectorDAO.class);
-        ExtendedDirectorDAO extendedDirectorDAO = context.getBean(ExtendedDirectorDAO.class);
-        GenreDAO genreDAO = context.getBean(GenreDAO.class);
-        MovieDAO movieDAO = context.getBean(MovieDAO.class);
-        ReviewDAO reviewDAO = context.getBean(ReviewDAO.class);
+//        ActorDAO actorDAO = context.getBean(ActorDAO.class);
+//        DirectorDAO directorDAO = context.getBean(DirectorDAO.class);
+//        ExtendedDirectorDAO extendedDirectorDAO = context.getBean(ExtendedDirectorDAO.class);
+//        GenreDAO genreDAO = context.getBean(GenreDAO.class);
+//        MovieDAO movieDAO = context.getBean(MovieDAO.class);
+//        ReviewDAO reviewDAO = context.getBean(ReviewDAO.class);
 
 
 //
@@ -58,7 +51,7 @@ public class illuminatiHibernateMain {
 //        extendedDirectorDAO.addWithoutTransaction(director);
 //        extendedDirectorDAO.add(director1);
 
-        Movie movie = movieDAO.get(88L);
+//        Movie movie = movieDAO.get(88L);
         //        for (Actor actor:
 //             movie.getActors()) {
 //            System.out.println(actor.getName());

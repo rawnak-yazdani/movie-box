@@ -1,11 +1,7 @@
-package io.welldev.dao;
+package io.welldev.service;
 
 import io.welldev.model.Actor;
-import io.welldev.model.Genre;
-import io.welldev.model.Movie;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
