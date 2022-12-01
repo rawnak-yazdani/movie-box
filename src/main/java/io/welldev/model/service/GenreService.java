@@ -39,7 +39,7 @@ public class GenreService {
         return genreRepo.findById(id).get();
     }
 
-    public List<Genre> findAllById() {
+    public List<Genre> findAll() {
         return genreRepo.findAll();
     }
 

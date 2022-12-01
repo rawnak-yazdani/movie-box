@@ -43,7 +43,7 @@ public class UserService {
         return userRepo.findById(id).get();
     }
 
-    public List<User> findAllById() {
+    public List<User> findAll() {
         return userRepo.findAll();
     }
 

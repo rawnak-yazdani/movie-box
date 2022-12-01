@@ -39,7 +39,7 @@ public class AdminService {
         return adminRepo.findById(id).get();
     }
 
-    public List<Admin> findAllById() {
+    public List<Admin> findAll() {
         return adminRepo.findAll();
     }
 

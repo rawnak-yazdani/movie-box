@@ -39,7 +39,7 @@ public class MovieService {
         return movieRepo.findById(id).get();
     }
 
-    public List<Movie> findAllById() {
+    public List<Movie> findAll() {
         return movieRepo.findAll();
     }
 
