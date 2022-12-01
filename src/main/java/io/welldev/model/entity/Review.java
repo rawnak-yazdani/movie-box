@@ -1,4 +1,4 @@
-package io.welldev.model;
+package io.welldev.model.entity;
 
 import javax.persistence.*;
 

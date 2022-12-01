@@ -1,4 +1,4 @@
-package io.welldev.initializer;
+package io.welldev.config.initializer;
 
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 

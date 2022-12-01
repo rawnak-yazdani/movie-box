@@ -1,4 +1,4 @@
-package io.welldev.repository;
+package io.welldev.model.repository;
 
 public interface UserRepository {
 }

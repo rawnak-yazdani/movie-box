@@ -9,7 +9,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"io.welldev.config","io.welldev.initializer"})
+@ComponentScan(basePackages = {"io.welldev.config","io.welldev.config.initializer"})
 public class WebConfig {
 
 //    @Bean
