@@ -21,15 +21,15 @@ public class SpringSecurityConfig {
     public InMemoryUserDetailsManager userDetailsManager() {
         UserDetails user1 = User.withUsername("Robbi")
                 .password(passwordEncoder().encode("user1Pass"))
-                .roles()
+                .roles("USER")
                 .build();
         UserDetails user2 = User.withUsername("Anik")
                 .password(passwordEncoder().encode("user2Pass"))
-                .roles()
+                .roles("USER")
                 .build();
         UserDetails admin = User.withUsername("Rawnak Yazdani")
                 .password(passwordEncoder().encode("adminPass"))
-                .roles()
+                .roles("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user1, user2, admin);
     }
@@ -46,15 +46,17 @@ public class SpringSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/admin/**")
                 .hasRole("ADMIN")
+                .antMatchers("/users**")
+                .hasRole("USER")
 //                .antMatchers("/anonymous*")
 //                .anonymous()
-                .antMatchers("/", "/login")
+                .antMatchers("/")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic();
-//                .formLogin();
+//                .httpBasic();
+                .formLogin();
 //                .loginPage("/login.html")
 //                .loginProcessingUrl("/perform_login")
 //                .defaultSuccessUrl("/index.jsp", true)

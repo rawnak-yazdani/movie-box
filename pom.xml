@@ -13,8 +13,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <spring.version>5.3.14</spring.version>
-    <springsecurity.version>5.6.1</springsecurity.version>
+    <spring-version>5.3.20</spring-version>
+    <springsecurity.version>5.7.0</springsecurity.version>
 
      <hibernate.version>4.1.9.Final</hibernate.version>
 <!--    <hibernate.version>3.6.9.Final</hibernate.version>-->
@@ -74,6 +74,17 @@
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.1</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.8</version>
     </dependency>
 
     <!-- JPA Vendor -->
