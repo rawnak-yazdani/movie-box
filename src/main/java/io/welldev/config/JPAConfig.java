@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@ComponentScan({"io.welldev.config", "io.welldev.dao"})
+@ComponentScan({"io.welldev.config", "io.welldev.service"})
 @Configuration
 @EnableTransactionManagement
 public class JPAConfig {
@@ -23,9 +23,9 @@ public class JPAConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/Test");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/welldev");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("Csgrindonset2");
+        dataSource.setPassword("2222");
 
         return  dataSource;
     }

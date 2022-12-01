@@ -1,4 +1,4 @@
-package io.welldev.Initializer;
+package io.welldev.initializer;
 
 import io.welldev.config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
