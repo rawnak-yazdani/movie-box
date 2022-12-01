@@ -19,7 +19,9 @@ import java.util.Set;
 @Entity
 public class Movie {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    @SequenceGenerator(initialValue=1, name = "movie_seq", sequenceName = "movie_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "movie_seq")
     private Long id;
 
     private String title;
