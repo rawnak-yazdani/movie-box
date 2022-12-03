@@ -13,10 +13,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <spring.version>5.3.20</spring.version>
-    <springsecurity.version>5.7.0</springsecurity.version>
+<!--    <spring.version>5.3.20</spring.version>-->
+    <spring.version>5.3.8</spring.version>
+<!--    <springsecurity.version>5.7.0</springsecurity.version>-->
 
-     <hibernate.version>4.1.9.Final</hibernate.version>
+     <hibernate.version>5.3.2.Final</hibernate.version>
+<!--     <hibernate.version>4.1.9.Final</hibernate.version>-->
 <!--    <hibernate.version>3.6.9.Final</hibernate.version>-->
 
     <logback.version>1.0.13</logback.version>
@@ -48,16 +50,16 @@
     </dependency>
 
     <!--Spring security -->
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-      <version>${springsecurity.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-config</artifactId>
-      <version>${springsecurity.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.security</groupId>-->
+<!--      <artifactId>spring-security-web</artifactId>-->
+<!--      <version>${springsecurity.version}</version>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.security</groupId>-->
+<!--      <artifactId>spring-security-config</artifactId>-->
+<!--      <version>${springsecurity.version}</version>-->
+<!--    </dependency>-->
 
     <!-- Servlet, JSP and JSTL Support -->
     <dependency>

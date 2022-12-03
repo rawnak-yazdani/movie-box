@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/users", headers = "Accept=application/json",
-produces = "application/json")
+        produces = "application/json")
 public class UserController {
 
     @GetMapping

@@ -3,6 +3,7 @@ package io.welldev.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -14,9 +15,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@ComponentScan({"io.welldev.config", "io.welldev.model"})
+@ComponentScan({"io.welldev", "io.welldev.model.entity"})
 @Configuration
 @EnableTransactionManagement
+@EnableJpaRepositories("io.welldev.model.repository")
 public class JPAConfig {
 
     @Bean
@@ -35,7 +37,7 @@ public class JPAConfig {
         LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean
                 = new LocalContainerEntityManagerFactoryBean();
         localContainerEntityManagerFactoryBean.setDataSource(dataSource());
-        localContainerEntityManagerFactoryBean.setPackagesToScan("io.welldev.model");
+        localContainerEntityManagerFactoryBean.setPackagesToScan("io.welldev.model.entity");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         localContainerEntityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);

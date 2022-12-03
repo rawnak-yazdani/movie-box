@@ -9,7 +9,6 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -26,11 +25,11 @@ public class Movie {
 
     private String title;
 
-    @ManyToMany
+    @ManyToMany/*(fetch = FetchType.EAGER)*/
     @JoinTable(name = "movie_genre",
             joinColumns = {@JoinColumn(name = "fk_movie")},
             inverseJoinColumns = {@JoinColumn(name = "fk_genre")})
-    @Fetch(value = FetchMode.SELECT)
+    @Fetch(value = FetchMode.JOIN)
     private Set<Genre> genres = new HashSet<Genre>();
 
     private String rating;
