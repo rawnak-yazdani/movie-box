@@ -1,7 +1,11 @@
 package io.welldev.initializer.configuration;
 
+import io.welldev.model.role.Permissions;
+import io.welldev.model.role.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -11,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.security.Permission;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -19,17 +25,24 @@ public class SecurityConfig {
     public InMemoryUserDetailsManager userDetailsManager() {
         UserDetails user1 = User.withUsername("Robbi")
                 .password(passwordEncoder().encode("user1Pass"))
-                .roles("USER")
+//                .roles("USER")
+                .authorities(Roles.USER.grantedAuthorities())
                 .build();
         UserDetails user2 = User.withUsername("Anik")
                 .password(passwordEncoder().encode("user2Pass"))
-                .roles("USER")
+//                .roles("USER")
+                .authorities(Roles.USER.grantedAuthorities())
                 .build();
         UserDetails admin = User.withUsername("Rawnak Yazdani")
                 .password(passwordEncoder().encode("adminPass"))
-                .roles("ADMIN")
+//                .roles("ADMIN")
+                .authorities(Roles.ADMIN.grantedAuthorities())
                 .build();
-        return new InMemoryUserDetailsManager(user1, user2, admin);
+        UserDetails adminTrainee = User.withUsername("Arnob")
+                .password(passwordEncoder().encode("traineePass"))
+                .authorities(Roles.ADMINTRAINEE.grantedAuthorities())
+                .build();
+        return new InMemoryUserDetailsManager(user1, user2, admin, adminTrainee);
     }
 
     @Bean
@@ -44,8 +57,11 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/admin/**")
                 .hasRole("ADMIN")
-                .antMatchers("/users**")
-                .hasRole("USER")
+                .antMatchers(HttpMethod.DELETE, "/users**").hasAuthority(Permissions.WRITE.getPermission())
+                .antMatchers(HttpMethod.POST, "/users**").hasAuthority(Permissions.WRITE.getPermission())
+                .antMatchers(HttpMethod.PUT, "/users**").hasAuthority(Permissions.WRITE.getPermission())
+                .antMatchers(HttpMethod.GET, "/users**")
+                .hasAnyRole(Roles.ADMIN.name(), Roles.ADMINTRAINEE.name(), Roles.USER.name())
 //                .antMatchers("/anonymous*")
 //                .anonymous()
                 .antMatchers("/")

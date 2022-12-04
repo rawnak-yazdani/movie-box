@@ -42,33 +42,4 @@ public class HomeController {
 //        return new ArrayList<Movie>();
     }
 
-    @GetMapping("/add")
-    public List<Movie> addMovie() {
-
-        Genre genre1 = new Genre();
-        genre1.setName("Genre 1");
-
-        Genre genre2 = new Genre();
-        genre2.setName("Genre 2");
-
-        List<Genre> genres = new ArrayList<>();
-        genres.add(genre1);
-        genres.add(genre2);
-
-        genreService.saveAndFlush(genre1);
-        genreService.saveAndFlush(genre2);
-
-        Movie movie1 = new Movie();
-        movie1.setTitle("Movie 1");
-        movie1.setRating("10/10");
-        movie1.setYear(2022);
-        movie1.setGenres(new HashSet<>(genres));
-
-        movieService.saveAndFlush(movie1);
-
-        List<Movie> movies = movieService.findAll();
-
-        return movies;
-//        return new ArrayList<Movie>();
-    }
 }
