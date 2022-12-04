@@ -13,6 +13,7 @@ import javax.servlet.ServletRegistration;
 
 public class Appinitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
+//    @Override
 //    public void onStartup(final ServletContext sc) {
 //
 //        AnnotationConfigWebApplicationContext root = new AnnotationConfigWebApplicationContext();

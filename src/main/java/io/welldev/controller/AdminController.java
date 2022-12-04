@@ -1,5 +1,6 @@
 package io.welldev.controller;
 
+import io.welldev.model.entity.DemoPurpose;
 import io.welldev.model.entity.Genre;
 import io.welldev.model.entity.Movie;
 import io.welldev.model.entity.User;
@@ -9,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/admin", headers = {"Accept=application/json"},
@@ -25,9 +23,15 @@ public class AdminController {
     @Autowired
     GenreService genreService;
 
+    List<DemoPurpose> movies = new ArrayList<>(Arrays.asList(
+            new DemoPurpose(1, "Movie 1"),
+            new DemoPurpose(2, "Movie 2")
+    ));
+
     @GetMapping(value = "/users/{id}")
-    public User getUser(@PathVariable("id") Long id) {
-        return new User();
+    public List<DemoPurpose> getUser(@PathVariable("id") Long id) {
+//        return new User();
+        return movies;
     }
 
     @PostMapping("/addMovie")

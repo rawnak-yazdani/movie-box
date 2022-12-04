@@ -10,10 +10,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("io.welldev.config");
+//        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("io.welldev.config");
 
 //        GenreDAO genreDAO = context.getBean(GenreDAO.class);
-        MovieService movieService = context.getBean(MovieService.class);
+//        MovieService movieService = context.getBean(MovieService.class);
 //        DirectorDAO directorDAO = context.getBean(DirectorDAO.class);
 //        CountryDAO countryDAO = context.getBean(CountryDAO.class);
 //        MovieDAO movieDAO = context.getBean(MovieDAO.class);
@@ -36,11 +36,11 @@ public class Main {
 //            System.out.println(actor1.getId());
 //        }
 
-        List<Movie> movies = movieService.findAll();
-        for (Movie movie:
-                movies) {
-            System.out.println(movie.getTitle());
-        }
+//        List<Movie> movies = movieService.findAll();
+//        for (Movie movie:
+//                movies) {
+//            System.out.println(movie.getTitle());
+//        }
 
 
     }
