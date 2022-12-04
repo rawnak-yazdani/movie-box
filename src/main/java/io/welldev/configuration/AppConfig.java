@@ -1,4 +1,4 @@
-package io.welldev.config;
+package io.welldev.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,15 +11,17 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@ComponentScan({"io.welldev", "io.welldev.model.entity"})
+@ComponentScan({"io.welldev"})
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories("io.welldev.model.repository")
-public class JPAConfig {
+@EnableWebMvc
+public class AppConfig {
 
     @Bean
     public DataSource dataSource() {
