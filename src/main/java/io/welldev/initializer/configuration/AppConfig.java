@@ -1,4 +1,4 @@
-package io.welldev.configuration;
+package io.welldev.initializer.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@ComponentScan({"io.welldev"})
+@ComponentScan({"io.welldev.controller", "io.welldev.model.entity", "io.welldev.model.service"})
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories("io.welldev.model.repository")

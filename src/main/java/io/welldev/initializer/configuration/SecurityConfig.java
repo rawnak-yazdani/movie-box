@@ -1,4 +1,4 @@
-package io.welldev.configuration;
+package io.welldev.initializer.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
