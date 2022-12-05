@@ -3,7 +3,6 @@ package io.welldev.controller;
 import io.welldev.model.entity.DemoPurpose;
 import io.welldev.model.entity.Genre;
 import io.welldev.model.entity.Movie;
-import io.welldev.model.entity.User;
 import io.welldev.model.service.GenreService;
 import io.welldev.model.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;

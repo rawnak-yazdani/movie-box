@@ -1,7 +1,10 @@
 package io.welldev.initializer.configuration;
 
+import io.welldev.model.role.Permissions;
+import io.welldev.model.role.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -19,17 +22,24 @@ public class SecurityConfig {
     public InMemoryUserDetailsManager userDetailsManager() {
         UserDetails user1 = User.withUsername("Robbi")
                 .password(passwordEncoder().encode("user1Pass"))
-                .roles("USER")
+//                .roles("USER")
+                .authorities(Roles.USER.grantedAuthorities())
                 .build();
         UserDetails user2 = User.withUsername("Anik")
                 .password(passwordEncoder().encode("user2Pass"))
-                .roles("USER")
+//                .roles("USER")
+                .authorities(Roles.USER.grantedAuthorities())
                 .build();
         UserDetails admin = User.withUsername("Rawnak Yazdani")
                 .password(passwordEncoder().encode("adminPass"))
-                .roles("ADMIN")
+//                .roles("ADMIN")
+                .authorities(Roles.ADMIN.grantedAuthorities())
                 .build();
-        return new InMemoryUserDetailsManager(user1, user2, admin);
+        UserDetails adminTrainee = User.withUsername("Arnob")
+                .password(passwordEncoder().encode("traineePass"))
+                .authorities(Roles.ADMINTRAINEE.grantedAuthorities())
+                .build();
+        return new InMemoryUserDetailsManager(user1, user2, admin, adminTrainee);
     }
 
     @Bean
@@ -42,10 +52,13 @@ public class SecurityConfig {
         httpSecurity.csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/admin/**")
-                .hasRole("ADMIN")
-                .antMatchers("/users**")
-                .hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority(Permissions.ADMIN_WRITE.getPermission())
+                .antMatchers(HttpMethod.GET, "/admin/**").hasAuthority(Permissions.ADMIN_READ.getPermission())
+                .antMatchers(HttpMethod.DELETE, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.POST, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.PUT, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.GET, "/users**")
+                .hasAnyRole(Roles.ADMIN.name(), Roles.ADMINTRAINEE.name(), Roles.USER.name())
 //                .antMatchers("/anonymous*")
 //                .anonymous()
                 .antMatchers("/")
@@ -53,8 +66,8 @@ public class SecurityConfig {
                 .anyRequest()
                 .authenticated()
                 .and()
-//                .httpBasic();
-                .formLogin();
+                .httpBasic();
+//                .formLogin();
 //                .loginPage("/login.html")
 //                .loginProcessingUrl("/perform_login")
 //                .defaultSuccessUrl("/index.jsp", true)
