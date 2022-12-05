@@ -8,6 +8,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -15,7 +16,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-public class User {
+@Table(name = "cinephile")
+public class Cinephile {
     @Id
     @Column(name = "id", nullable = false)
     @SequenceGenerator(initialValue=1, name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
@@ -25,9 +27,9 @@ public class User {
     private String username;
 
     @ManyToMany
-    @JoinTable(name = "movie_user",
-            joinColumns = {@JoinColumn(name = "fk_user")},
+    @JoinTable(name = "movie_cinephile",
+            joinColumns = {@JoinColumn(name = "fk_cinephile")},
             inverseJoinColumns = {@JoinColumn(name = "fk_movie")})
     @Fetch(value = FetchMode.JOIN)
-    private Set<Movie> watchList;
+    private Set<Movie> watchList = new HashSet<>();
 }

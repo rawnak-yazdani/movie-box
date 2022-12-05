@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 import static io.welldev.model.role.Permissions.*;
 
 public enum Roles {
-    USER(Sets.newHashSet(READ)),
-    ADMIN(Sets.newHashSet(READ, WRITE)),
-    ADMINTRAINEE(Sets.newHashSet(READ));
+    USER(Sets.newHashSet(USER_READ)),
+    ADMIN(Sets.newHashSet(USER_READ, USER_WRITE, ADMIN_READ, ADMIN_WRITE)),
+    ADMINTRAINEE(Sets.newHashSet(USER_READ, USER_WRITE, ADMIN_READ));
 
     private final Set<Permissions> permissions;
 

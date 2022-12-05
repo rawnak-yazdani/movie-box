@@ -4,7 +4,6 @@ import io.welldev.model.role.Permissions;
 import io.welldev.model.role.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,8 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.security.Permission;
 
 @Configuration
 @EnableWebSecurity
@@ -55,11 +52,11 @@ public class SecurityConfig {
         httpSecurity.csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/admin/**")
-                .hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/users**").hasAuthority(Permissions.WRITE.getPermission())
-                .antMatchers(HttpMethod.POST, "/users**").hasAuthority(Permissions.WRITE.getPermission())
-                .antMatchers(HttpMethod.PUT, "/users**").hasAuthority(Permissions.WRITE.getPermission())
+                .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority(Permissions.ADMIN_WRITE.getPermission())
+                .antMatchers(HttpMethod.GET, "/admin/**").hasAuthority(Permissions.ADMIN_READ.getPermission())
+                .antMatchers(HttpMethod.DELETE, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.POST, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.PUT, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
                 .antMatchers(HttpMethod.GET, "/users**")
                 .hasAnyRole(Roles.ADMIN.name(), Roles.ADMINTRAINEE.name(), Roles.USER.name())
 //                .antMatchers("/anonymous*")
@@ -69,8 +66,8 @@ public class SecurityConfig {
                 .anyRequest()
                 .authenticated()
                 .and()
-//                .httpBasic();
-                .formLogin();
+                .httpBasic();
+//                .formLogin();
 //                .loginPage("/login.html")
 //                .loginProcessingUrl("/perform_login")
 //                .defaultSuccessUrl("/index.jsp", true)
