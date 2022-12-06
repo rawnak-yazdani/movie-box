@@ -1,13 +1,12 @@
 package io.welldev.controller;
 
 import io.welldev.model.entity.*;
-import io.welldev.model.service.AppUserDetailsService;
+import io.welldev.model.service.CinephileCredentialsService;
 import io.welldev.model.service.CinephileService;
 import io.welldev.model.service.GenreService;
 import io.welldev.model.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -24,7 +23,7 @@ public class HomeController {
     @Autowired
     GenreService genreService;
     @Autowired
-    AppUserDetailsService appUserDetailsService;
+    CinephileCredentialsService cinephileCredentialsService;
     @Autowired
     CinephileService cinephileService;
 
@@ -48,18 +47,18 @@ public class HomeController {
 
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public Cinephile addUser(@RequestBody AppUserDetails appUserDetails) {
-        cinephileService.save(appUserDetails.getCinephile());
-        appUserDetailsService.save(appUserDetails);
+    public Cinephile addUser(@RequestBody CinephileCredentials cinephileCredentials) {
+        cinephileService.save(cinephileCredentials.getCinephile());
+        cinephileCredentialsService.save(cinephileCredentials);
 
-        return appUserDetailsService.getUserByName(appUserDetails.getUsername()).getCinephile();
+        return cinephileCredentialsService.getUserByName(cinephileCredentials.getUsername()).getCinephile();
     }
 
 /*
 {
     "username": "Anik3",
     "password": "12345",
-    "cinephile": {"username": "Khaleed Ahmed Anik"}
+    "cinephile": {"name": "Khaleed Ahmed Anik"}
 }
 */
 

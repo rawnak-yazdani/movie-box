@@ -3,17 +3,14 @@ package io.welldev.model.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity
-public class AppUserDetails {
+public class CinephileCredentials {
 
     @Id
     @Column(name = "id", nullable = false)
