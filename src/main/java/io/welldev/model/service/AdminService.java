@@ -4,12 +4,13 @@ import io.welldev.model.entity.Admin;
 import io.welldev.model.repository.AdminRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@Component
+@Service
 @Transactional
 public class AdminService {
     public final AdminRepo adminRepo;

@@ -3,13 +3,12 @@ package io.welldev.model.service;
 import io.welldev.model.entity.Genre;
 import io.welldev.model.repository.GenreRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Component
+@Service
 @Transactional
 public class GenreService {
     public final GenreRepo genreRepo;
