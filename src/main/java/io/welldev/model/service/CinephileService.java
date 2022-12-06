@@ -1,66 +1,67 @@
 package io.welldev.model.service;
 
 import io.welldev.model.entity.Cinephile;
-import io.welldev.model.repository.UserRepo;
+import io.welldev.model.repository.CinephileRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@Component
+@Service
 @Transactional
-public class UserService {
-    public final UserRepo userRepo;
+public class CinephileService {
+    public final CinephileRepo cinephileRepo;
 
     public void save(Cinephile cinephile) {
-        userRepo.save(cinephile);
+        cinephileRepo.save(cinephile);
     }
 
     public void flush() {
-        userRepo.flush();
+        cinephileRepo.flush();
     }
 
     public void saveAndFlush(Cinephile cinephile) {
-        userRepo.saveAndFlush(cinephile);
+        cinephileRepo.saveAndFlush(cinephile);
     }
 
     //
     public void saveAll(List<Cinephile> usersList) {
-        userRepo.saveAll(usersList);
+        cinephileRepo.saveAll(usersList);
     }
 
     public void saveAllAndFlush(List<Cinephile> usersList) {
-        userRepo.saveAllAndFlush(usersList);
+        cinephileRepo.saveAllAndFlush(usersList);
     }
 
     public Cinephile findById(Long id) {
-        return userRepo.findById(id).get();
+        return cinephileRepo.findById(id).get();
     }
 
     public List<Cinephile> findAll() {
-        return userRepo.findAll();
+        return cinephileRepo.findAll();
     }
 
     public void deleteById(Long id) {
-        userRepo.deleteById(id);
+        cinephileRepo.deleteById(id);
     }
 
     public void delete(Cinephile cinephile) {
-        userRepo.delete(cinephile);
+        cinephileRepo.delete(cinephile);
     }
 
     public void deleteAllById(List<Long> ids) {
-        userRepo.deleteAllById(ids);
+        cinephileRepo.deleteAllById(ids);
     }
 
     public void deleteAll(List<Cinephile> cinephiles) {
-        userRepo.deleteAll(cinephiles);
+        cinephileRepo.deleteAll(cinephiles);
     }
 
     public void deleteAll() {
-        userRepo.deleteAll();
+        cinephileRepo.deleteAll();
     }
 
 }
