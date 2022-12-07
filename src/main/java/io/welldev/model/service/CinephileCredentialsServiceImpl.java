@@ -2,6 +2,7 @@ package io.welldev.model.service;
 
 import io.welldev.model.entity.CinephileCredentials;
 import io.welldev.model.repository.CinephileCredentialsRepo;
+import io.welldev.model.repository.CinephileRepo;
 import io.welldev.model.role.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CinephileCredentialsServiceImpl implements CinephileCredentialsService {
 
     private final CinephileCredentialsRepo cinephileCredentialsRepo;
+    private final CinephileRepo cinephileRepo;
     private final PasswordEncoder passwordEncoder;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -32,6 +34,7 @@ public class CinephileCredentialsServiceImpl implements CinephileCredentialsServ
     }
 
     public void save(CinephileCredentials user) {
+        cinephileRepo.save(user.getCinephile());
         cinephileCredentialsRepo.save(
                 new CinephileCredentials(
                         user.getId(),

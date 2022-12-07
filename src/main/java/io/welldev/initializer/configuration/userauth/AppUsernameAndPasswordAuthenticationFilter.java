@@ -37,11 +37,11 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                     appUserDetails.getUsername(),
                     appUserDetails.getPassword()
             );
-            authenticationManager.authenticate(authentication);
+            Authentication authenticate = authenticationManager.authenticate(authentication);
+            return authenticate;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return super.attemptAuthentication(request, response);
     }
 
     @Override

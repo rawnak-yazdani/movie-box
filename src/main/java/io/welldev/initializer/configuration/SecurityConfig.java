@@ -25,7 +25,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import javax.servlet.FilterChain;
 
 @AllArgsConstructor
-@Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -64,7 +63,7 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new AppUsernameAndPasswordAuthenticationFilter(authenticationManager))
+                .addFilterBefore(new AppUsernameAndPasswordAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority(Permissions.ADMIN_WRITE.getPermission())
                 .antMatchers(HttpMethod.GET, "/admin/**").hasAuthority(Permissions.ADMIN_READ.getPermission())
@@ -77,9 +76,7 @@ public class SecurityConfig {
                 .antMatchers("/", "/signup")
                 .permitAll()
                 .anyRequest()
-                .authenticated()
-                .and()
-                .httpBasic();
+                .authenticated();
 //                .formLogin();
 //                .loginPage("/login.html")
 //                .loginProcessingUrl("/perform_login")
