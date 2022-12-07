@@ -10,6 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
+@Table(name = "admin_credentials")
 public class AdminCredentials {
 
     @Id
