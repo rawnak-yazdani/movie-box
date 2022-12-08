@@ -1,11 +1,13 @@
 package io.welldev.initializer.configuration;
 
 import io.welldev.initializer.configuration.userauth.AppUsernameAndPasswordAuthenticationFilter;
+import io.welldev.initializer.configuration.userauth.JwtTokenVerifier;
 import io.welldev.model.role.Permissions;
 import io.welldev.model.role.Roles;
 import io.welldev.model.service.CinephileCredentialsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -26,6 +28,7 @@ import javax.servlet.FilterChain;
 
 @AllArgsConstructor
 @EnableWebSecurity
+@ComponentScan({"io.welldev.initializer.configuration.userauth"})
 public class SecurityConfig {
 
     private PasswordEncoder passwordEncoder;
@@ -54,7 +57,21 @@ public class SecurityConfig {
 //        return new InMemoryUserDetailsManager(user1, user2, admin, adminTrainee);
 //    }
 
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider());
+        return authenticationManagerBuilder.build();
+    }
 
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
@@ -63,7 +80,8 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(new AppUsernameAndPasswordAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilter(new AppUsernameAndPasswordAuthenticationFilter(authenticationManager))
+                .addFilterAfter(new JwtTokenVerifier(), AppUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority(Permissions.ADMIN_WRITE.getPermission())
                 .antMatchers(HttpMethod.GET, "/admin/**").hasAuthority(Permissions.ADMIN_READ.getPermission())
@@ -91,19 +109,5 @@ public class SecurityConfig {
 
         return  httpSecurity.build();
     }
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider());
-        return authenticationManagerBuilder.build();
-    }
 
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder);
-        provider.setUserDetailsService(userDetailsService);
-        return provider;
-    }
 }
