@@ -29,8 +29,8 @@ public class AdminController {
             new DemoPurpose(2, "Movie 2")
     ));
 
-    @GetMapping(value = "/users/{id}")
-    public List<DemoPurpose> getUser(@PathVariable("id") Long id) {
+    @GetMapping
+    public List<DemoPurpose> getUser() {
 //        return new User();
         return movies;
     }
