@@ -3,6 +3,7 @@ package io.welldev.initializer.configuration.userauth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.welldev.initializer.configuration.JwtSpecification;
 import io.welldev.model.entity.CinephileCredentials;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,15 +46,14 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             HttpServletResponse response,
                                             FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
-        String secretKey = "jumanjiScaresTheSoulOUTTAME_PLZ_LET_MET_OUT_YOU_HAVE_TO_WIn_THE_Game_OR_YOU_ARE_TRAPPED";
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(2L)))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .signWith(JwtSpecification.secretKeyHashed)
                 .compact();
-        response.addHeader("UserAuthorization", "Bearer " + token);
+        response.addHeader(JwtSpecification.authorizationHeader, JwtSpecification.tokenPrefix + token);
 
 //        super.successfulAuthentication(request, response, chain, authResult);
     }
