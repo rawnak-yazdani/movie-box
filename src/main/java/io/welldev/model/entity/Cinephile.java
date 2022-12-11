@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +25,8 @@ public class Cinephile {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     private Long id;
 
+    @NotNull(message = "Name Required")
+    @Pattern(regexp = "^[a-zA-Z0-9]", message = "Only alphabetical characters are allowed")
     private String name;
 
     @ManyToMany
