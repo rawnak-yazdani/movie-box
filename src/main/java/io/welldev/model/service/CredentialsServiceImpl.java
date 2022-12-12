@@ -69,7 +69,7 @@ public class CredentialsServiceImpl implements CredentialsService {
         );
     }
 
-    public Credentials getUserByName(String username) {
+    public Credentials findCredentialsByUsername(String username) {
         return credentialsRepo.findByUsername(username);
     }
 }

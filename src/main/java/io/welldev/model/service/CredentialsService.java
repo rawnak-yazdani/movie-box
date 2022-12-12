@@ -5,5 +5,5 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface CredentialsService extends UserDetailsService {
     public void save(Credentials credentials, String role);
-    public Credentials getUserByName(String username);
+    public Credentials findCredentialsByUsername(String username);
 }

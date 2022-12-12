@@ -48,7 +48,7 @@ public class HomeController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Cinephile> addUser(@Valid @RequestBody Credentials credentials) {
             credentialsService.save(credentials, "user");
-            Cinephile createdCinephile = credentialsService.getUserByName(credentials.getUsername()).getCinephile();
+            Cinephile createdCinephile = credentialsService.findCredentialsByUsername(credentials.getUsername()).getCinephile();
 
 
         return new ResponseEntity<>(createdCinephile, HttpStatus.CREATED);

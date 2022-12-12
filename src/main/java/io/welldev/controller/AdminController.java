@@ -58,7 +58,7 @@ public class AdminController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Admin> addUser(@Valid @RequestBody Credentials credentials) {
         credentialsService.save(credentials, credentials.getRole());
-        Admin createdAdmin = credentialsService.getUserByName(credentials.getUsername()).getAdmin();
+        Admin createdAdmin = credentialsService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
 
 
         return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
