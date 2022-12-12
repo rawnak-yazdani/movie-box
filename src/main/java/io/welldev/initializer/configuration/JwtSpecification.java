@@ -17,4 +17,5 @@ public class JwtSpecification {
     public static Integer tokenExpirationAfterDays = 14;
     public static SecretKey secretKeyHashed = Keys.hmacShaKeyFor(secretKey.getBytes());
     public static String authorizationHeader = HttpHeaders.AUTHORIZATION;
+    public static String currentUsername = "";
 }

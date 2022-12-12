@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -26,7 +27,7 @@ public class GenreService {
     }
 
     //
-    public void saveAll(List<Genre> genresList) {
+    public void saveAll(Set<Genre> genresList) {
         genreRepo.saveAll(genresList);
     }
 
