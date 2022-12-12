@@ -12,10 +12,10 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "admin")
-public class Admin implements Individual{
+public class Admin {
     @Id
     @Column(name = "id", nullable = false)
-    @SequenceGenerator(initialValue=1, name = "admin_seq", sequenceName = "admin_seq", allocationSize = 1)
+    @SequenceGenerator(initialValue = 1, name = "admin_seq", sequenceName = "admin_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admin_seq")
     private Long id;
 
@@ -28,5 +28,5 @@ public class Admin implements Individual{
 }
 
 /*
-* drop table admin, admin_credentials, cinephile, cinephile_credentials, genre, movie, movie_cinephile, movie_genre, movie_user;
-* */
+ * drop table admin, admin_credentials, cinephile, cinephile_credentials, genre, movie, movie_cinephile, movie_genre, movie_user;
+ * */

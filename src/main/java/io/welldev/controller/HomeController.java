@@ -41,7 +41,7 @@ public class HomeController {
 //                movies) {
 //            System.out.println(movie.getTitle());
 //        }
-        return new ArrayList<Movie>();
+        return movies;
     }
 
     @PostMapping(value = "/signup")

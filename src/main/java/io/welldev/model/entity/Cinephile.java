@@ -20,7 +20,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "cinephile")
-public class Cinephile implements Individual {
+public class Cinephile {
     @Id
     @Column(name = "id", nullable = false)
     @SequenceGenerator(initialValue = 1, name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
