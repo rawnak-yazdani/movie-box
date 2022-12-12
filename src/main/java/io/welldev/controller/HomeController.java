@@ -1,11 +1,13 @@
 package io.welldev.controller;
 
+import com.sun.xml.txw2.IllegalAnnotationException;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -47,11 +49,16 @@ public class HomeController {
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Cinephile> addUser(@Valid @RequestBody Credentials credentials) {
+        try {
             credentialsService.save(credentials, "user");
             Cinephile createdCinephile = credentialsService.findCredentialsByUsername(credentials.getUsername()).getCinephile();
 
-
-        return new ResponseEntity<>(createdCinephile, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdCinephile, HttpStatus.CREATED);
+        } catch (NullPointerException npe) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
+        } catch (IllegalArgumentException argumentException) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+        }
     }
 
 

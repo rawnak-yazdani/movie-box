@@ -52,21 +52,25 @@ public class CredentialsServiceImpl implements CredentialsService {
     }
 
     public void save(Credentials user, String role) {
-        if (role.equals("user"))
-            cinephileService.save(user.getCinephile());
-        else
-            adminService.save(user.getAdmin());
+        if (credentialsRepo.findByUsername(user.getUsername()) != null) {
+            throw new IllegalArgumentException();
+        } else {
+            if (role.equals("user"))
+                cinephileService.save(user.getCinephile());
+            else
+                adminService.save(user.getAdmin());
+            credentialsRepo.save(
+                    new Credentials(
+                            user.getId(),
+                            user.getUsername(),
+                            passwordEncoder.encode(user.getPassword()),
+                            role,
+                            user.getCinephile(),
+                            user.getAdmin()
+                    )
+            );
+        }
 
-        credentialsRepo.save(
-                new Credentials(
-                        user.getId(),
-                        user.getUsername(),
-                        passwordEncoder.encode(user.getPassword()),
-                        role,
-                        user.getCinephile(),
-                        user.getAdmin()
-                )
-        );
     }
 
     public Credentials findCredentialsByUsername(String username) {
