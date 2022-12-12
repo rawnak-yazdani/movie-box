@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.HashSet;
@@ -18,15 +20,15 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "cinephile")
-public class Cinephile {
+public class Cinephile implements Individual {
     @Id
     @Column(name = "id", nullable = false)
-    @SequenceGenerator(initialValue=1, name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
+    @SequenceGenerator(initialValue = 1, name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     private Long id;
 
-    @NotNull(message = "Name Required")
-    @Pattern(regexp = "^[a-zA-Z0-9]", message = "Only alphabetical characters are allowed")
+    @NotBlank(message = "Name Required")
+    @Pattern(regexp = "^[a-zA-Z-\\s]+$", message = "Only alphabetical characters are allowed")
     private String name;
 
     @ManyToMany

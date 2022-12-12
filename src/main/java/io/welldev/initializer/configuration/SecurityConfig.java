@@ -4,12 +4,10 @@ import io.welldev.initializer.configuration.userauth.AppUsernameAndPasswordAuthe
 import io.welldev.initializer.configuration.userauth.JwtTokenVerifier;
 import io.welldev.model.role.Permissions;
 import io.welldev.model.role.Roles;
-import io.welldev.model.service.CinephileCredentialsService;
+import io.welldev.model.service.CredentialsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,14 +15,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
-import javax.servlet.FilterChain;
 
 @AllArgsConstructor
 @EnableWebSecurity
@@ -32,7 +24,7 @@ import javax.servlet.FilterChain;
 public class SecurityConfig {
 
     private PasswordEncoder passwordEncoder;
-    private CinephileCredentialsService userDetailsService;
+    private CredentialsService userDetailsService;
 //    @Bean
 //    public InMemoryUserDetailsManager userDetailsManager() {
 //        UserDetails user1 = User.withUsername("Robbi")

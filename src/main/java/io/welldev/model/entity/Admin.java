@@ -7,13 +7,12 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "admin")
-public class Admin {
+public class Admin implements Individual{
     @Id
     @Column(name = "id", nullable = false)
     @SequenceGenerator(initialValue=1, name = "admin_seq", sequenceName = "admin_seq", allocationSize = 1)
@@ -21,6 +20,10 @@ public class Admin {
     private Long id;
 
     private String name;
+
+    public Admin(String name) {
+        this.name = name;
+    }
 
 }
 

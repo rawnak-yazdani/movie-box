@@ -2,9 +2,8 @@ package io.welldev.initializer.configuration.userauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import io.welldev.initializer.configuration.JwtSpecification;
-import io.welldev.model.entity.CinephileCredentials;
+import io.welldev.model.entity.Credentials;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,8 +27,8 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                                 HttpServletResponse response)
             throws AuthenticationException {
         try {
-            CinephileCredentials appUserDetails = new ObjectMapper()
-                    .readValue(request.getInputStream(), CinephileCredentials.class);
+            Credentials appUserDetails = new ObjectMapper()
+                    .readValue(request.getInputStream(), Credentials.class);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     appUserDetails.getUsername(),
                     appUserDetails.getPassword()

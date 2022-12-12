@@ -4,8 +4,10 @@ import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -20,7 +22,7 @@ public class AdminController {
     GenreService genreService;
 
     @Autowired
-    AdminCredentialsService adminCredentialsService;
+    CredentialsService credentialsService;
     @Autowired
     AdminService adminService;
 
@@ -52,6 +54,16 @@ public class AdminController {
 
     }
 
+    @PostMapping(value = "/signup")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Admin> addUser(@Valid @RequestBody Credentials credentials) {
+        credentialsService.save(credentials, credentials.getRole());
+        Admin createdAdmin = credentialsService.getUserByName(credentials.getUsername()).getAdmin();
+
+
+        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+    }
+
 /*
 {
     "id":null,
@@ -68,14 +80,14 @@ public class AdminController {
 
     }
 
-    @PostMapping(value = "/signup")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Admin addUser(@RequestBody AdminCredentials adminCredentials) {
-        adminService.save(adminCredentials.getAdmin());
-        adminCredentialsService.save(adminCredentials);
-
-        return adminCredentialsService.getUserByName(adminCredentials.getUsername()).getAdmin();
-    }
+//    @PostMapping(value = "/signup")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public Admin addUser(@RequestBody AdminCredentials adminCredentials) {
+//        adminService.save(adminCredentials.getAdmin());
+//        adminCredentialsService.save(adminCredentials);
+//
+//        return adminCredentialsService.getUserByName(adminCredentials.getUsername()).getAdmin();
+//    }
 
 /*
 {

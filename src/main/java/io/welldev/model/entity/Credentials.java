@@ -12,13 +12,13 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "cinephile_credentials")
-public class CinephileCredentials {
+@Table(name = "credentials")
+public class Credentials {
 
     @Id
     @Column(name = "id", nullable = false)
-    @SequenceGenerator(initialValue = 1, name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @SequenceGenerator(initialValue = 1, name = "cred_seq", sequenceName = "cred_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cred_seq")
     private Long id;
 
     @NotNull(message = "username is required")
@@ -26,9 +26,11 @@ public class CinephileCredentials {
     private String username;
     @NotNull(message = "password is required")
     private String password;
+    private String role;
 
     @OneToOne
     private Cinephile cinephile;
-
+    @OneToOne
+    private Admin admin;
 
 }
