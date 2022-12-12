@@ -22,6 +22,7 @@ public class CredentialsServiceImpl implements CredentialsService {
     private final CinephileService cinephileService;
     private final AdminService adminService;
     private final PasswordEncoder passwordEncoder;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Credentials user = credentialsRepo.findByUsername(username);
@@ -51,9 +52,10 @@ public class CredentialsServiceImpl implements CredentialsService {
     }
 
     public void save(Credentials user, String role) {
-        if (role.equals("user")) {
+        if (role.equals("user"))
             cinephileService.save(user.getCinephile());
-        } else adminService.save(user.getAdmin());
+        else
+            adminService.save(user.getAdmin());
 
         credentialsRepo.save(
                 new Credentials(
