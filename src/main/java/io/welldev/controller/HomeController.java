@@ -46,6 +46,8 @@ public class HomeController {
         return movies;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // user sign up
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Cinephile> addUser(@Valid @RequestBody Credentials credentials) {
@@ -60,6 +62,53 @@ public class HomeController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
         }
     }
+/*
+{
+    "username": "anik1",
+    "password": "2222",
+    "cinephile": {"name": "Khaleed Ahmed Anik"}
+}
+
+{
+    "username": "abir2",
+    "password": "2222",
+    "cinephile": {"name": "Mahadee Hasan Abir"}
+}
+
+{
+    "username": "arnob3",
+    "password": "2222",
+    "cinephile": {"name": "Tanveer Arnob"}
+}
+
+{
+    "username": "rawnak4",
+    "password": "2222",
+    "cinephile": {"name": "Rawnak Yazdani"}
+}
+*/
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // main admin sign up
+//    @PostMapping(value = "/signup/main-admin")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Credentials credentials) {
+//        credentialsService.save(credentials, credentials.getRole());
+//        Admin createdAdmin = credentialsService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
+//
+//        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+//    }
+/*
+{
+    "username": "dictator",
+    "password": "2222",
+    "role": "admin",
+    "admin": {"name": "Mr Dictator"}
+}
+
+Token: (from http://localhost:8080/login, with username and password)
+Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkaWN0YXRvciIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJBZG1pbiA6OiBSZWFkIn0seyJhdXRob3JpdHkiOiJBZG1pbiA6OiBXcml0ZSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9LHsiYXV0aG9yaXR5IjoiVXNlciA6OiBSZWFkIn0seyJhdXRob3JpdHkiOiJVc2VyIDo6IFdyaXRlIn1dLCJpYXQiOjE2NzA5MDcxOTgsImV4cCI6MTY3MTA0MDgwMH0.V3Uqm5CGJoxOOqTzdqnYpSTYFKErXt6W1gvEZmdqeCiZrWkkO0g_8hfSCwwrsBrxu2YK59OO2DJaFfMdonKrpg
+*/
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -74,13 +123,5 @@ public class HomeController {
 //        });
 //        return errors;
 //    }
-
-/*
-{
-    "username": "Anik3",
-    "password": "12345",
-    "cinephile": {"name": "Khaleed Ahmed Anik"}
-}
-*/
 
 }

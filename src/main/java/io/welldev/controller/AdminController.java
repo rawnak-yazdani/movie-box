@@ -37,7 +37,9 @@ public class AdminController {
         return movies;
     }
 
-    @PostMapping("/addMovie")
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // add movies
+    @PostMapping("/add-movie")
     @ResponseStatus(HttpStatus.CREATED)
     public List<Movie> addMovie(@RequestBody Movie movie) {
 
@@ -54,6 +56,16 @@ public class AdminController {
 
     }
 
+/*
+{
+    "title":"Chehre",
+    "genres":[{"name":"Mystry"}, {"name":"Thriller"}],
+    "rating":"8/10",
+    "year":2022
+}
+*/
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // secondary admin signup
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Admin> addUser(@Valid @RequestBody Credentials credentials) {
@@ -63,16 +75,7 @@ public class AdminController {
 
         return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
     }
-
-/*
-{
-    "id":null,
-    "title":"Chehre",
-    "genres":[{"id":null,"name":"Mystry"}, {"id":null,"name":"Thriller"}],
-    "rating":"8/10",
-    "year":2022
-}
-*/
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @PutMapping("/addMovie/{id}")
     @ResponseStatus(HttpStatus.OK)
