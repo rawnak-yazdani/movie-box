@@ -35,7 +35,7 @@ public class HomeController {
             new DemoPurpose(2, "Movie 2")
     ));
 
-    @GetMapping
+    @GetMapping(value = "/movies")
     public List<Movie> getMovies() {
 
         List<Movie> movies = movieService.findAll();
@@ -89,14 +89,14 @@ public class HomeController {
 */
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // main admin sign up
-//    @PostMapping(value = "/signup/main-admin")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Credentials credentials) {
-//        credentialsService.save(credentials, credentials.getRole());
-//        Admin createdAdmin = credentialsService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
-//
-//        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-//    }
+    @PostMapping(value = "/signup/main-admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Credentials credentials) {
+        credentialsService.save(credentials, credentials.getRole());
+        Admin createdAdmin = credentialsService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
+
+        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+    }
 /*
 {
     "username": "dictator",

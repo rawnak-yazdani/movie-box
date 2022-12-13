@@ -2,7 +2,7 @@ package io.welldev.initializer.configuration.userauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
-import io.welldev.initializer.configuration.JwtSpecification;
+import io.jsonwebtoken.security.Keys;
 import io.welldev.model.entity.Credentials;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 @RequiredArgsConstructor
 public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -45,15 +46,15 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             HttpServletResponse response,
                                             FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
+        Long lifeTime = Long.parseLong(System.getenv("TOKEN_EXPIRE_TIME"));
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
-                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(2L)))
-                .signWith(JwtSpecification.secretKeyHashed)
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plus(lifeTime, ChronoUnit.DAYS)))
+                .signWith(Keys.hmacShaKeyFor(System.getenv("TOKEN_SECRET_KEY").getBytes()))
                 .compact();
-        response.addHeader(JwtSpecification.authorizationHeader, JwtSpecification.tokenPrefix + token);
-
+        response.getWriter().write("Bearer " + token);
 //        super.successfulAuthentication(request, response, chain, authResult);
     }
 }

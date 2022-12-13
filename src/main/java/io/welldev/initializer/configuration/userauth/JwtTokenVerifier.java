@@ -5,7 +5,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.welldev.initializer.configuration.JwtSpecification;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,21 +27,21 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        String authorizationHeader = request.getHeader(JwtSpecification.authorizationHeader);
+        String authorizationHeader = request.getHeader("Authorization");
 
-        if ( Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(JwtSpecification.tokenPrefix)) {
+        if ( Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        String token = authorizationHeader.replace(JwtSpecification.tokenPrefix, "");
+        String token = authorizationHeader.replace("Bearer ", "");
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(JwtSpecification.secretKeyHashed)
+                   // .setSigningKey(JwtSpecification.secretKeyHashed)
                     .build()
                     .parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             String username = body.getSubject();
-            JwtSpecification.currentUsername = username;
+           // JwtSpecification.currentUsername = username;
             List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
             Set<SimpleGrantedAuthority> grantedAuthorities = authorities.stream()
                     .map(m -> new SimpleGrantedAuthority(m.get("authority")))
