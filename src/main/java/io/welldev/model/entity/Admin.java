@@ -28,5 +28,5 @@ public class Admin {
 }
 
 /*
-drop table admin, admin_credentials, cinephile, cinephile_credentials, genre, movie, movie_cinephile, movie_genre, movie_user;
+drop table admin, cinephile, credentials, genre, movie, movie_cinephile, movie_genre, movie_user;
 */
