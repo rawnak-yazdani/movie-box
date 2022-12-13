@@ -75,12 +75,17 @@ public class SecurityConfig {
                 .addFilter(new AppUsernameAndPasswordAuthenticationFilter(authenticationManager))
                 .addFilterAfter(new JwtTokenVerifier(), AppUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
+
                 .antMatchers(HttpMethod.POST, "/admin/**").hasAuthority(Permissions.ADMIN_WRITE.getPermission())
+                .antMatchers(HttpMethod.PUT, "/admin/**").hasAuthority(Permissions.ADMIN_WRITE.getPermission())
+                .antMatchers(HttpMethod.DELETE, "/admin/**").hasAuthority(Permissions.ADMIN_WRITE.getPermission())
                 .antMatchers(HttpMethod.GET, "/admin/**").hasAuthority(Permissions.ADMIN_READ.getPermission())
-                .antMatchers(HttpMethod.DELETE, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
+
                 .antMatchers(HttpMethod.POST, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
                 .antMatchers(HttpMethod.PUT, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.DELETE, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
                 .antMatchers(HttpMethod.GET, "/users**")
+
                 .hasAnyRole(Roles.ADMIN.name(), Roles.ADMINTRAINEE.name(), Roles.USER.name())
 //                .antMatchers("/anonymous*")
                 .antMatchers("/", "/signup"/*, "/signup/main-admin"*/)

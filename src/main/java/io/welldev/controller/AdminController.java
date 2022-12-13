@@ -39,7 +39,7 @@ public class AdminController {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // add movies
-    @PostMapping("/add-movie")
+    @PostMapping("/movies")
     @ResponseStatus(HttpStatus.CREATED)
     public List<Movie> addMovie(@RequestBody Movie movie) {
 
@@ -50,20 +50,43 @@ public class AdminController {
 
         movieService.saveAndFlush(movie);
 
-        List<Movie> movies = movieService.findAll();
-
-        return movies;
+        return movieService.findAll();
 
     }
 
 /*
 {
-    "title":"Chehre",
-    "genres":[{"name":"Mystry"}, {"name":"Thriller"}],
+    "title":"Dhoom",
+    "genres":[{"name":"Action"}, {"name":"Thriller"}],
     "rating":"8/10",
-    "year":2022
+    "year":2004
+}
+
+{
+    "title":"Dhoom 2",
+    "genres":[{"name":"Action 2"}, {"name":"Thriller 2"}],
+    "rating":"9/10",
+    "year":2006
+}
+
+{
+    "title":"Dhoom 3",
+    "genres":[{"name":"Action 3"}, {"name":"Thriller 3"}],
+    "rating":"7/10",
+    "year":2013
 }
 */
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // delete movies
+    @DeleteMapping("/movies/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public List<Movie> deleteMovie(@PathVariable Long id) {
+
+        movieService.deleteById(id);
+
+        return movieService.findAll();
+
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // secondary admin signup
     @PostMapping(value = "/signup")
@@ -77,7 +100,7 @@ public class AdminController {
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @PutMapping("/addMovie/{id}")
+    @PutMapping("/add-movie/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateMovie(@PathVariable("id") Long id, @RequestBody Movie movie) {
 
@@ -91,12 +114,4 @@ public class AdminController {
 //
 //        return adminCredentialsService.getUserByName(adminCredentials.getUsername()).getAdmin();
 //    }
-
-/*
-{
-    "username": "Abir111",
-    "password": "2222",
-    "admin": {"name": "Abir Zaman"}
-}
-*/
 }
