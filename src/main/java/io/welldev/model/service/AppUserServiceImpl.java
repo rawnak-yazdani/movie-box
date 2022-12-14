@@ -61,6 +61,7 @@ public class AppUserServiceImpl implements AppUserService {
             throw new IllegalArgumentException();
         } else {
             user.setRole(role);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             appUserRepo.save(user);
         }
 

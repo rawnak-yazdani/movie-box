@@ -54,27 +54,27 @@ public class HomeController {
     }
 /*
 {
+    "name": "Khaleed Ahmed Anik",
     "username": "anik1",
-    "password": "2222",
-    "cinephile": {"name": "Khaleed Ahmed Anik"}
+    "password": "2222"
 }
 
 {
+    "name": "Mahadee Hasan Abir",
     "username": "abir2",
-    "password": "2222",
-    "cinephile": {"name": "Mahadee Hasan Abir"}
+    "password": "2222"
 }
 
 {
+    "name": "Tanveer Arnob",
     "username": "arnob3",
-    "password": "2222",
-    "cinephile": {"name": "Tanveer Arnob"}
+    "password": "2222"
 }
 
 {
+    "name": "Rawnak Yazdani",
     "username": "rawnak4",
-    "password": "2222",
-    "cinephile": {"name": "Rawnak Yazdani"}
+    "password": "2222"
 }
 */
 
