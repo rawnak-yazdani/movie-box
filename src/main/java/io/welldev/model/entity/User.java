@@ -17,8 +17,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "app_user")
-public class AppUser {
+@Table(name = "users")
+public class User {
     @Id
     @Column(name = "id", nullable = false)
     @SequenceGenerator(initialValue = 1, name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
@@ -41,8 +41,8 @@ public class AppUser {
     private String userCreationDate;
 
     @ManyToMany
-    @JoinTable(name = "movie_app_user",
-            joinColumns = {@JoinColumn(name = "fk_app_user")},
+    @JoinTable(name = "movie_user",
+            joinColumns = {@JoinColumn(name = "fk_user")},
             inverseJoinColumns = {@JoinColumn(name = "fk_movie")})
     @Fetch(value = FetchMode.JOIN)
     private Set<Movie> watchList = new HashSet<>();

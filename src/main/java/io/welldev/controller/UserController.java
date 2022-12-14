@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/users", headers = "Accept=application/json",
         produces = "application/json")
-public class CinephileController {
+public class UserController {
 
     @Autowired
     private CinephileService userService;
