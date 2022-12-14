@@ -26,12 +26,6 @@ public class HomeController {
     @Autowired
     AppUserService appUserService;
 
-    @Autowired
-    CinephileService cinephileService;
-
-    @Autowired
-    AdminService adminService;
-
     List<DemoPurpose> movies = new ArrayList<>(Arrays.asList(
             new DemoPurpose(1, "Movie 1"),
             new DemoPurpose(2, "Movie 2")
@@ -49,7 +43,7 @@ public class HomeController {
     public ResponseEntity<AppUser> addUser(@Valid @RequestBody AppUser appUser) {
         try {
             appUserService.save(appUser, "user");
-            AppUser createdAppUser = appUserService.findCredentialsByUsername(appUser.getUsername());
+            AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
 
             return new ResponseEntity<>(createdAppUser, HttpStatus.CREATED);
         } catch (NullPointerException npe) {
@@ -90,7 +84,7 @@ public class HomeController {
     public ResponseEntity<AppUser> addAdmin(@Valid @RequestBody AppUser credentials) {
         System.out.printf(credentials.getName() + credentials.getId());
         appUserService.save(credentials, "admin");
-        AppUser createdAdmin = appUserService.findCredentialsByUsername(credentials.getUsername());
+        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
 
         return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
     }

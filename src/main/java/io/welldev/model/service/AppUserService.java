@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AppUserService extends UserDetailsService {
     public void save(AppUser credentials, String role);
-    public AppUser findCredentialsByUsername(String username);
+    public AppUser findAppUserByUsername(String username);
 
     List<AppUser> findAll();
 }

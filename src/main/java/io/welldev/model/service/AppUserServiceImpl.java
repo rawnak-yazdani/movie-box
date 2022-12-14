@@ -21,8 +21,6 @@ import java.util.List;
 public class AppUserServiceImpl implements AppUserService {
 
     private final AppUserRepo appUserRepo;
-    private final CinephileService cinephileService;
-    private final AdminService adminService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -68,7 +66,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     }
 
-    public AppUser findCredentialsByUsername(String username) {
+    public AppUser findAppUserByUsername(String username) {
         return appUserRepo.findByUsername(username);
     }
 }

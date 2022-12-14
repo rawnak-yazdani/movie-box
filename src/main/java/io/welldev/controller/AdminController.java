@@ -24,9 +24,6 @@ public class AdminController {
     @Autowired
     AppUserService appUserService;
 
-    @Autowired
-    AdminService adminService;
-
     List<DemoPurpose> movies = new ArrayList<>(Arrays.asList(
             new DemoPurpose(1, "Movie 1"),
             new DemoPurpose(2, "Movie 2")
@@ -92,8 +89,8 @@ public class AdminController {
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppUser> addUser(@Valid @RequestBody AppUser appUser) {
-        appUserService.save(appUser, appUser.getRole());
-        AppUser createdAdmin = appUserService.findCredentialsByUsername(appUser.getUsername());
+        appUserService.save(appUser, "admin");
+        AppUser createdAdmin = appUserService.findAppUserByUsername(appUser.getUsername());
 
 
         return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);

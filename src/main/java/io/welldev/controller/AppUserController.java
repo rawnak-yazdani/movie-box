@@ -1,6 +1,5 @@
 package io.welldev.controller;
 
-import io.welldev.model.entity.Cinephile;
 import io.welldev.model.entity.AppUser;
 import io.welldev.model.entity.Movie;
 import io.welldev.model.service.AppUserService;
@@ -29,15 +28,15 @@ public class AppUserController {
     private GenreService genreService;
 
     @GetMapping
-    public List<AppUser> getUsers() {
-        return appUserService.findAll();
+    public ResponseEntity<List<AppUser>> getUsers() {
+        return new ResponseEntity<>(appUserService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{username}")
-    public AppUser getUser(@PathVariable("username") String username) {
+    public ResponseEntity<AppUser> getUser(@PathVariable("username") String username) {
         try {
-            AppUser requestedUserCredentials = appUserService.findCredentialsByUsername(username);
-            return requestedUserCredentials;
+            AppUser requestedUserCredentials = appUserService.findAppUserByUsername(username);
+            return new ResponseEntity<>(requestedUserCredentials, HttpStatus.FOUND);
         } catch (NullPointerException npe) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -53,7 +52,7 @@ public class AppUserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getName().equals(reqUsername)) {
-            AppUser createdUser = appUserService.findCredentialsByUsername(reqUsername);
+            AppUser createdUser = appUserService.findAppUserByUsername(reqUsername);
 
             for (Movie m :
                     movies) {
@@ -66,7 +65,7 @@ public class AppUserController {
 
             return new ResponseEntity<>(
                     appUserService
-                            .findCredentialsByUsername(reqUsername),
+                            .findAppUserByUsername(reqUsername),
                     HttpStatus.ACCEPTED
             );
         } else return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -77,7 +76,7 @@ public class AppUserController {
     public ResponseEntity<AppUser> deleteFromWatchList(@PathVariable String username,
                                                          @PathVariable Long id) {
         try {
-            AppUser requestedUser = appUserService.findCredentialsByUsername(username);
+            AppUser requestedUser = appUserService.findAppUserByUsername(username);
             for (Movie m:
                  requestedUser.getWatchList()) {
                 if (m.getId() == id) requestedUser.getWatchList().remove(m);
