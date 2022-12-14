@@ -31,12 +31,6 @@ public class HomeController {
             new DemoPurpose(2, "Movie 2")
     ));
 
-    @GetMapping(value = "/movies")
-    public ResponseEntity<List<Movie>> getMovies() {
-        return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // user sign up
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
@@ -52,6 +46,25 @@ public class HomeController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
         }
     }
+
+    // main admin sign up
+    @PostMapping(value = "/signup/main-admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
+        System.out.printf(credentials.getName() + credentials.getId());
+        appUserService.save(credentials, "admin");
+        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
+
+        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/movies")
+    public ResponseEntity<List<Movie>> getMovies() {
+        return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*
 {
     "name": "Khaleed Ahmed Anik",
@@ -76,32 +89,14 @@ public class HomeController {
     "username": "rawnak4",
     "password": "2222"
 }
+
+{
+    "name": "Mr Dictator",
+    "username": "dictator",
+    "password": "2222",
+    "role": "admin"
+}
 */
-
-
-    @PostMapping(value = "/signup/main-admin")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
-        System.out.printf(credentials.getName() + credentials.getId());
-        appUserService.save(credentials, "admin");
-        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
-
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-    }
-
-//{
-//    "username": "dictator",
-//    "password": "2222",
-//    "role": "admin",
-//    "admin": {"name": "Mr Dictator"}
-//}
-//
-//Token: (from http://localhost:8080/login, with username and password)
-//Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkaWN0YXRvciIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJBZG1pbiA6OiBSZWFkIn0seyJhdXRob3JpdHkiOiJBZG1pbiA6OiBXcml0ZSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9LHsiYXV0aG9yaXR5IjoiVXNlciA6OiBSZWFkIn0seyJhdXRob3JpdHkiOiJVc2VyIDo6IFdyaXRlIn1dLCJpYXQiOjE2NzA5MDcxOTgsImV4cCI6MTY3MTA0MDgwMH0.V3Uqm5CGJoxOOqTzdqnYpSTYFKErXt6W1gvEZmdqeCiZrWkkO0g_8hfSCwwrsBrxu2YK59OO2DJaFfMdonKrpg
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
 //    @ExceptionHandler(MethodArgumentNotValidException.class)
