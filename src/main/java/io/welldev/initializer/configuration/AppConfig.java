@@ -69,6 +69,7 @@ public class AppConfig {
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
         properties.setProperty("hibernate.show_sql", "true");
+        properties.setProperty("hibernate.jdbc.time_zone", "UTC");
 
         return properties;
     }

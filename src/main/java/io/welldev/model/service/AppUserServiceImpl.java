@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,11 @@ public class AppUserServiceImpl implements AppUserService {
     private final CinephileService cinephileService;
     private final AdminService adminService;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public List<AppUser> findAll() {
+        return appUserRepo.findAll();
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -56,17 +62,8 @@ public class AppUserServiceImpl implements AppUserService {
         if (appUserRepo.findByUsername(user.getUsername()) != null) {
             throw new IllegalArgumentException();
         } else {
-            appUserRepo.save(
-                    new AppUser(
-                            user.getId(),
-                            user.getUsername(),
-                            user.getName(),
-                            passwordEncoder.encode(user.getPassword()),
-                            role,
-                            user.getUserCreationDate(),
-                            user.getWatchList()
-                    )
-            );
+            user.setRole(role);
+            appUserRepo.save(user);
         }
 
     }

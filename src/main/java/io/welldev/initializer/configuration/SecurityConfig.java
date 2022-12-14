@@ -88,7 +88,7 @@ public class SecurityConfig {
 
                 .hasAnyRole(Roles.ADMIN.name(), Roles.ADMINTRAINEE.name(), Roles.USER.name())
 //                .antMatchers("/anonymous*")
-                .antMatchers("/movies", "/signup"/*, "/signup/main-admin"*/)
+                .antMatchers("/movies", "/signup", "/signup/main-admin")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

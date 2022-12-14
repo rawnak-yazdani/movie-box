@@ -83,27 +83,28 @@ public class HomeController {
     "cinephile": {"name": "Rawnak Yazdani"}
 }
 */
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // main admin sign up
-//    @PostMapping(value = "/signup/main-admin")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Credentials credentials) {
-//        appUserService.save(credentials, credentials.getRole());
-//        Admin createdAdmin = appUserService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
-//
-//        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-//    }
-/*
-{
-    "username": "dictator",
-    "password": "2222",
-    "role": "admin",
-    "admin": {"name": "Mr Dictator"}
-}
 
-Token: (from http://localhost:8080/login, with username and password)
-Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkaWN0YXRvciIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJBZG1pbiA6OiBSZWFkIn0seyJhdXRob3JpdHkiOiJBZG1pbiA6OiBXcml0ZSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9LHsiYXV0aG9yaXR5IjoiVXNlciA6OiBSZWFkIn0seyJhdXRob3JpdHkiOiJVc2VyIDo6IFdyaXRlIn1dLCJpYXQiOjE2NzA5MDcxOTgsImV4cCI6MTY3MTA0MDgwMH0.V3Uqm5CGJoxOOqTzdqnYpSTYFKErXt6W1gvEZmdqeCiZrWkkO0g_8hfSCwwrsBrxu2YK59OO2DJaFfMdonKrpg
-*/
+
+    @PostMapping(value = "/signup/main-admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<AppUser> addAdmin(@Valid @RequestBody AppUser credentials) {
+        System.out.printf(credentials.getName() + credentials.getId());
+        appUserService.save(credentials, "admin");
+        AppUser createdAdmin = appUserService.findCredentialsByUsername(credentials.getUsername());
+
+        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+    }
+
+//{
+//    "username": "dictator",
+//    "password": "2222",
+//    "role": "admin",
+//    "admin": {"name": "Mr Dictator"}
+//}
+//
+//Token: (from http://localhost:8080/login, with username and password)
+//Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkaWN0YXRvciIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJBZG1pbiA6OiBSZWFkIn0seyJhdXRob3JpdHkiOiJBZG1pbiA6OiBXcml0ZSJ9LHsiYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9LHsiYXV0aG9yaXR5IjoiVXNlciA6OiBSZWFkIn0seyJhdXRob3JpdHkiOiJVc2VyIDo6IFdyaXRlIn1dLCJpYXQiOjE2NzA5MDcxOTgsImV4cCI6MTY3MTA0MDgwMH0.V3Uqm5CGJoxOOqTzdqnYpSTYFKErXt6W1gvEZmdqeCiZrWkkO0g_8hfSCwwrsBrxu2YK59OO2DJaFfMdonKrpg
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
