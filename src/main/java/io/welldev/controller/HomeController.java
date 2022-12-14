@@ -81,7 +81,7 @@ public class HomeController {
 
     @PostMapping(value = "/signup/main-admin")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUser> addAdmin(@Valid @RequestBody AppUser credentials) {
+    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
         System.out.printf(credentials.getName() + credentials.getId());
         appUserService.save(credentials, "admin");
         AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
