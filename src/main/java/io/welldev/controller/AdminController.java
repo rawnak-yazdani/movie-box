@@ -23,6 +23,7 @@ public class AdminController {
 
     @Autowired
     CredentialsService credentialsService;
+
     @Autowired
     AdminService adminService;
 
@@ -79,12 +80,11 @@ public class AdminController {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // delete movies
     @DeleteMapping("/movies/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<Movie> deleteMovie(@PathVariable Long id) {
+    public ResponseEntity<List<Movie>> deleteMovie(@PathVariable Long id) {
 
         movieService.deleteById(id);
 
-        return movieService.findAll();
+        return new ResponseEntity<>(movieService.findAll(), HttpStatus.ACCEPTED);
 
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

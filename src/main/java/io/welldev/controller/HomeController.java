@@ -23,10 +23,13 @@ public class HomeController {
 
     @Autowired
     GenreService genreService;
+
     @Autowired
     CredentialsService credentialsService;
+
     @Autowired
     CinephileService cinephileService;
+
     @Autowired
     AdminService adminService;
 
@@ -36,14 +39,8 @@ public class HomeController {
     ));
 
     @GetMapping(value = "/movies")
-    public List<Movie> getMovies() {
-
-        List<Movie> movies = movieService.findAll();
-//        for (Movie movie:
-//                movies) {
-//            System.out.println(movie.getTitle());
-//        }
-        return movies;
+    public ResponseEntity<List<Movie>> getMovies() {
+        return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,14 +86,14 @@ public class HomeController {
 */
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // main admin sign up
-    @PostMapping(value = "/signup/main-admin")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Credentials credentials) {
-        credentialsService.save(credentials, credentials.getRole());
-        Admin createdAdmin = credentialsService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
-
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-    }
+//    @PostMapping(value = "/signup/main-admin")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Credentials credentials) {
+//        credentialsService.save(credentials, credentials.getRole());
+//        Admin createdAdmin = credentialsService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
+//
+//        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+//    }
 /*
 {
     "username": "dictator",
