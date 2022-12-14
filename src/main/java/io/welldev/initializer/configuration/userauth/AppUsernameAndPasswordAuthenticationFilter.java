@@ -16,9 +16,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
+
 @RequiredArgsConstructor
 public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -46,12 +50,15 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             HttpServletResponse response,
                                             FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
-        Long lifeTime = Long.parseLong(System.getenv("TOKEN_EXPIRE_TIME"));
+        int lifeTime = Integer.parseInt(System.getenv("TOKEN_EXPIRE_TIME"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, lifeTime);
+
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
-                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plus(lifeTime, ChronoUnit.DAYS)))
+                .setExpiration(calendar.getTime())
                 .signWith(Keys.hmacShaKeyFor(System.getenv("TOKEN_SECRET_KEY").getBytes()))
                 .compact();
         response.getWriter().write("Bearer " + token);
