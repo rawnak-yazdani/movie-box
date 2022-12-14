@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
+@Table(name = "app_user")
 public class AppUser {
 
     @Id
@@ -45,8 +45,8 @@ public class AppUser {
     private java.sql.Timestamp userCreationDate = java.sql.Timestamp.valueOf(LocalDateTime.now());
 
     @ManyToMany
-    @JoinTable(name = "movie_user",
-            joinColumns = {@JoinColumn(name = "fk_user")},
+    @JoinTable(name = "movie_app_user",
+            joinColumns = {@JoinColumn(name = "fk_app_user")},
             inverseJoinColumns = {@JoinColumn(name = "fk_movie")})
     @Fetch(value = FetchMode.JOIN)
     private Set<Movie> watchList = new HashSet<>();
