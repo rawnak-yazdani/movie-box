@@ -1,9 +1,7 @@
 package io.welldev.model.service;
 
-import io.welldev.model.entity.Credentials;
-import io.welldev.model.repository.AdminRepo;
-import io.welldev.model.repository.CredentialsRepo;
-import io.welldev.model.repository.CinephileRepo;
+import io.welldev.model.entity.AppUser;
+import io.welldev.model.repository.AppUserRepo;
 import io.welldev.model.role.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -13,19 +11,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class CredentialsServiceImpl implements CredentialsService {
+public class AppUserServiceImpl implements AppUserService {
 
-    private final CredentialsRepo credentialsRepo;
+    private final AppUserRepo appUserRepo;
     private final CinephileService cinephileService;
     private final AdminService adminService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Credentials user = credentialsRepo.findByUsername(username);
+        AppUser user = appUserRepo.findByUsername(username);
         if (user != null) {
             if (user.getRole().equals("user")) {
                 return User.builder()
@@ -51,29 +52,26 @@ public class CredentialsServiceImpl implements CredentialsService {
 
     }
 
-    public void save(Credentials user, String role) {
-        if (credentialsRepo.findByUsername(user.getUsername()) != null) {
+    public void save(AppUser user, String role) {
+        if (appUserRepo.findByUsername(user.getUsername()) != null) {
             throw new IllegalArgumentException();
         } else {
-            if (role.equals("user"))
-                cinephileService.save(user.getCinephile());
-            else
-                adminService.save(user.getAdmin());
-            credentialsRepo.save(
-                    new Credentials(
+            appUserRepo.save(
+                    new AppUser(
                             user.getId(),
                             user.getUsername(),
+                            user.getName(),
                             passwordEncoder.encode(user.getPassword()),
                             role,
-                            user.getCinephile(),
-                            user.getAdmin()
+                            user.getUserCreationDate(),
+                            user.getWatchList()
                     )
             );
         }
 
     }
 
-    public Credentials findCredentialsByUsername(String username) {
-        return credentialsRepo.findByUsername(username);
+    public AppUser findCredentialsByUsername(String username) {
+        return appUserRepo.findByUsername(username);
     }
 }

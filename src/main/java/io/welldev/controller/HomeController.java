@@ -1,6 +1,5 @@
 package io.welldev.controller;
 
-import com.sun.xml.txw2.IllegalAnnotationException;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class HomeController {
     GenreService genreService;
 
     @Autowired
-    CredentialsService credentialsService;
+    AppUserService appUserService;
 
     @Autowired
     CinephileService cinephileService;
@@ -47,12 +46,12 @@ public class HomeController {
     // user sign up
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Cinephile> addUser(@Valid @RequestBody Credentials credentials) {
+    public ResponseEntity<AppUser> addUser(@Valid @RequestBody AppUser appUser) {
         try {
-            credentialsService.save(credentials, "user");
-            Cinephile createdCinephile = credentialsService.findCredentialsByUsername(credentials.getUsername()).getCinephile();
+            appUserService.save(appUser, "user");
+            AppUser createdAppUser = appUserService.findCredentialsByUsername(appUser.getUsername());
 
-            return new ResponseEntity<>(createdCinephile, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdAppUser, HttpStatus.CREATED);
         } catch (NullPointerException npe) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
         } catch (IllegalArgumentException argumentException) {
@@ -89,8 +88,8 @@ public class HomeController {
 //    @PostMapping(value = "/signup/main-admin")
 //    @ResponseStatus(HttpStatus.CREATED)
 //    public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Credentials credentials) {
-//        credentialsService.save(credentials, credentials.getRole());
-//        Admin createdAdmin = credentialsService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
+//        appUserService.save(credentials, credentials.getRole());
+//        Admin createdAdmin = appUserService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
 //
 //        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
 //    }

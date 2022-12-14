@@ -1,7 +1,7 @@
 package io.welldev.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -10,10 +10,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -41,7 +42,7 @@ public class AppUser {
     private String role;
 
     @Basic
-    private java.sql.Timestamp userCreationDate;
+    private java.sql.Timestamp userCreationDate = java.sql.Timestamp.valueOf(LocalDateTime.now());
 
     @ManyToMany
     @JoinTable(name = "movie_user",
