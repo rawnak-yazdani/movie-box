@@ -31,6 +31,17 @@ public class HomeController {
             new DemoPurpose(2, "Movie 2")
     ));
 
+    // main admin sign up
+    @PostMapping(value = "/signup/main-admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
+        System.out.printf(credentials.getName() + credentials.getId());
+        appUserService.save(credentials, "admin");
+        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
+
+        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+    }
+
     // user sign up
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
@@ -47,17 +58,7 @@ public class HomeController {
         }
     }
 
-    // main admin sign up
-    @PostMapping(value = "/signup/main-admin")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
-        System.out.printf(credentials.getName() + credentials.getId());
-        appUserService.save(credentials, "admin");
-        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
-
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-    }
-
+    // show all movies
     @GetMapping(value = "/movies")
     public ResponseEntity<List<Movie>> getMovies() {
         return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
