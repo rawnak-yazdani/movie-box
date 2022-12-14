@@ -3,7 +3,7 @@ package io.welldev.initializer.configuration.userauth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.welldev.model.entity.Credentials;
+import io.welldev.model.entity.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,12 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Timer;
 
 @RequiredArgsConstructor
 public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -32,8 +28,8 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                                 HttpServletResponse response)
             throws AuthenticationException {
         try {
-            Credentials appUserDetails = new ObjectMapper()
-                    .readValue(request.getInputStream(), Credentials.class);
+            AppUser appUserDetails = new ObjectMapper()
+                    .readValue(request.getInputStream(), AppUser.class);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     appUserDetails.getUsername(),
                     appUserDetails.getPassword()

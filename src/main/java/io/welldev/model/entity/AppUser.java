@@ -18,7 +18,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "users")
-public class User {
+public class AppUser {
+
     @Id
     @Column(name = "id", nullable = false)
     @SequenceGenerator(initialValue = 1, name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
@@ -34,11 +35,13 @@ public class User {
     private String username;
 
     @NotNull(message = "Password is required")
+    @Pattern(regexp = "^[a-zA-Z0-9]{1,50}", message = "Password cannot be empty or contain more than 50 characters")
     private String password;
 
     private String role;
 
-    private String userCreationDate;
+    @Basic
+    private java.sql.Timestamp userCreationDate;
 
     @ManyToMany
     @JoinTable(name = "movie_user",
@@ -46,4 +49,5 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "fk_movie")})
     @Fetch(value = FetchMode.JOIN)
     private Set<Movie> watchList = new HashSet<>();
+
 }

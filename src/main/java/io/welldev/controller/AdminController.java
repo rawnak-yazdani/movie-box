@@ -22,7 +22,7 @@ public class AdminController {
     GenreService genreService;
 
     @Autowired
-    CredentialsService credentialsService;
+    AppUserService credentialsService;
 
     @Autowired
     AdminService adminService;
@@ -91,7 +91,7 @@ public class AdminController {
     // secondary admin signup
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Admin> addUser(@Valid @RequestBody Credentials credentials) {
+    public ResponseEntity<Admin> addUser(@Valid @RequestBody AppUser credentials) {
         credentialsService.save(credentials, credentials.getRole());
         Admin createdAdmin = credentialsService.findCredentialsByUsername(credentials.getUsername()).getAdmin();
 

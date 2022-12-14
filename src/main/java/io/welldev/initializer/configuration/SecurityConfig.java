@@ -4,7 +4,7 @@ import io.welldev.initializer.configuration.userauth.AppUsernameAndPasswordAuthe
 import io.welldev.initializer.configuration.userauth.JwtTokenVerifier;
 import io.welldev.model.role.Permissions;
 import io.welldev.model.role.Roles;
-import io.welldev.model.service.CredentialsService;
+import io.welldev.model.service.AppUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,7 +24,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private PasswordEncoder passwordEncoder;
-    private CredentialsService userDetailsService;
+    private AppUserService userDetailsService;
 //    @Bean
 //    public InMemoryUserDetailsManager userDetailsManager() {
 //        UserDetails user1 = User.withUsername("Robbi")

@@ -1,10 +1,10 @@
 package io.welldev.controller;
 
 import io.welldev.model.entity.Cinephile;
-import io.welldev.model.entity.Credentials;
+import io.welldev.model.entity.AppUser;
 import io.welldev.model.entity.Movie;
 import io.welldev.model.service.CinephileService;
-import io.welldev.model.service.CredentialsService;
+import io.welldev.model.service.AppUserService;
 import io.welldev.model.service.GenreService;
 import io.welldev.model.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,12 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/users", headers = "Accept=application/json",
         produces = "application/json")
-public class UserController {
+public class AppUserController {
 
     @Autowired
     private CinephileService userService;
     @Autowired
-    private CredentialsService credentialsService;
+    private AppUserService credentialsService;
     @Autowired
     private MovieService movieService;
     @Autowired
@@ -39,7 +39,7 @@ public class UserController {
     @GetMapping(value = "/{username}")
     public Cinephile getUser(@PathVariable("username") String username) {
         try {
-            Credentials requestedUserCredentials = credentialsService.findCredentialsByUsername(username);
+            AppUser requestedUserCredentials = credentialsService.findCredentialsByUsername(username);
             return requestedUserCredentials.getCinephile();
         } catch (NullPointerException npe) {
             throw new ResponseStatusException(
@@ -81,7 +81,7 @@ public class UserController {
     public ResponseEntity<Cinephile> deleteFromWatchList(@PathVariable String username,
                                                          @PathVariable Long id) {
         try {
-            Credentials requestedUserCredentials = credentialsService.findCredentialsByUsername(username);
+            AppUser requestedUserCredentials = credentialsService.findCredentialsByUsername(username);
             Cinephile cinephile = requestedUserCredentials.getCinephile();
             for (Movie m:
                  cinephile.getWatchList()) {

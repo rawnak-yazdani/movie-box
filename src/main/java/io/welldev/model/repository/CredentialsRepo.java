@@ -1,13 +1,10 @@
 package io.welldev.model.repository;
 
-import io.welldev.model.entity.Credentials;
+import io.welldev.model.entity.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-public interface CredentialsRepo extends JpaRepository<Credentials,Long> {
-    Credentials findByUsername(String username);
+public interface CredentialsRepo extends JpaRepository<AppUser,Long> {
+    AppUser findByUsername(String username);
 
 //    @Modifying
 //    @Query(
