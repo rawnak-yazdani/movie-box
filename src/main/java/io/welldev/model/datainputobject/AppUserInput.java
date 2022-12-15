@@ -1,5 +1,6 @@
 package io.welldev.model.datainputobject;
 
+import io.welldev.model.entity.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.Set;
 public class AppUserInput {
 
     @NotBlank(message = "Name is required")
-    @Pattern(regexp = "^[a-zA-Z-\\s]+$", message = "Only alphabetical characters are allowed")
+    @Pattern(regexp = "^[a-zA-Z-\\s]+$", message = "Only alphabetical characters are allowed for name")
     private String name;
 
     @NotBlank(message = "Username is required")
@@ -31,8 +32,5 @@ public class AppUserInput {
     @NotBlank(message = "Password is required")
     @Pattern(regexp = "^[a-zA-Z0-9]{1,50}", message = "Password cannot be empty or contain more than 50 characters")
     private String password;
-
-    @Basic
-    private java.sql.Timestamp userCreationDate = java.sql.Timestamp.valueOf(LocalDateTime.now());
 
 }

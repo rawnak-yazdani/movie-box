@@ -1,5 +1,6 @@
 package io.welldev.controller;
 
+import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,21 +32,16 @@ public class HomeController {
             new DemoPurpose(2, "Movie 2")
     ));
 
-    // main admin sign up
-    @PostMapping(value = "/signup/main-admin")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
-        System.out.printf(credentials.getName() + credentials.getId());
-        appUserService.save(credentials, "admin");
-        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
-
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-    }
-
     // user sign up
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUser> addUser(@Valid @RequestBody AppUser appUser) {
+    public ResponseEntity<AppUser> addAnUser(@Valid @RequestBody AppUserInput appUserInput) {
+
+        AppUser appUser = new AppUser();
+        appUser.setName(appUserInput.getName());
+        appUser.setUsername(appUserInput.getUsername());
+        appUser.setPassword(appUserInput.getPassword());
+
         try {
             appUserService.save(appUser, "user");
             AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
@@ -56,6 +52,17 @@ public class HomeController {
         } catch (IllegalArgumentException argumentException) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
         }
+    }
+
+    // main admin sign up
+    @PostMapping(value = "/signup/main-admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
+        System.out.printf(credentials.getName() + credentials.getId());
+        appUserService.save(credentials, "admin");
+        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
+
+        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
     }
 
     // show all movies
@@ -94,8 +101,7 @@ public class HomeController {
 {
     "name": "Mr Dictator",
     "username": "dictator",
-    "password": "2222",
-    "role": "admin"
+    "password": "2222"
 }
 */
 

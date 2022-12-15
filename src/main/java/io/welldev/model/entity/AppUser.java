@@ -29,15 +29,10 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     private Long id;
 
-    @NotBlank(message = "Name is required")
-    @Pattern(regexp = "^[a-zA-Z-\\s]+$", message = "Only alphabetical characters are allowed")
     private String name;
 
-    @NotBlank(message = "Username is required")
-    @Pattern(regexp = "^[a-zA-Z0-9]{3,10}", message = "Username length should be minimum 3 characters and maximum 8 characters")
     private String username;
 
-    @NotBlank(message = "Password is required")
     private String password;
 
     private String role;
