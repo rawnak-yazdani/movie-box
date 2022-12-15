@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
                 .antMatchers(HttpMethod.GET, "/users**")
 
-                .hasAnyRole(Roles.ADMIN.name(), Roles.ADMINTRAINEE.name(), Roles.USER.name())
+                .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
 //                .antMatchers("/anonymous*")
                 .antMatchers("/movies", "/signup"/*, "/signup/main-admin"*/)
                 .permitAll()
