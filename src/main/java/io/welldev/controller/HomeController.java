@@ -38,7 +38,7 @@ public class HomeController {
     ));
 
     // user sign up
-    @PostMapping(value = "/signup")
+    @PostMapping(value = "/signup/user")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
 
@@ -60,15 +60,15 @@ public class HomeController {
     }
 
 //    // main admin sign up
-//    @PostMapping(value = "/signup/main-admin")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
-//        System.out.printf(credentials.getName() + credentials.getId());
-//        appUserService.save(credentials, "admin");
-//        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
-//
-//        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-//    }
+    @PostMapping(value = "/signup/main-admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
+        System.out.printf(credentials.getName() + credentials.getId());
+        appUserService.save(credentials, "admin");
+        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
+
+        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+    }
 
     // show all movies
     @GetMapping(value = "/movies")
