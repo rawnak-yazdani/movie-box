@@ -33,37 +33,37 @@ public class HomeController {
     ));
 
     // user sign up
-    @PostMapping(value = "/signup")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUser> addAnUser(@Valid @RequestBody AppUserInput appUserInput) {
-
-        AppUser appUser = new AppUser();
-        appUser.setName(appUserInput.getName());
-        appUser.setUsername(appUserInput.getUsername());
-        appUser.setPassword(appUserInput.getPassword());
-
-        try {
-            appUserService.save(appUser, "user");
-            AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
-
-            return new ResponseEntity<>(createdAppUser, HttpStatus.CREATED);
-        } catch (NullPointerException npe) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
-        } catch (IllegalArgumentException argumentException) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
-        }
-    }
-
-    // main admin sign up
-    @PostMapping(value = "/signup/main-admin")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
-        System.out.printf(credentials.getName() + credentials.getId());
-        appUserService.save(credentials, "admin");
-        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
-
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-    }
+//    @PostMapping(value = "/signup")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<AppUser> addUser(@Valid @RequestBody AppUserInput appUserInput) {
+//
+//        AppUser appUser = new AppUser();
+//        appUser.setName(appUserInput.getName());
+//        appUser.setUsername(appUserInput.getUsername());
+//        appUser.setPassword(appUserInput.getPassword());
+//
+//        try {
+//            appUserService.save(appUser, "user");
+//            AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
+//
+//            return new ResponseEntity<>(createdAppUser, HttpStatus.CREATED);
+//        } catch (NullPointerException npe) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
+//        } catch (IllegalArgumentException argumentException) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+//        }
+//    }
+//
+//    // main admin sign up
+//    @PostMapping(value = "/signup/main-admin")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
+//        System.out.printf(credentials.getName() + credentials.getId());
+//        appUserService.save(credentials, "admin");
+//        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
+//
+//        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+//    }
 
     // show all movies
     @GetMapping(value = "/movies")
