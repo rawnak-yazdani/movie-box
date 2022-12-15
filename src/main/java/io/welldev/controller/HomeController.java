@@ -37,10 +37,7 @@ public class HomeController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppUser> addUser(@Valid @RequestBody AppUserInput appUserInput) {
 
-        AppUser appUser = new AppUser();
-        appUser.setName(appUserInput.getName());
-        appUser.setUsername(appUserInput.getUsername());
-        appUser.setPassword(appUserInput.getPassword());
+        AppUser appUser = new AppUser(appUserInput.getName(), appUserInput.getUsername(), appUserInput.getPassword());
 
         try {
             appUserService.save(appUser, "user");

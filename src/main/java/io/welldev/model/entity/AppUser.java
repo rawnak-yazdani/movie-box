@@ -47,4 +47,10 @@ public class AppUser {
     @Fetch(value = FetchMode.JOIN)
     private Set<Movie> watchList = new HashSet<>();
 
+    public AppUser(String name, String username, String password) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+    }
+
 }
