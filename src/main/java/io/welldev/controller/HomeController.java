@@ -3,6 +3,7 @@ package io.welldev.controller;
 import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,9 @@ public class HomeController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppUser> addUser(@Valid @RequestBody AppUserInput appUserInput) {
 
-        AppUser appUser = new AppUser(appUserInput.getName(), appUserInput.getUsername(), appUserInput.getPassword());
+        AppUser appUser = new AppUser();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(appUser, appUserInput);
 
         try {
             appUserService.save(appUser, "user");

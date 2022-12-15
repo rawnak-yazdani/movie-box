@@ -51,12 +51,7 @@ public class AdminController {
     @ResponseStatus(HttpStatus.CREATED)
     public List<Movie> addMovie(@RequestBody Movie movie) {
 
-        for (Genre genre :
-                new ArrayList<>(movie.getGenres())) {
-            genreService.saveAndFlush(genre);
-        }
-
-        movieService.saveAndFlush(movie);
+        movieService.save(movie);
 
         return movieService.findAll();
 

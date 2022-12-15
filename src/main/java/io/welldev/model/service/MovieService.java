@@ -1,20 +1,35 @@
 package io.welldev.model.service;
 
+import io.welldev.model.entity.Genre;
 import io.welldev.model.entity.Movie;
+import io.welldev.model.repository.GenreRepo;
 import io.welldev.model.repository.MovieRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
 
 @RequiredArgsConstructor
 @Service
 @Transactional
 public class MovieService {
     public final MovieRepo movieRepo;
+    public final GenreRepo genreRepo;
 
     public void save(Movie movie) {
+        Set<Genre> genres = movie.getGenres();
+//        Iterator<Genre> genreIterator = genres.iterator();
+        for (Genre genre:
+             genres) {
+            Genre existingGenre = genreRepo.findByName(genre.getName());
+            if (existingGenre != null) {
+                genre.setId(existingGenre.getId());
+            } else genreRepo.save(genre);
+        }
         movieRepo.save(movie);
     }
 
