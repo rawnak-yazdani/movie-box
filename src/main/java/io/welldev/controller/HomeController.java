@@ -1,6 +1,7 @@
 package io.welldev.controller;
 
 import io.welldev.model.datainputobject.AppUserInput;
+import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
 import org.modelmapper.ModelMapper;
@@ -36,17 +37,19 @@ public class HomeController {
     // user sign up
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUser> addUser(@Valid @RequestBody AppUserInput appUserInput) {
+    public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
 
         AppUser appUser = new AppUser();
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.map(appUser, appUserInput);
+        modelMapper.map(appUserInput, appUser);
 
         try {
             appUserService.save(appUser, "user");
             AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
+            AppUserOutput appUserOutput = new AppUserOutput();
+            modelMapper.map(createdAppUser, appUserOutput);
 
-            return new ResponseEntity<>(createdAppUser, HttpStatus.CREATED);
+            return new ResponseEntity<>(appUserOutput, HttpStatus.CREATED);
         } catch (NullPointerException npe) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
         } catch (IllegalArgumentException argumentException) {

@@ -1,18 +1,22 @@
 package io.welldev.controller;
 
+import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.AppUser;
 import io.welldev.model.entity.Movie;
 import io.welldev.model.service.AppUserService;
 import io.welldev.model.service.GenreService;
 import io.welldev.model.service.MovieService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -28,8 +32,18 @@ public class AppUserController {
     private GenreService genreService;
 
     @GetMapping
-    public ResponseEntity<List<AppUser>> getUsers() {
-        return new ResponseEntity<>(appUserService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<AppUserOutput>> getUsers() {
+        ModelMapper mapper = new ModelMapper();
+        List<AppUser> appUsers = appUserService.findAll();
+        List<AppUserOutput> appUserOutputs = new LinkedList();
+        for (AppUser user:
+             appUsers) {
+            AppUserOutput appUserOutput = new AppUserOutput();
+            mapper.map(user, appUserOutput);
+            appUserOutputs.add(appUserOutput);
+        }
+        return new ResponseEntity<>(
+                appUserOutputs, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{username}")
