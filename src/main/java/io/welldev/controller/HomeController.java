@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.jws.WebParam;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -28,6 +29,8 @@ public class HomeController {
 
     @Autowired
     AppUserService appUserService;
+    @Autowired
+    ModelMapper mapper;
 
     List<DemoPurpose> movies = new ArrayList<>(Arrays.asList(
             new DemoPurpose(1, "Movie 1"),
@@ -40,14 +43,13 @@ public class HomeController {
     public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
 
         AppUser appUser = new AppUser();
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.map(appUserInput, appUser);
+        mapper.map(appUserInput, appUser);
 
         try {
             appUserService.save(appUser, "user");
             AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
             AppUserOutput appUserOutput = new AppUserOutput();
-            modelMapper.map(createdAppUser, appUserOutput);
+            mapper.map(createdAppUser, appUserOutput);
 
             return new ResponseEntity<>(appUserOutput, HttpStatus.CREATED);
         } catch (NullPointerException npe) {

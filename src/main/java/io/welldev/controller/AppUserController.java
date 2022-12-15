@@ -1,5 +1,6 @@
 package io.welldev.controller;
 
+import io.welldev.model.datainputobject.UserMovieInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.AppUser;
 import io.welldev.model.entity.Movie;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,10 +32,12 @@ public class AppUserController {
     private MovieService movieService;
     @Autowired
     private GenreService genreService;
+    @Autowired
+    private ModelMapper mapper;
 
     @GetMapping
     public ResponseEntity<List<AppUserOutput>> getUsers() {
-        ModelMapper mapper = new ModelMapper();
+        mapper = new ModelMapper();
         List<AppUser> appUsers = appUserService.findAll();
         List<AppUserOutput> appUserOutputs = new LinkedList();
         for (AppUser user:
@@ -47,10 +51,12 @@ public class AppUserController {
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<AppUser> getUser(@PathVariable("username") String username) {
+    public ResponseEntity<AppUserOutput> getUser(@PathVariable("username") String username) {
         try {
-            AppUser requestedUserCredentials = appUserService.findAppUserByUsername(username);
-            return new ResponseEntity<>(requestedUserCredentials, HttpStatus.FOUND);
+            AppUser requestedAppUser = appUserService.findAppUserByUsername(username);
+            AppUserOutput appUserOutput = new AppUserOutput();
+            mapper.map(requestedAppUser, appUserOutput);
+            return new ResponseEntity<>(appUserOutput, HttpStatus.FOUND);
         } catch (NullPointerException npe) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -59,44 +65,48 @@ public class AppUserController {
         }
     }
 
-    @PutMapping(value = "/{username}")
-    public ResponseEntity<AppUser> addToWatchList(@PathVariable("username") String reqUsername,
-                                                    @RequestBody List<Movie> movies) {
+    @PutMapping(value = "/{username}/watchlist")
+    public ResponseEntity<AppUserOutput> addToWatchList(@PathVariable("username") String reqUsername,
+                                                        @RequestBody List<UserMovieInput> userMovieInputs) {
 //        String username = JwtSpecification.currentUsername;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getName().equals(reqUsername)) {
             AppUser createdUser = appUserService.findAppUserByUsername(reqUsername);
 
-            for (Movie m :
-                    movies) {
-                genreService.saveAll(m.getGenres());
+            List<Movie> updatedList = new LinkedList<>();
+            for (UserMovieInput input:
+                 userMovieInputs) {
+                updatedList.add(movieService.findById(input.getId()));
             }
-
-            movieService.saveAll(movies);
-            createdUser.getWatchList().addAll(movies);
+            createdUser.getWatchList().addAll(updatedList);
             appUserService.save(createdUser, createdUser.getRole());
 
+            createdUser = appUserService
+                    .findAppUserByUsername(reqUsername);
+            AppUserOutput appUserOutput = new AppUserOutput();
+            mapper.map(createdUser, appUserOutput);
             return new ResponseEntity<>(
-                    appUserService
-                            .findAppUserByUsername(reqUsername),
+                    appUserOutput,
                     HttpStatus.ACCEPTED
             );
         } else return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
     }
 
-    @DeleteMapping(value = "/{username}/{id}")
-    public ResponseEntity<AppUser> deleteFromWatchList(@PathVariable String username,
-                                                         @PathVariable Long id) {
+    @DeleteMapping(value = "/{username}/watchlist")
+    public ResponseEntity<AppUserOutput> deleteFromWatchList(@PathVariable String username,
+                                                         @PathVariable List<UserMovieInput> movieInputs) {
         try {
             AppUser requestedUser = appUserService.findAppUserByUsername(username);
-            for (Movie m:
-                 requestedUser.getWatchList()) {
-                if (m.getId() == id) requestedUser.getWatchList().remove(m);
+            for (UserMovieInput m:
+                 movieInputs) {
+                requestedUser.getWatchList().remove(movieService.findById(m.getId()));
             }
+            AppUserOutput appUserOutput = new AppUserOutput();
+            mapper.map(requestedUser, appUserOutput);
 //            appUserService.save(cinephile);
-            return new ResponseEntity<>(requestedUser, HttpStatus.OK);
+            return new ResponseEntity<>(appUserOutput, HttpStatus.OK);
         } catch (NullPointerException npe) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User or watchlist movie not found!");
         }

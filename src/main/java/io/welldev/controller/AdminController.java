@@ -61,8 +61,6 @@ public class AdminController {
     @PutMapping("/movies/{id}")
     public ResponseEntity<Movie> updateMovie(@PathVariable("id") Long id, @RequestBody Movie movie) {
         movie.setId(movieService.findById(id).getId());
-
-        genreService.saveAll(movie.getGenres());
         movieService.save(movie);
 
         return new ResponseEntity<>(movie, HttpStatus.OK);
