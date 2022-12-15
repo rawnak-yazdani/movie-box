@@ -36,17 +36,11 @@ public class AppUserServiceImpl implements AppUserService {
                         .password(user.getPassword())
                         .authorities(Roles.USER.grantedAuthorities())
                         .build();
-            } else if (user.getRole().equals("admin")) {
-                return User.builder()
-                        .username(user.getUsername())
-                        .password(user.getPassword())
-                        .authorities(Roles.ADMIN.grantedAuthorities())
-                        .build();
             } else {
                 return User.builder()
                         .username(user.getUsername())
                         .password(user.getPassword())
-                        .authorities(Roles.ADMINTRAINEE.grantedAuthorities())
+                        .authorities(Roles.ADMIN.grantedAuthorities())
                         .build();
             }
 
