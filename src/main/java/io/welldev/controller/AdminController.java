@@ -39,9 +39,8 @@ public class AdminController {
         return movies;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // other admin signup
-    @PostMapping(value = "/signup/admin")
+    @PostMapping(value = "/signup")
     public ResponseEntity<AppUser> addOtherAdmin(@Valid @RequestBody AppUser appUser) {
         appUserService.save(appUser, "admin");
         AppUser createdAdmin = appUserService.findAppUserByUsername(appUser.getUsername());
@@ -49,8 +48,8 @@ public class AdminController {
         return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
     }
 
-    // user sign up by admin
-    @PostMapping(value = "/signup/user")
+    // add a user by admin
+    @PostMapping(value = "/users")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
 

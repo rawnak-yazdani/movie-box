@@ -38,7 +38,7 @@ public class HomeController {
     ));
 
     // user sign up
-    @PostMapping(value = "/signup/user")
+    @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
 
