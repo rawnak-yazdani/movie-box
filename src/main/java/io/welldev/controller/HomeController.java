@@ -29,6 +29,7 @@ public class HomeController {
 
     @Autowired
     AppUserService appUserService;
+
     @Autowired
     ModelMapper mapper;
 
@@ -59,15 +60,25 @@ public class HomeController {
         }
     }
 
-//    // main admin sign up
+    // main admin sign up for once
     @PostMapping(value = "/signup/main-admin")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUser> addMainAdmin(@Valid @RequestBody AppUser credentials) {
-        System.out.printf(credentials.getName() + credentials.getId());
-        appUserService.save(credentials, "admin");
-        AppUser createdAdmin = appUserService.findAppUserByUsername(credentials.getUsername());
+    public ResponseEntity<AppUserOutput> addMainAdmin(@Valid @RequestBody AppUserInput appUserInput) {
 
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+        AppUser appUser = new AppUser();
+        mapper.map(appUserInput, appUser);
+
+        try {
+            appUserService.save(appUser, "admin");
+            AppUser createdAdmin = appUserService.findAppUserByUsername(appUser.getUsername());
+            AppUserOutput appUserOutput = new AppUserOutput();
+            mapper.map(createdAdmin, appUserOutput);
+
+            return new ResponseEntity<>(appUserOutput, HttpStatus.CREATED);
+        } catch (NullPointerException npe) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
+        } catch (IllegalArgumentException argumentException) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+        }
     }
 
     // show all movies

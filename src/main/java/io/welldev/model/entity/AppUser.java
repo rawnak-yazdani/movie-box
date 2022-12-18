@@ -8,9 +8,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,11 +43,5 @@ public class AppUser {
             inverseJoinColumns = {@JoinColumn(name = "fk_movie")})
     @Fetch(value = FetchMode.JOIN)
     private Set<Movie> watchList = new HashSet<>();
-
-    public AppUser(String name, String username, String password) {
-        this.name = name;
-        this.username = username;
-        this.password = password;
-    }
 
 }

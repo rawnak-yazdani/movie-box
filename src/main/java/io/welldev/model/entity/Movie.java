@@ -36,3 +36,5 @@ public class Movie {
 
     private int year;
 }
+
+//drop table movie, genre, app_user, movie_app_user, movie_genre;

@@ -185,6 +185,12 @@
       <version>2.4.4</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+      <version>1.5.3</version>
+    </dependency>
+
   </dependencies>
   <build>
     <finalName>movie-box</finalName>
