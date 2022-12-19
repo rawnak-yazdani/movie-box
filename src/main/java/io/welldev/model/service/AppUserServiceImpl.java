@@ -105,17 +105,42 @@ public class AppUserServiceImpl implements AppUserService {
             AppUser createdUser = appUserRepo.findByUsername(reqUsername);
 
             List<Movie> updatedList = new LinkedList<>();
+
             for (UserMovieInput input:
                     userMovieInputs) {
                 updatedList.add(movieService.findById(input.getId()));
             }
+
             createdUser.getWatchList().addAll(updatedList);
             appUserRepo.save(createdUser);
 
-            createdUser = appUserRepo
-                    .findByUsername(reqUsername);
+            createdUser = appUserRepo.findByUsername(reqUsername);
             AppUserOutput appUserOutput = new AppUserOutput();
             mapper.map(createdUser, appUserOutput);
+
+            return appUserOutput;
+        } else return null;
+
+    }
+
+    @Override
+    public AppUserOutput deleteFromWatchlist(String reqUsername, List<UserMovieInput> userMovieInputs) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getName().equals(reqUsername)) {
+            AppUser createdUser = appUserRepo.findByUsername(reqUsername);
+
+            for (UserMovieInput input:
+                    userMovieInputs) {
+                createdUser.getWatchList().remove(movieService.findById(input.getId()));
+            }
+
+            appUserRepo.save(createdUser);
+
+            createdUser = appUserRepo.findByUsername(reqUsername);
+            AppUserOutput appUserOutput = new AppUserOutput();
+            mapper.map(createdUser, appUserOutput);
+
             return appUserOutput;
         } else return null;
 
