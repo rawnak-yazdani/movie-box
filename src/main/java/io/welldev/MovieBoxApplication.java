@@ -1,14 +1,13 @@
 package io.welldev;
 
-import io.welldev.model.entity.Movie;
-import io.welldev.model.service.MovieService;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.List;
-
-public class Main {
+@SpringBootApplication
+public class MovieBoxApplication {
 
     public static void main(String[] args) {
+        SpringApplication.run(MovieBoxApplication.class, args);
 
 //        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("io.welldev.config");
 
