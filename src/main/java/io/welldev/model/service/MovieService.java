@@ -16,7 +16,9 @@ import java.util.Set;
 @Service
 @Transactional
 public class MovieService {
+
     public final MovieRepo movieRepo;
+
     public final GenreRepo genreRepo;
 
     public void save(Movie movie) {
