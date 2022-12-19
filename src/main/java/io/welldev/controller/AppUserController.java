@@ -37,37 +37,17 @@ public class AppUserController {
 
     // show all users
     @GetMapping
-    public ResponseEntity<List<AppUserOutput>> getUsers() {
-        mapper = new ModelMapper();
-        List<AppUser> appUsers = appUserService.findAll();
-        List<AppUserOutput> appUserOutputs = new LinkedList();
-        for (AppUser user :
-                appUsers) {
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(user, appUserOutput);
-            appUserOutputs.add(appUserOutput);
-        }
-        return new ResponseEntity<>(
-                appUserOutputs, HttpStatus.OK);
+    public ResponseEntity<List<AppUserOutput>> showAllUsers() {
+        return ResponseEntity.ok(appUserService.showAllUsers());
     }
 
     // show a user
-    @GetMapping(value = "/{username}")
-    public ResponseEntity<AppUserOutput> getUser(@PathVariable("username") String username) {
-        try {
-            AppUser requestedAppUser = appUserService.findAppUserByUsername(username);
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(requestedAppUser, appUserOutput);
-            return new ResponseEntity<>(appUserOutput, HttpStatus.FOUND);
-        } catch (NullPointerException npe) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "User does not Exist"
-            );
-        }
+    @GetMapping(value = "/info")
+    public ResponseEntity<AppUserOutput> showAUser(@RequestParam String username) {
+        return ResponseEntity.accepted().body(appUserService.showAUser(username));
     }
 
-    // update watchlist of a user
+    // update watchlist or add movies to watchlist of a user
     @PutMapping(value = "/{username}/watchlist")
     public ResponseEntity<AppUserOutput> addMovieToWatchList(@PathVariable("username") String reqUsername,
                                                              @RequestBody List<UserMovieInput> userMovieInputs) {
@@ -79,7 +59,7 @@ public class AppUserController {
     // delete from watchlist
     @DeleteMapping(value = "/{username}/watchlist")
     public ResponseEntity<AppUserOutput> deleteMovieFromWatchList(@PathVariable String username,
-                                                             @RequestBody List<UserMovieInput> movieInputs) {
+                                                                  @RequestBody List<UserMovieInput> movieInputs) {
 
         AppUserOutput appUserOutput = appUserService.deleteFromWatchlist(username, movieInputs);
         return new ResponseEntity<>(appUserOutput, appUserOutput == null ? HttpStatus.BAD_REQUEST : HttpStatus.ACCEPTED);
@@ -90,31 +70,5 @@ public class AppUserController {
     public ResponseEntity<AppUserOutput> editUser(@Valid @RequestBody AppUserInput appUserInput) {
         return new ResponseEntity<>(appUserService.updateUserInfo(appUserInput), HttpStatus.ACCEPTED);
     }
-
-    // update watchlist of a user
-//    @PutMapping(value = "/{username}/watchlist")
-//    public ResponseEntity<AppUserOutput> addToWatchList(@PathVariable("username") String reqUsername,
-//                                                        @RequestBody List<UserMovieInput> userMovieInputs) {
-//
-//        AppUserOutput appUserOutput = appUserService.updateWatchlist(reqUsername, userMovieInputs);
-
-    // delete from watchlist
-//    @DeleteMapping(value = "/{username}/watchlist")
-//    public ResponseEntity<AppUserOutput> deleteFromWatchList(@PathVariable String username,
-//                                                             @PathVariable List<UserMovieInput> movieInputs) {
-//        try {
-//            AppUser requestedUser = appUserService.findAppUserByUsername(username);
-//            for (UserMovieInput m:
-//                    movieInputs) {
-//                requestedUser.getWatchList().remove(movieService.findById(m.getId()));
-//            }
-//            AppUserOutput appUserOutput = new AppUserOutput();
-//            mapper.map(requestedUser, appUserOutput);
-////            appUserService.save(cinephile);
-//            return new ResponseEntity<>(appUserOutput, HttpStatus.OK);
-//        } catch (NullPointerException npe) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User or watchlist movie not found!");
-//        }
-//    }
 
 }

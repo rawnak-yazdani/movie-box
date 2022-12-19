@@ -20,4 +20,8 @@ public interface AppUserService extends UserDetailsService {
     public AppUser findAppUserByUsername(String username);
 
     List<AppUser> findAll();
+
+    public AppUserOutput showAUser(String username);
+
+    public List<AppUserOutput> showAllUsers();
 }
