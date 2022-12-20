@@ -34,7 +34,6 @@ public class AppUser {
 
     private String role;
 
-    @Basic
     private java.sql.Timestamp userCreationDate = java.sql.Timestamp.valueOf(LocalDateTime.now());
 
     @ManyToMany

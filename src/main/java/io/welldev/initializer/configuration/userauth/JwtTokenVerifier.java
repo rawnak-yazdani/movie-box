@@ -27,14 +27,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class JwtTokenVerifier extends OncePerRequestFilter {
 
-    @Autowired
-    private BlackListingService blackListingService;
-    @Autowired
-    private UserRequestScopeBean userRequestScopeBean;
+//    @Autowired
+//    private BlackListingService blackListingService;
+
+//    @Autowired
+//    private UserRequestScopeBean userRequestScopeBean;
+
+    /**
+     * This method will be called when user hits an API which requires authorization
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -49,16 +55,19 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         String token = authorizationHeader.replace("Bearer ", "");
 
         try {
-            String blackListedToken = blackListingService.getJwtBlackList(token);
-            if (blackListedToken != null) {
-                logger.error("JwtInterceptor: Token is blacklisted");
-                response.sendError(401);
-            }
-            userRequestScopeBean.setJwt(token);
+//            String blackListedToken = blackListingService.getJwtBlackList(token);
+//            if (blackListedToken != null) {
+//                logger.error("JwtInterceptor: Token is blacklisted");
+//                response.sendError(401);
+//            }
+//            userRequestScopeBean.setJwt(token);
 
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(System.getenv("TOKEN_SECRET_KEY").getBytes()))
                     .build()
+                    /**
+                     * parseClaimsJws(token) method verifies the token
+                     */
                     .parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             String username = body.getSubject();
