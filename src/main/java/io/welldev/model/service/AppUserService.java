@@ -13,9 +13,15 @@ public interface AppUserService extends UserDetailsService {
 
     public AppUserOutput updateWatchlist(String reqUsername, List<UserMovieInput> userMovieInputs);
 
+    public AppUserOutput deleteFromWatchlist(String reqUsername, List<UserMovieInput> userMovieInputs);
+
     public void save(AppUser credentials, String role);
 
     public AppUser findAppUserByUsername(String username);
 
     List<AppUser> findAll();
+
+    public AppUserOutput showAUser(String username);
+
+    public List<AppUserOutput> showAllUsers();
 }
