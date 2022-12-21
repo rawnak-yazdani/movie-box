@@ -1,0 +1,1 @@
+INSERT INTO genre (id, name) VALUES (nextval('genre_seq'), 'DRAMA');
