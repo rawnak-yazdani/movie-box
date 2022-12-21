@@ -46,8 +46,7 @@ public class AppUserController {
         return ResponseEntity.ok().body(appUserService.showAUser(username));
     }
 
-    // update watchlist or add movies to watchlist of a user
-    @PutMapping(value = "/{username}/watchlist")
+    @PutMapping(value = API.UPDATE_USER_WATCHLIST)
     public ResponseEntity<AppUserOutput> addMovieToWatchList(@PathVariable("username") String reqUsername,
                                                              @RequestBody List<UserMovieInput> userMovieInputs) {
 
@@ -68,7 +67,27 @@ public class AppUserController {
         return new ResponseEntity<>(appUserService.updateUserInfo(appUserInput), HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/logout")
+    @PostMapping    // user sign up
+    public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
+
+        AppUser appUser = new AppUser();
+        mapper.map(appUserInput, appUser);
+
+        try {
+            appUserService.save(appUser, Strings.USER);
+            AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
+            AppUserOutput appUserOutput = new AppUserOutput();
+            mapper.map(createdAppUser, appUserOutput);
+
+            return new ResponseEntity<>(appUserOutput, HttpStatus.CREATED);
+        } catch (NullPointerException npe) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
+        } catch (IllegalArgumentException argumentException) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+        }
+    }
+
+    @PutMapping(API.LOGOUT_A_USER)
     public ResponseEntity<Void> logout() {
         String jwtToken = (String) SecurityContextHolder
                 .getContext()

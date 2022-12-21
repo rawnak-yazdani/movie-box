@@ -12,7 +12,7 @@ public class Constants {
 
         public static final String SHOW_ALL_MOVIES = "/movies";
 
-        public static final String ADD_A_MOVIE_BY_ADMIN = "/movie";
+        public static final String ADD_A_MOVIE_BY_ADMIN = "/movies";
 
         public static final String UPDATE_A_MOVIE_BY_ADMIN = "/movies/{id}";
 
@@ -20,11 +20,11 @@ public class Constants {
 
         public static final String SHOW_A_USER = "/{username}";
 
-        public static final String UPDATE_USER_INFO = "/info";
-
         public static final String UPDATE_USER_WATCHLIST = "/{username}/watchlist";
 
         public static final String DELETE_FROM_USER_WATCHLIST = "/{username}/watchlist";
+
+        public static final String LOGOUT_A_USER = "/logout";
     }
 
     public static class Strings {
