@@ -6,10 +6,16 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.welldev.model.service.BlackListingService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -22,7 +28,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
+@RequiredArgsConstructor
 public class JwtTokenVerifier extends OncePerRequestFilter {
+
+//    @Autowired
+//    private BlackListingService blackListingService;
+
+//    @Autowired
+//    private UserRequestScopeBean userRequestScopeBean;
+
+    /**
+     * This method will be called when user hits an API which requires authorization
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -35,10 +53,21 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             return;
         }
         String token = authorizationHeader.replace("Bearer ", "");
+
         try {
+//            String blackListedToken = blackListingService.getJwtBlackList(token);
+//            if (blackListedToken != null) {
+//                logger.error("JwtInterceptor: Token is blacklisted");
+//                response.sendError(401);
+//            }
+//            userRequestScopeBean.setJwt(token);
+
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(System.getenv("TOKEN_SECRET_KEY").getBytes()))
                     .build()
+                    /**
+                     * parseClaimsJws(token) method verifies the token
+                     */
                     .parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             String username = body.getSubject();

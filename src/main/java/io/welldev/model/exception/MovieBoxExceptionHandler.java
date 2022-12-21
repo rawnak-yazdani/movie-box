@@ -44,28 +44,23 @@ public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
+        JSONObject jsonObjectOfErrors = new JSONObject();
 
-//        Map<String, List<String>> body = new HashMap<>();
-//
-//        List<String> errors = ex.getBindingResult()
-//                .getFieldErrors()
-//                .stream()
-//                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-//                .collect(Collectors.toList());
-//
-//        body.put("errors", errors);
-//
-//        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        try {
+            List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.toList());
 
-        return new ResponseEntity<>(prepareErrorJSON(status, ex), status);
-    }
+            jsonObjectOfErrors.put("status", status.value());
+            jsonObjectOfErrors.put("error", status.getReasonPhrase());
+            jsonObjectOfErrors.put("message", errors);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-    /**
-     * @Status 400
-     */
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return new ResponseEntity<>(prepareErrorJSON(status, ex), status);
+        return new ResponseEntity<>(jsonObjectOfErrors.toString(), status);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -87,7 +82,8 @@ public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
         try {
             jsonObjectOfErrors.put("status", status.value());
             jsonObjectOfErrors.put("error", status.getReasonPhrase());
-            jsonObjectOfErrors.put("message", ex.getMessage().split(":")[0]);
+//            jsonObjectOfErrors.put("message", ex.getMessage().split(":")[0]);
+            jsonObjectOfErrors.put("message", ex.getMessage());
         } catch (JSONException e) {
             e.printStackTrace();
         }

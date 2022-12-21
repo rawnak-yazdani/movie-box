@@ -44,7 +44,7 @@ public class AppUserController {
     // show a user
     @GetMapping(value = "/info")
     public ResponseEntity<AppUserOutput> showAUser(@RequestParam String username) {
-        return ResponseEntity.accepted().body(appUserService.showAUser(username));
+        return ResponseEntity.ok().body(appUserService.showAUser(username));
     }
 
     // update watchlist or add movies to watchlist of a user

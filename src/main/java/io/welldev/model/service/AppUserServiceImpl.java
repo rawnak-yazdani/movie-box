@@ -43,6 +43,9 @@ public class AppUserServiceImpl implements AppUserService {
         return appUserRepo.findAll();
     }
 
+    /**
+     * This method will be called second during login [from authenticationManager.authenticate(authentication)]
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser user = appUserRepo.findByUsername(username);
