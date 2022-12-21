@@ -1,10 +1,10 @@
 package io.welldev.initializer.configuration;
 
-import io.welldev.initializer.configuration.userauth.AppUsernameAndPasswordAuthenticationFilter;
-import io.welldev.initializer.configuration.userauth.JwtTokenVerifier;
+import io.welldev.initializer.configuration.authentication.AppUsernameAndPasswordAuthenticationFilter;
+import io.welldev.initializer.configuration.authorization.JwtTokenVerifier;
+import io.welldev.initializer.configuration.authentication.AppUserDetailsService;
 import io.welldev.model.role.Permissions;
 import io.welldev.model.role.Roles;
-import io.welldev.model.service.AppUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +21,13 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @AllArgsConstructor
 @EnableWebSecurity
-@ComponentScan({"io.welldev.initializer.configuration.userauth"})
+@ComponentScan({"io.welldev.initializer.configuration.userauth", "io.welldev.initializer.configuration.authentication", "io.welldev.initializer.configuration.authorization"})
 public class SecurityConfig {
 
     private PasswordEncoder passwordEncoder;
-    private AppUserService userDetailsService;
+    
+    private AppUserDetailsService userDetailsService;
+    
     @Autowired
     private JwtTokenVerifier jwtTokenVerifier;
 
