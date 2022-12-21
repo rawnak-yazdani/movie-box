@@ -1,2 +1,0 @@
--- INSERT INTO app_user (name, password, role, usercreationdate, username) VALUES ('General Akbur', '$2a$12$Ipl1UomhdKyXuvqxONgHduzspUycq6MWg9Ve9OfpUNlQAr4m71B9y', 'admin', now(), 'dictator');
-INSERT INTO genre (name) VALUES ('Drama');

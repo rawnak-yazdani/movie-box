@@ -25,23 +25,6 @@ import java.util.Map;
 public class CacheConfig {
     public final static String BLACKLIST_CACHE_NAME = "jwt-black-list";
 
-//    @Value("${spring.redis.host:localhost}")
-//    private String redisHost;
-//
-//    @Value("${spring.redis.port:7001}")
-//    private int redisPort;
-//    @Bean
-//    public CacheManager cacheManager(RedisCacheConfiguration redisCacheConfiguration) {
-//        return new RedisCacheManager(redisCacheConfiguration);
-//    }
-//
-//
-    @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(
-            "localhost",
-            6370);
-    }
     @Bean
     RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         Long lifeTime = Long.parseLong(System.getenv("TOKEN_EXPIRE_TIME"));
@@ -52,13 +35,5 @@ public class CacheConfig {
                                     .entryTtl(Duration.ofHours(lifeTime)));
 
     }
-//
-//    @Bean
-//    public RedisCacheConfiguration cacheConfiguration() {
-//        Long lifeTime = Long.parseLong(System.getenv("TOKEN_EXPIRE_TIME"));
-//        return RedisCacheConfiguration.defaultCacheConfig()
-//                .entryTtl(Duration.ofHours(lifeTime))
-//                .disableCachingNullValues()
-//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-//    }
+
 }
