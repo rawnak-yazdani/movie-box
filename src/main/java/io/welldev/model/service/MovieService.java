@@ -20,7 +20,7 @@ public class MovieService {
 
     public final GenreRepo genreRepo;
 
-    public void save(Movie movie) {
+    public Movie save(Movie movie) {
         Set<Genre> genres = movie.getGenres();
 //        Iterator<Genre> genreIterator = genres.iterator();
         for (Genre genre:
@@ -30,7 +30,7 @@ public class MovieService {
                 genre.setId(existingGenre.getId());
             } else genreRepo.save(genre);
         }
-        movieRepo.save(movie);
+        return movieRepo.save(movie);
     }
 
     public void flush() {

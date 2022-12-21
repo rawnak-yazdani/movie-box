@@ -51,14 +51,13 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/admin/**").hasAuthority(Permissions.ADMIN_WRITE.getPermission())
                 .antMatchers(HttpMethod.GET, "/admin/**").hasAuthority(Permissions.ADMIN_READ.getPermission())
 
-                .antMatchers(HttpMethod.POST, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
-                .antMatchers(HttpMethod.PUT, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
-                .antMatchers(HttpMethod.DELETE, "/users**").hasAuthority(Permissions.USER_WRITE.getPermission())
-                .antMatchers(HttpMethod.GET, "/users**")
+                .antMatchers(HttpMethod.PUT, "/users/**").hasAuthority(Permissions.USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.DELETE, "/users/**").hasAuthority(Permissions.USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.GET, "/users/**").hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
 
-                .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
+                .antMatchers(HttpMethod.POST, "/users").permitAll()
 //                .antMatchers("/anonymous*")
-                .antMatchers("/movies", "/user")
+                .antMatchers("/movies")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

@@ -4,6 +4,7 @@ import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
+import io.welldev.model.constants.Constants.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,7 @@ import javax.validation.Valid;
 import java.util.*;
 
 @RestController
-@RequestMapping(value = "/admin", headers = {"Accept=application/json"},
-        produces = "application/json")
+@RequestMapping(value = API.ADMIN, headers = Strings.HEADERS_JSON, produces = Strings.PRODUCES_JSON)
 public class AdminController {
 
     @Autowired
@@ -28,8 +28,7 @@ public class AdminController {
     @Autowired
     AppUserService appUserService;
 
-    // other admin signup
-    @PostMapping(value = "/signup")
+    @PostMapping    // other admin signup
     public ResponseEntity<AppUser> addOtherAdmin(@Valid @RequestBody AppUser appUser) {
         appUserService.save(appUser, "admin");
         AppUser createdAdmin = appUserService.findAppUserByUsername(appUser.getUsername());
@@ -37,9 +36,7 @@ public class AdminController {
         return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
     }
 
-    // add a user by admin
-    @PostMapping(value = "/users")
-    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = API.ADD_A_USER_BY_ADMIN)
     public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
 
         AppUser appUser = new AppUser();
@@ -60,19 +57,12 @@ public class AdminController {
         }
     }
 
-    // add movies by admin
-    @PostMapping("/movies")
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<Movie> addMovie(@RequestBody Movie movie) {
-
-        movieService.save(movie);
-
-        return movieService.findAll();
-
+    @PostMapping(API.ADD_A_MOVIE_BY_ADMIN)
+    public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
+        return ResponseEntity.ok(movieService.save(movie));
     }
 
-    // update movies by admin
-    @PutMapping("/movies/{id}")
+    @PutMapping(API.UPDATE_A_MOVIE_BY_ADMIN)
     public ResponseEntity<Movie> updateMovie(@PathVariable("id") Long id, @RequestBody Movie movie) {
         movie.setId(movieService.findById(id).getId());
         movieService.save(movie);
@@ -102,8 +92,7 @@ public class AdminController {
         "year":2013
     }
     */
-    // delete movies by admin
-    @DeleteMapping("/movies/{id}")
+    @DeleteMapping(API.DELETE_A_MOVIE_BY_ADMIN)
     public ResponseEntity<List<Movie>> deleteMovie(@PathVariable Long id) {
 
         movieService.deleteById(id);
@@ -111,13 +100,4 @@ public class AdminController {
         return new ResponseEntity<>(movieService.findAll(), HttpStatus.ACCEPTED);
 
     }
-
-//    @PostMapping(value = "/signup")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public Admin addUser(@RequestBody AdminCredentials adminCredentials) {
-//        adminService.save(adminCredentials.getAdmin());
-//        adminCredentialsService.save(adminCredentials);
-//
-//        return adminCredentialsService.getUserByName(adminCredentials.getUsername()).getAdmin();
-//    }
 }

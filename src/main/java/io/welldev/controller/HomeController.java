@@ -4,6 +4,8 @@ import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
+import io.welldev.model.constants.Constants.*;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,68 +17,19 @@ import javax.validation.Valid;
 import java.util.*;
 
 @RestController
-@RequestMapping(value = "/", headers = {"Accept=application/json"},
-        produces = "application/json")
+@RequestMapping(value = API.CONTEXT_PATH, headers = Strings.HEADERS_JSON, produces = Strings.PRODUCES_JSON)
+@RequiredArgsConstructor
 public class HomeController {
 
-    @Autowired
-    MovieService movieService;
-//    List<Movie> movies = movieService.findAll();
+    private final MovieService movieService;
 
-    @Autowired
-    GenreService genreService;
+    private final GenreService genreService;
 
-    @Autowired
-    AppUserService appUserService;
+    private final AppUserService appUserService;
 
-    @Autowired
-    ModelMapper mapper;
+    private final ModelMapper mapper;
 
-    // user sign up
-    @PostMapping(value = "/user")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
-
-        AppUser appUser = new AppUser();
-        mapper.map(appUserInput, appUser);
-
-        try {
-            appUserService.save(appUser, "user");
-            AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(createdAppUser, appUserOutput);
-
-            return new ResponseEntity<>(appUserOutput, HttpStatus.CREATED);
-        } catch (NullPointerException npe) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
-        } catch (IllegalArgumentException argumentException) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
-        }
-    }
-
-    // main admin sign up for once
-    @PostMapping(value = "/main-admin")
-    public ResponseEntity<AppUserOutput> addMainAdmin(@Valid @RequestBody AppUserInput appUserInput) {
-
-        AppUser appUser = new AppUser();
-        mapper.map(appUserInput, appUser);
-
-        try {
-            appUserService.save(appUser, "admin");
-            AppUser createdAdmin = appUserService.findAppUserByUsername(appUser.getUsername());
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(createdAdmin, appUserOutput);
-
-            return new ResponseEntity<>(appUserOutput, HttpStatus.CREATED);
-        } catch (NullPointerException npe) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
-        } catch (IllegalArgumentException argumentException) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
-        }
-    }
-
-    // show all movies
-    @GetMapping(value = "/movies")
+    @GetMapping(value = API.SHOW_ALL_MOVIES)
     public ResponseEntity<List<Movie>> getMovies() {
         return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
     }
@@ -86,8 +39,6 @@ public class HomeController {
 //        blackListingService.blackListJwt(userRequestScopeBean.getJwt());
 //        return ResponseEntity.ok(null);
 //    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
 {
@@ -120,17 +71,5 @@ public class HomeController {
     "password": "2222"
 }
 */
-
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-//        Map<String, String> errors = new HashMap<>();
-//        ex.getBindingResult().getAllErrors().forEach((error) -> {
-//            String fieldName = ((FieldError) error).getField();
-//            String errorMessage = error.getDefaultMessage();
-//            errors.put(fieldName, errorMessage);
-//        });
-//        return errors;
-//    }
 
 }
