@@ -1,6 +1,7 @@
 package io.welldev.initializer.configuration;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -74,6 +75,7 @@ public class AppConfig {
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
+        properties.setProperty("hibernate.defer-datasource-initialization", "true");
         properties.setProperty("hibernate.show_sql", "true");
 
         return properties;

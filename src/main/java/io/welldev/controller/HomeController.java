@@ -1,5 +1,6 @@
 package io.welldev.controller;
 
+import io.welldev.initializer.configuration.userauth.UserRequestScopeBean;
 import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;
@@ -8,10 +9,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.jws.WebParam;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -32,6 +33,7 @@ public class HomeController {
 
     @Autowired
     ModelMapper mapper;
+    private UserRequestScopeBean userRequestScopeBean;
 
     List<DemoPurpose> movies = new ArrayList<>(Arrays.asList(
             new DemoPurpose(1, "Movie 1"),
@@ -86,6 +88,8 @@ public class HomeController {
     public ResponseEntity<List<Movie>> getMovies() {
         return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
     }
+
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
