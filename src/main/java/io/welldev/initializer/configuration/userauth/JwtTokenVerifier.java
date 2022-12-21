@@ -6,11 +6,18 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.welldev.model.service.BlackListingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,6 +35,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtTokenVerifier extends OncePerRequestFilter {
 
+    @Autowired
+    private BlackListingService blackListingService;
+    @Autowired
+    private UserRequestScopeBean userRequestScopeBean;
     /**
      * This method will be called when user hits an API which requires authorization
      */
@@ -51,19 +62,25 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                      * parseClaimsJws(token) method verifies the token
                      */
                     .parseClaimsJws(token);
+            String blackListedToken = blackListingService.getJwtBlackList(token);
+            if (blackListedToken != null) {
+                logger.error("JwtInterceptor: Token is blacklisted");
+                return;
+            }
             Claims body = claimsJws.getBody();
             String username = body.getSubject();
             List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
             Set<SimpleGrantedAuthority> grantedAuthorities = authorities.stream()
                     .map(m -> new SimpleGrantedAuthority(m.get("authority")))
                     .collect(Collectors.toSet());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
+            AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     username,
                     null,
                     grantedAuthorities
             );
+            authentication.setDetails(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (JwtException e) {
+        } catch (Exception e) {
             throw new IllegalStateException(
                     String.format("Token %s cannot be trusted!!",token));
         }

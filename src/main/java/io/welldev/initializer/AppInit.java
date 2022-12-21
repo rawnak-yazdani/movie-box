@@ -1,6 +1,7 @@
 package io.welldev.initializer;
 
 import io.welldev.initializer.configuration.AppConfig;
+import io.welldev.initializer.configuration.CacheConfig;
 import io.welldev.initializer.configuration.SecurityConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -26,7 +27,7 @@ public class AppInit extends AbstractAnnotationConfigDispatcherServletInitialize
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] { AppConfig.class, SecurityConfig.class };
+        return new Class[] { AppConfig.class, SecurityConfig.class, CacheConfig.class };
     }
 
     @Override

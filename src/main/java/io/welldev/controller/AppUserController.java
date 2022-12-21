@@ -6,15 +6,21 @@ import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.constants.Constants.*;
 import io.welldev.model.entity.AppUser;
 import io.welldev.model.service.AppUserService;
+import io.welldev.model.service.BlackListingService;
+import io.welldev.model.service.GenreService;
 import io.welldev.model.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -27,6 +33,12 @@ public class AppUserController {
 
     private final ModelMapper mapper;
 
+    @Autowired
+    private ModelMapper mapper;
+
+    @Autowired
+    private BlackListingService blackListingService;
+
     @GetMapping     // show all users
     public ResponseEntity<List<AppUserOutput>> showAllUsers() {
         return ResponseEntity.ok(appUserService.showAllUsers());
@@ -37,27 +49,8 @@ public class AppUserController {
         return ResponseEntity.ok().body(appUserService.showAUser(username));
     }
 
-    @PostMapping    // user sign up
-    public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
-
-        AppUser appUser = new AppUser();
-        mapper.map(appUserInput, appUser);
-
-        try {
-            appUserService.save(appUser, Strings.USER);
-            AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(createdAppUser, appUserOutput);
-
-            return new ResponseEntity<>(appUserOutput, HttpStatus.CREATED);
-        } catch (NullPointerException npe) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
-        } catch (IllegalArgumentException argumentException) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
-        }
-    }
-
-    @PutMapping(value = API.UPDATE_USER_WATCHLIST)
+    // update watchlist or add movies to watchlist of a user
+    @PutMapping(value = "/{username}/watchlist")
     public ResponseEntity<AppUserOutput> addMovieToWatchList(@PathVariable("username") String reqUsername,
                                                              @RequestBody List<UserMovieInput> userMovieInputs) {
 
@@ -76,6 +69,16 @@ public class AppUserController {
     @PutMapping     // update user info
     public ResponseEntity<AppUserOutput> editUser(@Valid @RequestBody AppUserInput appUserInput) {
         return new ResponseEntity<>(appUserService.updateUserInfo(appUserInput), HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        String jwtToken = (String) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getDetails();
+        blackListingService.blackListJwt(jwtToken);
+        return ResponseEntity.ok(null);
     }
 
 }

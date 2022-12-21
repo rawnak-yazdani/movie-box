@@ -1,5 +1,6 @@
 package io.welldev.controller;
 
+import io.welldev.initializer.configuration.userauth.UserRequestScopeBean;
 import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;
@@ -10,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,11 +36,6 @@ public class HomeController {
         return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
     }
 
-//    @PutMapping("/logout")
-//    public ResponseEntity<Void> logout() {
-//        blackListingService.blackListJwt(userRequestScopeBean.getJwt());
-//        return ResponseEntity.ok(null);
-//    }
 
 /*
 {
