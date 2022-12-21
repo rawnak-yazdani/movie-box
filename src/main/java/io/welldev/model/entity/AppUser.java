@@ -17,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "app_user")
+@Table(name = "app_user", uniqueConstraints = { @UniqueConstraint(columnNames = "username")})
 public class AppUser {
 
     @Id
