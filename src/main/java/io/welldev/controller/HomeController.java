@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,7 +33,6 @@ public class HomeController {
 
     @Autowired
     ModelMapper mapper;
-    private BlackListingService blackListingService;
     private UserRequestScopeBean userRequestScopeBean;
 
     List<DemoPurpose> movies = new ArrayList<>(Arrays.asList(
@@ -89,11 +89,7 @@ public class HomeController {
         return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
     }
 
-    @PutMapping("/logout")
-    public ResponseEntity<Void> logout() {
-        blackListingService.blackListJwt(userRequestScopeBean.getJwt());
-        return ResponseEntity.ok(null);
-    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
