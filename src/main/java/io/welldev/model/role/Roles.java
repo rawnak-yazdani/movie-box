@@ -10,6 +10,7 @@ import static io.welldev.model.role.Permissions.*;
 
 public enum Roles {
     USER(Sets.newHashSet(USER_READ)),
+
     ADMIN(Sets.newHashSet(USER_READ, USER_WRITE, ADMIN_READ, ADMIN_WRITE));
 
     private final Set<Permissions> permissions;

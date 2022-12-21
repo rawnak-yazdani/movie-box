@@ -2,17 +2,13 @@ package io.welldev.initializer.configuration;
 
 import io.welldev.initializer.configuration.userauth.AppUsernameAndPasswordAuthenticationFilter;
 import io.welldev.initializer.configuration.userauth.JwtTokenVerifier;
-import io.welldev.initializer.configuration.userauth.UserRequestScopeBean;
 import io.welldev.model.role.Permissions;
 import io.welldev.model.role.Roles;
 import io.welldev.model.service.AppUserService;
-import io.welldev.model.service.BlackListingService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -22,9 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.context.WebApplicationContext;
-
-import javax.jws.soap.SOAPBinding;
 
 @AllArgsConstructor
 @EnableWebSecurity
@@ -36,11 +29,11 @@ public class SecurityConfig {
     @Autowired
     private JwtTokenVerifier jwtTokenVerifier;
 
-    @Bean
-    @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public UserRequestScopeBean requestScopeBean() {
-        return new UserRequestScopeBean();
-    }
+//    @Bean
+//    @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+//    public UserRequestScopeBean requestScopeBean() {
+//        return new UserRequestScopeBean();
+//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
@@ -65,7 +58,7 @@ public class SecurityConfig {
 
                 .hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
 //                .antMatchers("/anonymous*")
-                .antMatchers("/movies", "/signup", "/signup/main-admin")
+                .antMatchers("/movies", "/user")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

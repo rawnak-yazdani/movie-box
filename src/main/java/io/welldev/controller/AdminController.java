@@ -28,17 +28,6 @@ public class AdminController {
     @Autowired
     AppUserService appUserService;
 
-    List<DemoPurpose> movies = new ArrayList<>(Arrays.asList(
-            new DemoPurpose(1, "Movie 1"),
-            new DemoPurpose(2, "Movie 2")
-    ));
-
-    @GetMapping
-    public List<DemoPurpose> getUser() {
-//        return new User();
-        return movies;
-    }
-
     // other admin signup
     @PostMapping(value = "/signup")
     public ResponseEntity<AppUser> addOtherAdmin(@Valid @RequestBody AppUser appUser) {

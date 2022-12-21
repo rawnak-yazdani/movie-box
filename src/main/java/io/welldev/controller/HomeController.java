@@ -1,6 +1,5 @@
 package io.welldev.controller;
 
-import io.welldev.initializer.configuration.userauth.UserRequestScopeBean;
 import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;
@@ -32,16 +31,9 @@ public class HomeController {
 
     @Autowired
     ModelMapper mapper;
-    private BlackListingService blackListingService;
-    private UserRequestScopeBean userRequestScopeBean;
-
-    List<DemoPurpose> movies = new ArrayList<>(Arrays.asList(
-            new DemoPurpose(1, "Movie 1"),
-            new DemoPurpose(2, "Movie 2")
-    ));
 
     // user sign up
-    @PostMapping(value = "/signup")
+    @PostMapping(value = "/user")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
 
@@ -63,7 +55,7 @@ public class HomeController {
     }
 
     // main admin sign up for once
-    @PostMapping(value = "/signup/main-admin")
+    @PostMapping(value = "/main-admin")
     public ResponseEntity<AppUserOutput> addMainAdmin(@Valid @RequestBody AppUserInput appUserInput) {
 
         AppUser appUser = new AppUser();
@@ -89,11 +81,11 @@ public class HomeController {
         return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
     }
 
-    @PutMapping("/logout")
-    public ResponseEntity<Void> logout() {
-        blackListingService.blackListJwt(userRequestScopeBean.getJwt());
-        return ResponseEntity.ok(null);
-    }
+//    @PutMapping("/logout")
+//    public ResponseEntity<Void> logout() {
+//        blackListingService.blackListJwt(userRequestScopeBean.getJwt());
+//        return ResponseEntity.ok(null);
+//    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

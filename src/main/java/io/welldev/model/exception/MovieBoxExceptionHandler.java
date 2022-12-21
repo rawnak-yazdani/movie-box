@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
-
     /**
      * This will handle exception in the request
      * @Status 400

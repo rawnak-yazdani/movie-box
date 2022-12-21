@@ -42,8 +42,8 @@ public class AppUserController {
     }
 
     // show a user
-    @GetMapping(value = "/info")
-    public ResponseEntity<AppUserOutput> showAUser(@RequestParam String username) {
+    @GetMapping(value = "/{username}")
+    public ResponseEntity<AppUserOutput> showAUser(@PathVariable("username") String username) {
         return ResponseEntity.ok().body(appUserService.showAUser(username));
     }
 

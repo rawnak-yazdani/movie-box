@@ -29,7 +29,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class AppUserServiceImpl implements AppUserService {
-
     private final AppUserRepo appUserRepo;
 
     private final MovieService movieService;

@@ -26,7 +26,6 @@ public class GenreService {
         genreRepo.saveAndFlush(genre);
     }
 
-    //
     public void saveAll(Set<Genre> genresList) {
         genreRepo.saveAll(genresList);
     }

@@ -16,7 +16,6 @@ import java.util.Set;
 @Service
 @Transactional
 public class MovieService {
-
     public final MovieRepo movieRepo;
 
     public final GenreRepo genreRepo;
@@ -42,7 +41,6 @@ public class MovieService {
         movieRepo.saveAndFlush(movie);
     }
 
-    //
     public void saveAll(List<Movie> moviesList) {
         movieRepo.saveAll(moviesList);
     }

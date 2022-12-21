@@ -6,15 +6,11 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.welldev.model.service.BlackListingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,12 +28,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtTokenVerifier extends OncePerRequestFilter {
 
-//    @Autowired
-//    private BlackListingService blackListingService;
-
-//    @Autowired
-//    private UserRequestScopeBean userRequestScopeBean;
-
     /**
      * This method will be called when user hits an API which requires authorization
      */
@@ -46,22 +36,14 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
+        String token = request.getHeader("Authorization");
 
-        if ( Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")) {
+        if (Strings.isNullOrEmpty(token)) {
             filterChain.doFilter(request, response);
             return;
         }
-        String token = authorizationHeader.replace("Bearer ", "");
 
         try {
-//            String blackListedToken = blackListingService.getJwtBlackList(token);
-//            if (blackListedToken != null) {
-//                logger.error("JwtInterceptor: Token is blacklisted");
-//                response.sendError(401);
-//            }
-//            userRequestScopeBean.setJwt(token);
-
             Jws<Claims> claimsJws = Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(System.getenv("TOKEN_SECRET_KEY").getBytes()))
                     .build()
