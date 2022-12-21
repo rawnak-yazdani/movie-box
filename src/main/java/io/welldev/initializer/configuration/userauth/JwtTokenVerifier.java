@@ -37,8 +37,6 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
     @Autowired
     private BlackListingService blackListingService;
-    @Autowired
-    private UserRequestScopeBean userRequestScopeBean;
     /**
      * This method will be called when user hits an API which requires authorization
      */

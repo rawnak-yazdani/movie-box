@@ -1,6 +1,5 @@
 package io.welldev.controller;
 
-import io.welldev.initializer.configuration.userauth.UserRequestScopeBean;
 import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;

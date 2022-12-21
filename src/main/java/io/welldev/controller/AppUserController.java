@@ -34,9 +34,6 @@ public class AppUserController {
     private final ModelMapper mapper;
 
     @Autowired
-    private ModelMapper mapper;
-
-    @Autowired
     private BlackListingService blackListingService;
 
     @GetMapping     // show all users
