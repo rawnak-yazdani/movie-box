@@ -6,6 +6,7 @@ import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.AppUser;
 import io.welldev.model.entity.Movie;
 import io.welldev.model.service.AppUserService;
+import io.welldev.model.service.BlackListingService;
 import io.welldev.model.service.GenreService;
 import io.welldev.model.service.MovieService;
 import org.modelmapper.ModelMapper;
@@ -34,6 +35,8 @@ public class AppUserController {
 
     @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private BlackListingService blackListingService;
 
     // show all users
     @GetMapping
@@ -69,6 +72,16 @@ public class AppUserController {
     @PutMapping(value = "/info")
     public ResponseEntity<AppUserOutput> editUser(@Valid @RequestBody AppUserInput appUserInput) {
         return new ResponseEntity<>(appUserService.updateUserInfo(appUserInput), HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        String jwtToken = (String) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getDetails();
+        blackListingService.blackListJwt(jwtToken);
+        return ResponseEntity.ok(null);
     }
 
 }

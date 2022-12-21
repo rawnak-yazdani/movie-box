@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import io.welldev.model.service.BlackListingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,30 +50,29 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         String token = authorizationHeader.replace("Bearer ", "");
 
         try {
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(System.getenv("TOKEN_SECRET_KEY").getBytes()))
+                    .build()
+                    .parseClaimsJws(token);
             String blackListedToken = blackListingService.getJwtBlackList(token);
             if (blackListedToken != null) {
                 logger.error("JwtInterceptor: Token is blacklisted");
                 response.sendError(401);
             }
-            userRequestScopeBean.setJwt(token);
-
-            Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(System.getenv("TOKEN_SECRET_KEY").getBytes()))
-                    .build()
-                    .parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             String username = body.getSubject();
             List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
             Set<SimpleGrantedAuthority> grantedAuthorities = authorities.stream()
                     .map(m -> new SimpleGrantedAuthority(m.get("authority")))
                     .collect(Collectors.toSet());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
+            AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     username,
                     null,
                     grantedAuthorities
             );
+            authentication.setDetails(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (JwtException e) {
+        } catch (Exception e) {
             throw new IllegalStateException(
                     String.format("Token %s cannot be trusted!!",token));
         }
