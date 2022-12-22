@@ -41,7 +41,7 @@ public class AppUserService {
     public AppUser save(AppUser user, String role) {
         Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(user.getUsername()));
 
-        if (!appUser.isPresent()) {
+        if (appUser.isPresent()) {
             throw new IllegalArgumentException();
         } else {
             user.setRole(role);
