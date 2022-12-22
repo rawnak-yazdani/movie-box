@@ -78,10 +78,8 @@ public class AdminController {
     }
     */
     @DeleteMapping(API.DELETE_A_MOVIE_BY_ADMIN)
-    public ResponseEntity<List<Movie>> deleteMovie(@PathVariable Long id) {
-        return ResponseEntity
-                .ok()
-                .body(movieService.deleteById(id));
-
+    public void deleteMovie(@PathVariable Long id) {
+        movieService.deleteById(id);
+//        return HttpStatus.NO_CONTENT;
     }
 }

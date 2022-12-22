@@ -5,8 +5,10 @@ import io.welldev.model.entity.Movie;
 import io.welldev.model.repository.GenreRepo;
 import io.welldev.model.repository.MovieRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Set;
@@ -23,8 +25,8 @@ public class MovieService {
     public Movie save(Movie movie) {
         Set<Genre> genres = movie.getGenres();
 //        Iterator<Genre> genreIterator = genres.iterator();
-        for (Genre genre:
-             genres) {
+        for (Genre genre :
+                genres) {
             Genre existingGenre = genreRepo.findByName(genre.getName());
             if (existingGenre != null) {
                 genre.setId(existingGenre.getId());
@@ -49,22 +51,26 @@ public class MovieService {
         movieRepo.saveAllAndFlush(moviesList);
     }
 
-    public Movie updateAMovieInfo(Long id, Movie movie){
+    public Movie updateAMovieInfo(Long id, Movie movie) {
         movie.setId(findById(id).getId());
         return save(movie);
     }
 
     public Movie findById(Long id) {
-        return movieRepo.findById(id).get();
+        try {
+            return movieRepo.findById(id).get();
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "This movie does not exist!");
+        }
     }
 
     public List<Movie> findAll() {
         return movieRepo.findAll();
     }
 
-    public List<Movie> deleteById(Long id) {
+    public void deleteById(Long id) {
+        findById(id);
         movieRepo.deleteById(id);
-        return findAll();
     }
 
     public void delete(Movie movie) {
