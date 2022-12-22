@@ -1,5 +1,6 @@
 package io.welldev.model.service;
 
+import io.welldev.model.constants.Constants;
 import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.datainputobject.UserMovieInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
@@ -9,6 +10,7 @@ import io.welldev.model.repository.AppUserRepo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,33 +38,50 @@ public class AppUserService {
         return appUserRepo.findAll();
     }
 
-    public void save(AppUser user, String role) {
-        if (appUserRepo.findByUsername(user.getUsername()) != null) {
+    public AppUser save(AppUser user, String role) {
+        Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(user.getUsername()));
+
+        if (!appUser.isPresent()) {
             throw new IllegalArgumentException();
         } else {
             user.setRole(role);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            appUserRepo.save(user);
+            return appUserRepo.save(user);
         }
+    }
 
+    public AppUserOutput signUp(AppUserInput appUserInput, String role) {
+        AppUser appUser = new AppUser();
+        mapper.map(appUserInput, appUser);
+
+        try {
+            AppUserOutput appUserOutput = new AppUserOutput();
+            mapper.map(save(appUser, role), appUserOutput);
+            return appUserOutput;
+        } catch (IllegalArgumentException argumentException) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+        }
+    }
+
+    public AppUserOutput userSignUp(AppUserInput appUserInput) {
+        return signUp(appUserInput, Constants.Strings.USER_ROLE);
+    }
+
+    public AppUserOutput adminSignUp(AppUserInput appUserInput) {
+        return signUp(appUserInput, Constants.Strings.ADMIN_ROLE);
     }
 
     public AppUserOutput updateUserInfo(AppUserInput appUserInput) {
-        AppUser appUser = appUserRepo.findByUsername(appUserInput.getUsername());
+        Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(appUserInput.getUsername()));
 
-        if (appUser != null) {
+        if (appUser.isPresent()) {
             mapper.map(appUserInput, appUser);
-            appUser.setPassword(passwordEncoder.encode(appUserInput.getPassword()));
-            appUserRepo.save(appUser);
-
+            appUser.get().setPassword(passwordEncoder.encode(appUserInput.getPassword()));
             AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(appUser, appUserOutput);
+            mapper.map(appUserRepo.save(appUser.get()), appUserOutput);
             return appUserOutput;
         } else {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_ACCEPTABLE,
-                    "User does not Exist"
-            );
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User does not Exist");
         }
 
     }
@@ -71,7 +90,7 @@ public class AppUserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getName().equals(reqUsername)) {
-            AppUser createdUser = appUserRepo.findByUsername(reqUsername);
+            Optional<AppUser> createdUser = Optional.ofNullable(appUserRepo.findByUsername(reqUsername));
 
             List<Movie> updatedList = new LinkedList<>();
 
@@ -80,15 +99,19 @@ public class AppUserService {
                 updatedList.add(movieService.findById(input.getId()));
             }
 
-            createdUser.getWatchList().addAll(updatedList);
-            appUserRepo.save(createdUser);
+            if (createdUser.isPresent()) {
 
-            createdUser = appUserRepo.findByUsername(reqUsername);
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(createdUser, appUserOutput);
+                createdUser.get().getWatchList().addAll(updatedList);
+                AppUserOutput appUserOutput = new AppUserOutput();
+                mapper.map(appUserRepo.save(createdUser.get()), appUserOutput);
 
-            return appUserOutput;
-        } else return null;
+                return appUserOutput;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
+        }
 
     }
 
@@ -96,21 +119,25 @@ public class AppUserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getName().equals(reqUsername)) {
-            AppUser createdUser = appUserRepo.findByUsername(reqUsername);
+            Optional<AppUser> createdUser = Optional.ofNullable(appUserRepo.findByUsername(reqUsername));
 
-            for (UserMovieInput input :
-                    userMovieInputs) {
-                createdUser.getWatchList().remove(movieService.findById(input.getId()));
+            if (createdUser.isPresent()) {
+                for (UserMovieInput input :
+                        userMovieInputs) {
+                    createdUser.get().getWatchList().remove(movieService.findById(input.getId()));
+                }
+
+                AppUserOutput appUserOutput = new AppUserOutput();
+                mapper.map(appUserRepo.save(createdUser.get()), appUserOutput);
+
+                return appUserOutput;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
             }
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
+        }
 
-            appUserRepo.save(createdUser);
-
-            createdUser = appUserRepo.findByUsername(reqUsername);
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(createdUser, appUserOutput);
-
-            return appUserOutput;
-        } else return null;
 
     }
 
@@ -126,10 +153,7 @@ public class AppUserService {
             mapper.map(requestedAppUser.get(), appUserOutput);
             return appUserOutput;
         } else {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "User does not Exist"
-            );
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
         }
     }
 

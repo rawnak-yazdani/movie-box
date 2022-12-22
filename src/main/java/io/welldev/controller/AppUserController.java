@@ -30,58 +30,50 @@ public class AppUserController {
 
     private final ModelMapper mapper;
 
-    @Autowired
-    private BlackListingService blackListingService;
+    private final BlackListingService blackListingService;
 
     @GetMapping     // show all users
     public ResponseEntity<List<AppUserOutput>> showAllUsers() {
-        return ResponseEntity.ok(appUserService.showAllUsers());
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .body(appUserService.showAllUsers());
     }
 
     @GetMapping(value = API.SHOW_A_USER)
     public ResponseEntity<AppUserOutput> showAUser(@PathVariable("username") String username) {
-        return ResponseEntity.ok().body(appUserService.showAUser(username));
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .body(appUserService.showAUser(username));
     }
 
     @PutMapping(value = API.UPDATE_USER_WATCHLIST)
     public ResponseEntity<AppUserOutput> addMovieToWatchList(@PathVariable("username") String reqUsername,
                                                              @RequestBody List<UserMovieInput> userMovieInputs) {
-
-        AppUserOutput appUserOutput = appUserService.updateWatchlist(reqUsername, userMovieInputs);
-        return new ResponseEntity<>(appUserOutput, appUserOutput == null ? HttpStatus.BAD_REQUEST : HttpStatus.ACCEPTED);
+        return ResponseEntity
+                .ok()
+                .body(appUserService.updateWatchlist(reqUsername, userMovieInputs));
     }
 
     @DeleteMapping(value = API.DELETE_FROM_USER_WATCHLIST)
-    public ResponseEntity<AppUserOutput> deleteMovieFromWatchList(@PathVariable String username,
-                                                                  @RequestBody List<UserMovieInput> movieInputs) {
-
-        AppUserOutput appUserOutput = appUserService.deleteFromWatchlist(username, movieInputs);
-        return new ResponseEntity<>(appUserOutput, appUserOutput == null ? HttpStatus.BAD_REQUEST : HttpStatus.ACCEPTED);
+    public ResponseEntity<AppUserOutput> deleteMovieFromWatchList(@PathVariable String reqUsername,
+                                                                  @RequestBody List<UserMovieInput> userMovieInputs) {
+        return ResponseEntity
+                .ok()
+                .body(appUserService.deleteFromWatchlist(reqUsername, userMovieInputs));
     }
 
     @PutMapping     // update user info
     public ResponseEntity<AppUserOutput> editUser(@Valid @RequestBody AppUserInput appUserInput) {
-        return new ResponseEntity<>(appUserService.updateUserInfo(appUserInput), HttpStatus.ACCEPTED);
+        return ResponseEntity
+                .ok()
+                .body(appUserService.updateUserInfo(appUserInput));
     }
 
     @PostMapping    // user sign up
     public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
-
-        AppUser appUser = new AppUser();
-        mapper.map(appUserInput, appUser);
-
-        try {
-            appUserService.save(appUser, Strings.USER);
-            AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(createdAppUser, appUserOutput);
-
-            return new ResponseEntity<>(appUserOutput, HttpStatus.CREATED);
-        } catch (NullPointerException npe) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
-        } catch (IllegalArgumentException argumentException) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
-        }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(appUserService.userSignUp(appUserInput));
     }
 
     @PutMapping(API.LOGOUT_A_USER)

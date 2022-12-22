@@ -49,6 +49,11 @@ public class MovieService {
         movieRepo.saveAllAndFlush(moviesList);
     }
 
+    public Movie updateAMovieInfo(Long id, Movie movie){
+        movie.setId(findById(id).getId());
+        return save(movie);
+    }
+
     public Movie findById(Long id) {
         return movieRepo.findById(id).get();
     }
@@ -57,8 +62,9 @@ public class MovieService {
         return movieRepo.findAll();
     }
 
-    public void deleteById(Long id) {
+    public List<Movie> deleteById(Long id) {
         movieRepo.deleteById(id);
+        return findAll();
     }
 
     public void delete(Movie movie) {

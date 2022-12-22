@@ -32,6 +32,8 @@ public class Constants {
 
         public static final String PRODUCES_JSON = "application/json";
 
-        public static final String USER = "user";
+        public static final String USER_ROLE = "user";
+
+        public static final String ADMIN_ROLE = "admin";
     }
 }

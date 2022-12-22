@@ -32,40 +32,9 @@ public class HomeController {
 
     @GetMapping(value = API.SHOW_ALL_MOVIES)
     public ResponseEntity<List<Movie>> getMovies() {
-        return new ResponseEntity<>(movieService.findAll(), HttpStatus.FOUND);
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .body(movieService.findAll());
     }
-
-
-/*
-{
-    "name": "Khaleed Ahmed Anik",
-    "username": "anik1",
-    "password": "2222"
-}
-
-{
-    "name": "Mahadee Hasan Abir",
-    "username": "abir2",
-    "password": "2222"
-}
-
-{
-    "name": "Tanveer Arnob",
-    "username": "arnob3",
-    "password": "2222"
-}
-
-{
-    "name": "Rawnak Yazdani",
-    "username": "rawnak4",
-    "password": "2222"
-}
-
-{
-    "name": "Mr Dictator",
-    "username": "dictator",
-    "password": "2222"
-}
-*/
 
 }

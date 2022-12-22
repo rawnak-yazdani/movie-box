@@ -5,6 +5,7 @@ import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
 import io.welldev.model.constants.Constants.*;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,57 +18,41 @@ import java.util.*;
 
 @RestController
 @RequestMapping(value = API.ADMIN, headers = Strings.HEADERS_JSON, produces = Strings.PRODUCES_JSON)
+@RequiredArgsConstructor
 public class AdminController {
 
-    @Autowired
-    MovieService movieService;
+    private final MovieService movieService;
 
-    @Autowired
-    GenreService genreService;
+    private final GenreService genreService;
 
-    @Autowired
-    AppUserService appUserService;
+    private final AppUserService appUserService;
 
     @PostMapping    // other admin signup
-    public ResponseEntity<AppUser> addOtherAdmin(@Valid @RequestBody AppUser appUser) {
-        appUserService.save(appUser, "admin");
-        AppUser createdAdmin = appUserService.findAppUserByUsername(appUser.getUsername());
-
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+    public ResponseEntity<AppUserOutput> addOtherAdmin(@Valid @RequestBody AppUserInput appUserInput) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(appUserService.adminSignUp(appUserInput));
     }
 
     @PostMapping(value = API.ADD_A_USER_BY_ADMIN)
     public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
-
-        AppUser appUser = new AppUser();
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.map(appUserInput, appUser);
-
-        try {
-            appUserService.save(appUser, "user");
-            AppUser createdAppUser = appUserService.findAppUserByUsername(appUser.getUsername());
-            AppUserOutput appUserOutput = new AppUserOutput();
-            modelMapper.map(createdAppUser, appUserOutput);
-
-            return new ResponseEntity<>(appUserOutput, HttpStatus.CREATED);
-        } catch (NullPointerException npe) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username was not saved Properly");
-        } catch (IllegalArgumentException argumentException) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
-        }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(appUserService.userSignUp(appUserInput));
     }
 
     @PostMapping(API.ADD_A_MOVIE_BY_ADMIN)
     public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
-        return ResponseEntity.ok(movieService.save(movie));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(movieService.save(movie));
     }
 
     @PutMapping(API.UPDATE_A_MOVIE_BY_ADMIN)
     public ResponseEntity<Movie> updateMovie(@PathVariable("id") Long id, @RequestBody Movie movie) {
-        movie.setId(movieService.findById(id).getId());
-        movieService.save(movie);
-
-        return new ResponseEntity<>(movie, HttpStatus.OK);
+        return ResponseEntity
+                .ok()
+                .body(movieService.updateAMovieInfo(id, movie));
     }
 
     /*
@@ -94,10 +79,9 @@ public class AdminController {
     */
     @DeleteMapping(API.DELETE_A_MOVIE_BY_ADMIN)
     public ResponseEntity<List<Movie>> deleteMovie(@PathVariable Long id) {
-
-        movieService.deleteById(id);
-
-        return new ResponseEntity<>(movieService.findAll(), HttpStatus.ACCEPTED);
+        return ResponseEntity
+                .ok()
+                .body(movieService.deleteById(id));
 
     }
 }
