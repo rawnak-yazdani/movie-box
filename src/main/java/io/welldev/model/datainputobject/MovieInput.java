@@ -1,5 +1,6 @@
 package io.welldev.model.datainputobject;
 
+import io.welldev.model.entity.Genre;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ public class MovieInput {
     private String title;
 
     private String rating;
+
+    private Set<Genre> genres = new HashSet<Genre>();
 
     private int year;
 }

@@ -170,4 +170,14 @@ public class AppUserService {
 
         return appUserOutputs;
     }
+
+    public List<AppUserOutput> deleteUser(Long id) {
+        Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findById(id).get());
+        if (!appUser.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+        } else {
+            appUserRepo.delete(appUser.get());
+        }
+        return showAllUsers();
+    }
 }

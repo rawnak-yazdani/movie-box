@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/users/**").hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
 
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
-                .antMatchers(HttpMethod.GET,"/movies").permitAll()
+                .antMatchers(HttpMethod.GET,"/movies/*").permitAll()
                 .anyRequest()
                 .authenticated();
 //                .antMatchers("/anonymous*")

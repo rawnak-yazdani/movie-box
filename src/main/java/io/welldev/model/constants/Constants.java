@@ -12,11 +12,14 @@ public class Constants {
 
         public static final String SHOW_ALL_MOVIES = "/movies";
 
+        public static final String SHOW_A_MOVIE = "/movies/{id}";
+
         public static final String ADD_A_MOVIE_BY_ADMIN = "/movies";
 
         public static final String UPDATE_A_MOVIE_BY_ADMIN = "/movies/{id}";
 
         public static final String DELETE_A_MOVIE_BY_ADMIN = "/movies/{id}";
+        public static final String DELETE_A_USER_BY_ADMIN = "/users/{id}";
 
         public static final String SHOW_A_USER = "/{username}";
 

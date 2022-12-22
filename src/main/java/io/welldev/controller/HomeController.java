@@ -1,13 +1,10 @@
 package io.welldev.controller;
 
-import io.welldev.model.datainputobject.AppUserInput;
-import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
 import io.welldev.model.constants.Constants.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,6 +32,12 @@ public class HomeController {
         return ResponseEntity
                 .status(HttpStatus.FOUND)
                 .body(movieService.findAll());
+    }
+    @GetMapping(value = API.SHOW_A_MOVIE)
+    public ResponseEntity<Movie> getMovie(@PathVariable Long id) {
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .body(movieService.findById(id));
     }
 
 }

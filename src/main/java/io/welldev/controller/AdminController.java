@@ -1,6 +1,7 @@
 package io.welldev.controller;
 
 import io.welldev.model.datainputobject.AppUserInput;
+import io.welldev.model.datainputobject.MovieInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
@@ -23,8 +24,6 @@ public class AdminController {
 
     private final MovieService movieService;
 
-    private final GenreService genreService;
-
     private final AppUserService appUserService;
 
     @PostMapping    // other admin signup
@@ -42,17 +41,17 @@ public class AdminController {
     }
 
     @PostMapping(API.ADD_A_MOVIE_BY_ADMIN)
-    public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
+    public ResponseEntity<Movie> addMovie(@RequestBody MovieInput movieInput) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(movieService.save(movie));
+                .body(movieService.addMovie(movieInput));
     }
 
     @PutMapping(API.UPDATE_A_MOVIE_BY_ADMIN)
-    public ResponseEntity<Movie> updateMovie(@PathVariable("id") Long id, @RequestBody Movie movie) {
+    public ResponseEntity<Movie> updateMovie(@PathVariable("id") Long id, @RequestBody MovieInput movieInput) {
         return ResponseEntity
                 .ok()
-                .body(movieService.updateAMovieInfo(id, movie));
+                .body(movieService.updateAMovieInfo(id, movieInput));
     }
 
     /*
@@ -78,8 +77,8 @@ public class AdminController {
     }
     */
     @DeleteMapping(API.DELETE_A_MOVIE_BY_ADMIN)
-    public void deleteMovie(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteMovie(@PathVariable Long id) {
         movieService.deleteById(id);
-//        return HttpStatus.NO_CONTENT;
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 }

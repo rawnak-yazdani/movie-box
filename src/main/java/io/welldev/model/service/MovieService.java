@@ -1,10 +1,12 @@
 package io.welldev.model.service;
 
+import io.welldev.model.datainputobject.MovieInput;
 import io.welldev.model.entity.Genre;
 import io.welldev.model.entity.Movie;
 import io.welldev.model.repository.GenreRepo;
 import io.welldev.model.repository.MovieRepo;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +20,11 @@ import java.util.Set;
 @Service
 @Transactional
 public class MovieService {
-    public final MovieRepo movieRepo;
+    private final MovieRepo movieRepo;
 
-    public final GenreRepo genreRepo;
+    private final GenreRepo genreRepo;
+
+    private final ModelMapper mapper;
 
     public Movie save(Movie movie) {
         Set<Genre> genres = movie.getGenres();
@@ -51,8 +55,16 @@ public class MovieService {
         movieRepo.saveAllAndFlush(moviesList);
     }
 
-    public Movie updateAMovieInfo(Long id, Movie movie) {
+    public Movie updateAMovieInfo(Long id, MovieInput movieInput) {
+        Movie movie = new Movie();
+        mapper.map(movieInput, movie);
         movie.setId(findById(id).getId());
+        return save(movie);
+    }
+
+    public Movie addMovie(MovieInput movieInput) {
+        Movie movie = new Movie();
+        mapper.map(movieInput, movie);
         return save(movie);
     }
 
@@ -70,6 +82,7 @@ public class MovieService {
 
     public void deleteById(Long id) {
         findById(id);
+        movieRepo.deleteMapping(id);
         movieRepo.deleteById(id);
     }
 
