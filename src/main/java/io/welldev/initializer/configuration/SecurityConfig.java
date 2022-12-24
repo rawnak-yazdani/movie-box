@@ -21,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @AllArgsConstructor
 @EnableWebSecurity
-@ComponentScan({"io.welldev.initializer.configuration.userauth", "io.welldev.initializer.configuration.authentication", "io.welldev.initializer.configuration.authorization"})
+@ComponentScan({"io.welldev.initializer.configuration.authentication", "io.welldev.initializer.configuration.authorization"})
 public class SecurityConfig {
 
     private PasswordEncoder passwordEncoder;
@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/users/**").hasAnyRole(Roles.ADMIN.name(), Roles.USER.name())
 
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
-                .antMatchers(HttpMethod.GET,"/movies/*").permitAll()
+                .antMatchers(HttpMethod.GET,"/movies/**").permitAll()
                 .anyRequest()
                 .authenticated();
 //                .antMatchers("/anonymous*")

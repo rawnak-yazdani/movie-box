@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.welldev.model.constants.Constants.*;
 import io.welldev.model.service.BlackListingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -40,7 +40,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(AppStrings.AUTHORIZATION);
 
         if (Strings.isNullOrEmpty(token)) {
             filterChain.doFilter(request, response);
@@ -49,7 +49,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(System.getenv("TOKEN_SECRET_KEY").getBytes()))
+                    .setSigningKey(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
                     .build()
                     /**
                      * parseClaimsJws(token) method verifies the token
@@ -65,7 +65,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             String username = body.getSubject();
             List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
             Set<SimpleGrantedAuthority> grantedAuthorities = authorities.stream()
-                    .map(m -> new SimpleGrantedAuthority(m.get("authority")))
+                    .map(m -> new SimpleGrantedAuthority(m.get(AppStrings.AUTHORITY)))
                     .collect(Collectors.toSet());
             AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     username,

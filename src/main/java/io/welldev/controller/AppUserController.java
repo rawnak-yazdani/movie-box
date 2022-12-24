@@ -1,27 +1,25 @@
 package io.welldev.controller;
 
+import io.welldev.model.constants.Constants.API;
+import io.welldev.model.constants.Constants.AppStrings;
 import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.datainputobject.UserMovieInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
-import io.welldev.model.constants.Constants.*;
-import io.welldev.model.entity.AppUser;
 import io.welldev.model.service.AppUserService;
 import io.welldev.model.service.BlackListingService;
 import io.welldev.model.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = API.USERS, headers = Strings.HEADERS_JSON, produces = Strings.PRODUCES_JSON)
+@RequestMapping(value = API.USERS, headers = AppStrings.HEADERS_JSON, produces = AppStrings.PRODUCES_JSON)
 @RequiredArgsConstructor
 public class AppUserController {
     private final AppUserService appUserService;
@@ -55,7 +53,7 @@ public class AppUserController {
     }
 
     @DeleteMapping(value = API.DELETE_FROM_USER_WATCHLIST)
-    public ResponseEntity<AppUserOutput> deleteMovieFromWatchList(@PathVariable String reqUsername,
+    public ResponseEntity<AppUserOutput> deleteMovieFromWatchList(@PathVariable("username") String reqUsername,
                                                                   @RequestBody List<UserMovieInput> userMovieInputs) {
         return ResponseEntity
                 .ok()

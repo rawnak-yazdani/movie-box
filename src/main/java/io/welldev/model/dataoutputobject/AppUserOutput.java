@@ -15,6 +15,8 @@ import java.util.Set;
 @Setter
 public class AppUserOutput {
     private String name;
+
     private String username;
+
     private Set<Movie> watchList = new HashSet<>();
 }

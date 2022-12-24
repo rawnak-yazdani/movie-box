@@ -7,15 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.*;
 
 @RestController
-@RequestMapping(value = API.CONTEXT_PATH, headers = Strings.HEADERS_JSON, produces = Strings.PRODUCES_JSON)
+@RequestMapping(value = API.CONTEXT_PATH, headers = AppStrings.HEADERS_JSON, produces = AppStrings.PRODUCES_JSON)
 @RequiredArgsConstructor
 public class HomeController {
 
@@ -33,6 +30,7 @@ public class HomeController {
                 .status(HttpStatus.FOUND)
                 .body(movieService.findAll());
     }
+
     @GetMapping(value = API.SHOW_A_MOVIE)
     public ResponseEntity<Movie> getMovie(@PathVariable Long id) {
         return ResponseEntity

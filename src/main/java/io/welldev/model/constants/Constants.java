@@ -19,6 +19,7 @@ public class Constants {
         public static final String UPDATE_A_MOVIE_BY_ADMIN = "/movies/{id}";
 
         public static final String DELETE_A_MOVIE_BY_ADMIN = "/movies/{id}";
+
         public static final String DELETE_A_USER_BY_ADMIN = "/users/{id}";
 
         public static final String SHOW_A_USER = "/{username}";
@@ -30,7 +31,7 @@ public class Constants {
         public static final String LOGOUT_A_USER = "/logout";
     }
 
-    public static class Strings {
+    public static class AppStrings {
         public static final String HEADERS_JSON = "Accept=application/json";
 
         public static final String PRODUCES_JSON = "application/json";
@@ -38,5 +39,27 @@ public class Constants {
         public static final String USER_ROLE = "user";
 
         public static final String ADMIN_ROLE = "admin";
+
+        public static final String TOKEN_EXPIRE_TIME = "TOKEN_EXPIRE_TIME";
+
+        public static final String TOKEN_SECRET_KEY = "TOKEN_SECRET_KEY";
+
+        public static final String AUTHORITIES = "authorities";
+
+        public static final String AUTHORITY = "authority";
+
+        public static final String TOKEN = "token";
+
+        public static final String ISSUED_AT = "issued at";
+
+        public static final String EXPIRE_AT = "expire at";
+
+        public static final String AUTHORIZATION = "Authorization";
+
+        public static final String STATUS = "status";
+
+        public static final String ERROR = "error";
+
+        public static final String MESSAGE = "message";
     }
 }

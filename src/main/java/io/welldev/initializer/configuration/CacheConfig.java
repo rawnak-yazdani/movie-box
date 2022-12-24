@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@ComponentScan({"io.welldev.initializer.configuration.userauth"})
 public class CacheConfig {
     public final static String BLACKLIST_CACHE_NAME = "jwt-black-list";
 
