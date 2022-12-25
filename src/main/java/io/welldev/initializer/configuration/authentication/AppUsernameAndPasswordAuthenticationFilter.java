@@ -27,7 +27,9 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     private final AuthenticationManager authenticationManager;
 
     /**
-     * This method will be called first during login
+     * This method will be called first during login [called form doFilter() of AbstractAuthenticationProcessingFilter]
+     * UsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter
+     * AbstractAuthenticationProcessingFilter extends GenericFilterBean
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
