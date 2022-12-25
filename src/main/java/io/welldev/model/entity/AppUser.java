@@ -17,9 +17,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "app_user", uniqueConstraints = { @UniqueConstraint(columnNames = "username")})
+@Table(name = "app_user", uniqueConstraints = {@UniqueConstraint(columnNames = "username")})
 public class AppUser {
-
     @Id
     @Column(name = "id", nullable = false)
     @SequenceGenerator(initialValue = 1, name = "user_seq", sequenceName = "user_seq", allocationSize = 1)

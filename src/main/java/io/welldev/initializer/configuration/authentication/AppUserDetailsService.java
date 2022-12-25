@@ -1,5 +1,6 @@
 package io.welldev.initializer.configuration.authentication;
 
+import io.welldev.model.constants.Constants.*;
 import io.welldev.model.entity.AppUser;
 import io.welldev.model.role.Roles;
 import io.welldev.model.service.AppUserService;
@@ -22,7 +23,7 @@ public class AppUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser user = appUserService.findAppUserByUsername(username);
         if (user != null) {
-            if (user.getRole().equals("user")) {
+            if (user.getRole().equals(AppStrings.USER_ROLE)) {
                 return User.builder()
                         .username(user.getUsername())
                         .password(user.getPassword())

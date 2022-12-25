@@ -3,6 +3,7 @@ package io.welldev.initializer.configuration.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.welldev.model.constants.Constants.*;
 import io.welldev.model.entity.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.codehaus.jettison.json.JSONException;
@@ -54,7 +55,7 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             HttpServletResponse response,
                                             FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
-        int lifeTime = Integer.parseInt(System.getenv("TOKEN_EXPIRE_TIME"));
+        int lifeTime = Integer.parseInt(System.getenv(AppStrings.TOKEN_EXPIRE_TIME));
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, lifeTime);
         Date dateIat = new Date();
@@ -62,18 +63,18 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
-                .claim("authorities", authResult.getAuthorities())
+                .claim(AppStrings.AUTHORITIES, authResult.getAuthorities())
                 .setIssuedAt(dateIat)
                 .setExpiration(dateExp)
-                .signWith(Keys.hmacShaKeyFor(System.getenv("TOKEN_SECRET_KEY").getBytes()))
+                .signWith(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
                 .compact();
 
         JSONObject jsonObjectOfResponseBody = new JSONObject();
 
         try {
-            jsonObjectOfResponseBody.put("issued at", dateIat.toString());
-            jsonObjectOfResponseBody.put("expire at", dateExp.toString());
-            jsonObjectOfResponseBody.put("token", token);
+            jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIat.toString());
+            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT, dateExp.toString());
+            jsonObjectOfResponseBody.put(AppStrings.TOKEN, token);
         } catch (JSONException e) {
             e.printStackTrace();
         }

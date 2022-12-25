@@ -14,7 +14,6 @@ import java.util.List;
 @Setter
 @Entity
 public class Genre {
-
     @Id
     @Column(name = "id", nullable = false)
     @SequenceGenerator(initialValue=1, name = "genre_seq", sequenceName = "genre_seq", allocationSize = 1)

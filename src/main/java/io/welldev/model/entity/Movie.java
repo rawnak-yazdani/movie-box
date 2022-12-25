@@ -38,3 +38,4 @@ public class Movie {
 }
 
 //drop table movie, genre, app_user, movie_app_user, movie_genre;
+//drop sequence movie_seq, user_seq, genre_seq;

@@ -1,5 +1,6 @@
 package io.welldev.model.exception;
 
+import io.welldev.model.constants.Constants.*;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -52,9 +53,9 @@ public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
 
-            jsonObjectOfErrors.put("status", status.value());
-            jsonObjectOfErrors.put("error", status.getReasonPhrase());
-            jsonObjectOfErrors.put("message", errors);
+            jsonObjectOfErrors.put(AppStrings.STATUS, status.value());
+            jsonObjectOfErrors.put(AppStrings.ERROR, status.getReasonPhrase());
+            jsonObjectOfErrors.put(AppStrings.MESSAGE, errors);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -79,10 +80,10 @@ public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
         JSONObject jsonObjectOfErrors = new JSONObject();
 
         try {
-            jsonObjectOfErrors.put("status", status.value());
-            jsonObjectOfErrors.put("error", status.getReasonPhrase());
+            jsonObjectOfErrors.put(AppStrings.STATUS, status.value());
+            jsonObjectOfErrors.put(AppStrings.ERROR, status.getReasonPhrase());
 //            jsonObjectOfErrors.put("message", ex.getMessage().split(":")[0]);
-            jsonObjectOfErrors.put("message", ex.getMessage());
+            jsonObjectOfErrors.put(AppStrings.MESSAGE, ex.getMessage());
         } catch (JSONException e) {
             e.printStackTrace();
         }
