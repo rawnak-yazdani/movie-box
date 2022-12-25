@@ -81,11 +81,18 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
-        Cookie cookie = new Cookie(AppStrings.TOKEN, token);
+//        Cookie cookieToken = new Cookie(AppStrings.TOKEN, token);
+//        cookieToken.setHttpOnly(true);
 
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+        Cookie cookieIat = new Cookie(AppStrings.ISSUED_AT, dateIat.toString());
+        cookieIat.setHttpOnly(true);
+
+        Cookie cookieExp = new Cookie(AppStrings.EXPIRE_AT, dateExp.toString());
+        cookieExp.setHttpOnly(true);
+
+        response.addCookie(cookieIat);
+//        response.addCookie(cookieToken);
+        response.addCookie(cookieExp);
 //        response.getWriter().write(jsonObjectOfResponseBody.toString());
 //        super.successfulAuthentication(request, response, chain, authResult);
     }
