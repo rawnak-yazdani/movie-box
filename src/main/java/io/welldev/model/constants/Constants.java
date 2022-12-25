@@ -48,11 +48,11 @@ public class Constants {
 
         public static final String AUTHORITY = "authority";
 
-        public static final String TOKEN = "token";
+        public static final String TOKEN = "TOKEN";
 
-        public static final String ISSUED_AT = "bissued at";
+        public static final String ISSUED_AT = "issued at";
 
-        public static final String EXPIRE_AT = "bexpire at";
+        public static final String EXPIRE_AT = "expire at";
 
         public static final String AUTHORIZATION = "Authorization";
 

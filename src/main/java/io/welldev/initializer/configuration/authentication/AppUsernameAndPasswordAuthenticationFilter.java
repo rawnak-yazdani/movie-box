@@ -72,28 +72,21 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .signWith(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
                 .compact();
 
-//        JSONObject jsonObjectOfResponseBody = new JSONObject();
-//
-//        try {
-//            jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIat.toString());
-//            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT, dateExp.toString());
+        JSONObject jsonObjectOfResponseBody = new JSONObject();
+
+        try {
+            jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIat.toString());
+            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT, dateExp.toString());
 //            jsonObjectOfResponseBody.put(AppStrings.TOKEN, token);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        Cookie cookieToken = new Cookie(AppStrings.TOKEN, token);
-//        cookieToken.setHttpOnly(true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        Cookie cookieIat = new Cookie(AppStrings.ISSUED_AT, dateIat.toString());
-        cookieIat.setHttpOnly(true);
+        Cookie cookieToken = new Cookie(AppStrings.TOKEN, token);
+        cookieToken.setHttpOnly(true);
 
-        Cookie cookieExp = new Cookie(AppStrings.EXPIRE_AT, dateExp.toString());
-        cookieExp.setHttpOnly(true);
-
-        response.addCookie(cookieIat);
-//        response.addCookie(cookieToken);
-        response.addCookie(cookieExp);
-//        response.getWriter().write(jsonObjectOfResponseBody.toString());
+        response.addCookie(cookieToken);
+        response.getWriter().write(jsonObjectOfResponseBody.toString());
 //        super.successfulAuthentication(request, response, chain, authResult);
     }
 }
