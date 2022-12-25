@@ -82,7 +82,7 @@ public class MovieService {
 
     public void deleteById(Long id) {
         findById(id);
-        movieRepo.deleteMapping(id);
+        movieRepo.deleteUserAndMovieAssociation(id);
         movieRepo.deleteById(id);
     }
 

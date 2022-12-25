@@ -27,8 +27,8 @@ public class Movie {
 
     @ManyToMany/*(fetch = FetchType.EAGER)*/
     @JoinTable(name = "movie_genre",
-            joinColumns = {@JoinColumn(name = "fk_movie")},
-            inverseJoinColumns = {@JoinColumn(name = "fk_genre")})
+            joinColumns = {@JoinColumn(name = "movie_id")},
+            inverseJoinColumns = {@JoinColumn(name = "genre_id")})
     @Fetch(value = FetchMode.JOIN)
     private Set<Genre> genres = new HashSet<Genre>();
 

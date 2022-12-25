@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface MovieRepo extends JpaRepository<Movie, Long> {
 
     @Modifying
-    @Query(value = "DELETE from movie_app_user where fk_movie = :id",
+    @Query(value = "delete from movie_app_user where fk_movie = :id",
     nativeQuery = true)
-    void deleteMapping(@Param("id") Long id);
+    void deleteUserAndMovieAssociation(@Param("id") Long id);
 }

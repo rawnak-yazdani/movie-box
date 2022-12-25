@@ -37,8 +37,8 @@ public class AppUser {
 
     @ManyToMany
     @JoinTable(name = "movie_app_user",
-            joinColumns = {@JoinColumn(name = "fk_app_user")},
-            inverseJoinColumns = {@JoinColumn(name = "fk_movie")})
+            joinColumns = {@JoinColumn(name = "app_user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "movie_id")})
     @Fetch(value = FetchMode.JOIN)
     private Set<Movie> watchList = new HashSet<>();
 

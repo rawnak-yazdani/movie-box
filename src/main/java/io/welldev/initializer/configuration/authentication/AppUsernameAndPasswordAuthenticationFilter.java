@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -69,17 +70,21 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .signWith(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
                 .compact();
 
-        JSONObject jsonObjectOfResponseBody = new JSONObject();
+//        JSONObject jsonObjectOfResponseBody = new JSONObject();
+//
+//        try {
+//            jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIat.toString());
+//            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT, dateExp.toString());
+//            jsonObjectOfResponseBody.put(AppStrings.TOKEN, token);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        Cookie cookie = new Cookie(AppStrings.TOKEN, token);
 
-        try {
-            jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIat.toString());
-            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT, dateExp.toString());
-            jsonObjectOfResponseBody.put(AppStrings.TOKEN, token);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        response.getWriter().write(jsonObjectOfResponseBody.toString());
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+//        response.getWriter().write(jsonObjectOfResponseBody.toString());
 //        super.successfulAuthentication(request, response, chain, authResult);
     }
 }
