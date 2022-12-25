@@ -84,6 +84,7 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         Cookie cookieToken = new Cookie(AppStrings.TOKEN, token);
         cookieToken.setHttpOnly(true);
+        cookieToken.setSecure(true);
 
         response.addCookie(cookieToken);
         response.getWriter().write(jsonObjectOfResponseBody.toString());
