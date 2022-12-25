@@ -6,6 +6,7 @@ import io.welldev.model.datainputobject.UserMovieInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.entity.AppUser;
 import io.welldev.model.entity.Movie;
+import io.welldev.model.exception.ItemNotFoundException;
 import io.welldev.model.repository.AppUserRepo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -145,8 +146,10 @@ public class AppUserService {
 
         if (requestedAppUser.isPresent())
             return appUserRepo.findByUsername(username);
-        else
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+        else {
+            //throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+            throw new ItemNotFoundException("User " + username+ " not Exist");
+        }
     }
 
     public AppUserOutput showAUser(String username) {
