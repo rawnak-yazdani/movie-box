@@ -147,8 +147,8 @@ public class AppUserService {
         if (requestedAppUser.isPresent())
             return appUserRepo.findByUsername(username);
         else {
-            //throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
-            throw new ItemNotFoundException("User " + username+ " not Exist");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+//            throw new ItemNotFoundException("User " + username+ " not Exist");
         }
     }
 

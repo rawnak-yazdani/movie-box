@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-//@RestControllerAdvice
+@ControllerAdvice
 public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * This will handle exception in the request
