@@ -1,6 +1,6 @@
 package io.welldev.initializer.configuration.authentication;
 
-import io.welldev.model.constants.Constants.*;
+import io.welldev.model.constants.Constants.AppStrings;
 import io.welldev.model.entity.AppUser;
 import io.welldev.model.role.Roles;
 import io.welldev.model.service.AppUserService;
@@ -22,22 +22,20 @@ public class AppUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser user = appUserService.findAppUserByUsername(username);
-        if (user != null) {
-            if (user.getRole().equals(AppStrings.USER_ROLE)) {
-                return User.builder()
-                        .username(user.getUsername())
-                        .password(user.getPassword())
-                        .authorities(Roles.USER.grantedAuthorities())
-                        .build();
-            } else {
-                return User.builder()
-                        .username(user.getUsername())
-                        .password(user.getPassword())
-                        .authorities(Roles.ADMIN.grantedAuthorities())
-                        .build();
-            }
 
-        } else throw new UsernameNotFoundException(String.format("Username %s not found", username));
+        if (user.getRole().equals(AppStrings.USER_ROLE)) {
+            return User.builder()
+                    .username(user.getUsername())
+                    .password(user.getPassword())
+                    .authorities(Roles.USER.grantedAuthorities())
+                    .build();
+        } else {
+            return User.builder()
+                    .username(user.getUsername())
+                    .password(user.getPassword())
+                    .authorities(Roles.ADMIN.grantedAuthorities())
+                    .build();
+        }
 
     }
 }

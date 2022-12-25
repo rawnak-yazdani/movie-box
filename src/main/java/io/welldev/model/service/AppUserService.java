@@ -141,7 +141,12 @@ public class AppUserService {
     }
 
     public AppUser findAppUserByUsername(String username) {
-        return appUserRepo.findByUsername(username);
+        Optional<AppUser> requestedAppUser = Optional.ofNullable(appUserRepo.findByUsername(username));
+
+        if (requestedAppUser.isPresent())
+            return appUserRepo.findByUsername(username);
+        else
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
     }
 
     public AppUserOutput showAUser(String username) {
@@ -170,13 +175,12 @@ public class AppUserService {
         return appUserOutputs;
     }
 
-    public List<AppUserOutput> deleteUser(Long id) {
-        Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findById(id).get());
-        if (!appUser.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
-        } else {
+    public void deleteUser(AppUserInput appUserInput) {
+        Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(appUserInput.getUsername()));
+
+        if (appUser.isPresent())
             appUserRepo.delete(appUser.get());
-        }
-        return showAllUsers();
+        else
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
     }
 }

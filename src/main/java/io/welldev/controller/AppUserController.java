@@ -76,12 +76,19 @@ public class AppUserController {
 
     @PutMapping(API.LOGOUT_A_USER)
     public ResponseEntity<Void> logout() {
-        String jwtToken = (String) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getDetails();
+        String jwtToken = (String) SecurityContextHolder.getContext().getAuthentication().getDetails();
         blackListingService.blackListJwt(jwtToken);
         return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Object> deleteAUser(@Valid @RequestBody AppUserInput appUserInput) {
+        appUserService.deleteUser(appUserInput);
+        String jwtToken = (String) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        blackListingService.blackListJwt(jwtToken);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
 }
