@@ -73,6 +73,10 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     grantedAuthorities
             );
             authentication.setDetails(token);
+            /**
+             * Spring (SecurityContextImpl) will use this authentication to check user authority against antMatchers() or APIs
+             * SecurityContextHolder is used to access SecurityContext from our project
+             */
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
             throw new IllegalStateException(
