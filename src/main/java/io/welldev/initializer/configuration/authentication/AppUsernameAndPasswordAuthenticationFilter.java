@@ -5,6 +5,7 @@ import io.welldev.model.constants.Constants.*;
 import io.welldev.model.entity.AppUser;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,7 +26,11 @@ import java.util.Date;
 @Component
 public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
+
     private final JwtUtils jwtUtils;
+
+    @Value("${TOKEN_EXPIRE_TIME}")
+    private String jwtExpireTime;
 
     public AppUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
                                                       JwtUtils jwtUtils,
@@ -67,26 +72,20 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             HttpServletResponse response,
                                             FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
-        int lifeTimeOfAccessToken = Integer.parseInt(System.getenv(AppStrings.TOKEN_EXPIRE_TIME));
-        int lifeTimeOfRefreshToken = lifeTimeOfAccessToken * 84;
+        int lifeTimeOfToken = Integer.parseInt(jwtExpireTime);
+        Date dateExpAccessToken = jwtUtils.getTokenExpireDate(lifeTimeOfToken);
+        Date dateExpRefreshToken = jwtUtils.getTokenExpireDate(lifeTimeOfToken * 84);
 
-        Calendar calendarAccessToken = Calendar.getInstance();
-        calendarAccessToken.add(Calendar.HOUR, lifeTimeOfAccessToken);
-        Date dateExpAccessToken = calendarAccessToken.getTime();
+        Date dateIssuedAt = new Date();
 
-        Calendar calendarRefreshToken = Calendar.getInstance();
-        calendarRefreshToken.add(Calendar.HOUR, lifeTimeOfRefreshToken);
-        Date dateExpRefreshToken = calendarRefreshToken.getTime();
-
-        Date dateIat = new Date();
-
-        String accessToken = jwtUtils.generateAccessTokenFromUsername(authResult, dateIat, dateExpAccessToken);
-        String refreshToken = jwtUtils.generateRefreshTokenFromUsername(authResult, dateIat, dateExpRefreshToken);
+        String accessToken = jwtUtils.generateTokenFromUsername(authResult.getName(), authResult.getAuthorities(),
+                dateIssuedAt, dateExpAccessToken);
+        String refreshToken = jwtUtils.generateTokenFromUsername(authResult.getName(), authResult.getAuthorities(),
+                dateIssuedAt, dateExpRefreshToken);
 
         JSONObject jsonObjectOfResponseBody = new JSONObject();
-
         try {
-            jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIat.toString());
+            jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIssuedAt.toString());
             jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT_ACCESS_TOKEN, dateExpAccessToken.toString());
             jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT_REFRESH_TOKEN, dateExpRefreshToken.toString());
 //            jsonObjectOfResponseBody.put(AppStrings.TOKEN, token);

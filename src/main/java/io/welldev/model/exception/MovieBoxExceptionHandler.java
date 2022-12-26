@@ -96,7 +96,7 @@ public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
 
         result.put("errors", errors);
 
-        return new ResponseEntity<>(ex.toString(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ex.toString(), ex.getStatus());
     }
 
     private String prepareErrorJSON(HttpStatus status, Exception ex) {

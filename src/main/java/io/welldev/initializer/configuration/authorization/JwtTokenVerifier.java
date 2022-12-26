@@ -9,14 +9,13 @@ import io.welldev.initializer.configuration.authentication.JwtUtils;
 import io.welldev.model.constants.Constants.*;
 import io.welldev.model.service.BlackListingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,9 +25,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -37,6 +34,9 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
     private final BlackListingService blackListingService;
 
     private final JwtUtils jwtUtils;
+
+    @Value("${TOKEN_EXPIRE_TIME}")
+    private String jwtExpireTime;
 
     /**
      * This method will be called when user hits an API which requires authorization
@@ -100,43 +100,56 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
     public void refreshToken(HttpServletRequest request,
                                        HttpServletResponse response) {
-//        String accessToken = request.getHeader(AppStrings.AUTHORIZATION);
-//        String refreshToken = request.getHeader(AppStrings.RENEWAUTH);
-//
-//        if (Strings.isNullOrEmpty(refreshToken) && Strings.isNullOrEmpty(accessToken)) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Access or Refresh Token Assigned");
-//        }
-//        blackListingService.blackListJwt(accessToken);
-//
-//        if (!jwtUtils.validateJwtToken(refreshToken)) {
-//            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Access Token");
-//        }
-//        String blackListedToken = blackListingService.getJwtBlackList(refreshToken);
-//        if (blackListedToken != null) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Refresh Token invalid");
-//        }
-//        Jws<Claims> claimsJws = Jwts.parserBuilder()
-//                .setSigningKey(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
-//                .build()
-//                /**
-//                 * parseClaimsJws(token) method verifies the token
-//                 */
-//                .parseClaimsJws(refreshToken);
-//        Claims body = claimsJws.getBody();
-//        String newAccessToken = jwtUtils.generateAccessTokenFromUsername(body.getSubject());
-//        String newRefreshToken = jwtUtils.generateRefreshTokenFromUsername(body.getSubject());
-//
-//        Cookie accessCookie = new Cookie(AppStrings.ACCESS_TOKEN, newAccessToken);
-//        accessCookie.setHttpOnly(true);
-//        accessCookie.setSecure(true);
-//
-//        response.addCookie(accessCookie);
-//
-//        Cookie RefreshCookie = new Cookie(AppStrings.REFRESH_TOKEN, newRefreshToken);
-//        RefreshCookie.setHttpOnly(true);
-//        RefreshCookie.setSecure(true);
-//
-//        response.addCookie(RefreshCookie);
+        String accessToken = request.getHeader(AppStrings.AUTHORIZATION);
+        String refreshToken = request.getHeader(AppStrings.RENEWAUTH);
+
+        if (Strings.isNullOrEmpty(refreshToken) && Strings.isNullOrEmpty(accessToken)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Access or Refresh Token Assigned");
+        }
+        blackListingService.blackListJwt(accessToken);
+
+        if (!jwtUtils.validateJwtToken(refreshToken)) {
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Access Token");
+        }
+        String blackListedToken = blackListingService.getJwtBlackList(refreshToken);
+        if (blackListedToken != null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Refresh Token invalid");
+        }
+        Jws<Claims> claimsJws = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
+                .build()
+                /**
+                 * parseClaimsJws(token) method verifies the token
+                 */
+                .parseClaimsJws(refreshToken);
+        Claims body = claimsJws.getBody();
+        List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
+        Set<SimpleGrantedAuthority> grantedAuthorities = authorities.stream()
+                .map(m -> new SimpleGrantedAuthority(m.get(AppStrings.AUTHORITY)))
+                .collect(Collectors.toSet());
+        int lifeTimeOfToken = Integer.parseInt(jwtExpireTime);
+        Date dateExpAccessToken = jwtUtils.getTokenExpireDate(lifeTimeOfToken);
+        Date dateExpRefreshToken = jwtUtils.getTokenExpireDate(lifeTimeOfToken * 84);
+
+        Date dateIat = new Date();
+        String newAccessToken = jwtUtils.generateTokenFromUsername(body.getSubject(), grantedAuthorities,
+                dateIat, dateExpAccessToken);
+        String newRefreshToken = jwtUtils.generateTokenFromUsername(body.getSubject(), grantedAuthorities,
+                dateIat, dateExpRefreshToken);
+
+        Cookie accessCookie = new Cookie(AppStrings.ACCESS_TOKEN, newAccessToken);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(true);
+
+        response.addCookie(accessCookie);
+
+        Cookie RefreshCookie = new Cookie(AppStrings.REFRESH_TOKEN, newRefreshToken);
+        RefreshCookie.setHttpOnly(true);
+        RefreshCookie.setSecure(true);
+
+        response.addCookie(RefreshCookie);
+
+        blackListingService.blackListJwt(refreshToken);
 
     }
 }

@@ -7,9 +7,11 @@ import io.welldev.model.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 
 @Component
@@ -26,20 +28,11 @@ public class JwtUtils {
 //        return generateTokenFromUsername(userPrincipal.getUsername());
 //    }
 
-    public String generateAccessTokenFromUsername(Authentication authResult, Date dateIat, Date dateExp) {
+    public String generateTokenFromUsername(String username, Collection<? extends GrantedAuthority> authorities,
+                                            Date dateIat, Date dateExp) {
         return Jwts.builder()
-                .setSubject(authResult.getName())
-                .claim(Constants.AppStrings.AUTHORITIES, authResult.getAuthorities())
-                .setIssuedAt(dateIat)
-                .setExpiration(dateExp)
-                .signWith(Keys.hmacShaKeyFor(System.getenv(Constants.AppStrings.TOKEN_SECRET_KEY).getBytes()))
-                .compact();
-    }
-
-    public String generateRefreshTokenFromUsername(Authentication authResult, Date dateIat, Date dateExp) {
-        return Jwts.builder()
-                .setSubject(authResult.getName())
-                .claim(Constants.AppStrings.AUTHORITIES, authResult.getAuthorities())
+                .setSubject(username)
+                .claim(Constants.AppStrings.AUTHORITIES, authorities)
                 .setIssuedAt(dateIat)
                 .setExpiration(dateExp)
                 .signWith(Keys.hmacShaKeyFor(System.getenv(Constants.AppStrings.TOKEN_SECRET_KEY).getBytes()))
@@ -88,4 +81,9 @@ public class JwtUtils {
 
     }
 
+    public Date getTokenExpireDate(int lifetimeOfToken) {
+        Calendar calendarAccessToken = Calendar.getInstance();
+        calendarAccessToken.add(Calendar.HOUR, lifetimeOfToken);
+        return calendarAccessToken.getTime();
+    }
 }
