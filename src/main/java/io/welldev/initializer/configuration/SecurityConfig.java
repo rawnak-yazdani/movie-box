@@ -1,8 +1,10 @@
 package io.welldev.initializer.configuration;
 
 import io.welldev.initializer.configuration.authentication.AppUsernameAndPasswordAuthenticationFilter;
+import io.welldev.initializer.configuration.authentication.JwtUtils;
 import io.welldev.initializer.configuration.authorization.JwtTokenVerifier;
 import io.welldev.initializer.configuration.authentication.AppUserDetailsService;
+import io.welldev.model.exception.AppAuthenticationFailureHandler;
 import io.welldev.model.role.Permissions;
 import io.welldev.model.role.Roles;
 import lombok.AllArgsConstructor;
@@ -16,8 +18,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @AllArgsConstructor
 @EnableWebSecurity
@@ -30,12 +35,36 @@ public class SecurityConfig {
     
     @Autowired
     private JwtTokenVerifier jwtTokenVerifier;
+    private JwtUtils jwtUtils;
 
 //    @Bean
 //    @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 //    public UserRequestScopeBean requestScopeBean() {
 //        return new UserRequestScopeBean();
 //    }
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider());
+        return authenticationManagerBuilder.build();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
+    }
+
+    @Bean
+    public UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
+        AppUsernameAndPasswordAuthenticationFilter appUsernameAndPasswordAuthenticationFilter =
+                new AppUsernameAndPasswordAuthenticationFilter(authenticationManager, jwtUtils, authenticationFailureHandler());
+        appUsernameAndPasswordAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
+        return appUsernameAndPasswordAuthenticationFilter;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
@@ -44,7 +73,7 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new AppUsernameAndPasswordAuthenticationFilter(authenticationManager))
+                .addFilter(usernamePasswordAuthenticationFilter(authenticationManager))
                 .addFilterAfter(jwtTokenVerifier, AppUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
 
@@ -77,19 +106,10 @@ public class SecurityConfig {
         return  httpSecurity.build();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider());
-        return authenticationManagerBuilder.build();
-    }
+
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder);
-        provider.setUserDetailsService(userDetailsService);
-        return provider;
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new AppAuthenticationFailureHandler();
     }
 }

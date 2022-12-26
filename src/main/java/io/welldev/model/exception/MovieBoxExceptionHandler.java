@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+@ControllerAdvice({"io.welldev"})
 public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * This will handle exception in the request
@@ -68,17 +68,17 @@ public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(jsonObjectOfErrors.toString(), status);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<?> constraintViolationException(ConstraintViolationException ex, WebRequest request) {
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> constraintViolationException(ResponseStatusException ex, WebRequest request) {
         List<String> errors = new ArrayList<>();
 
-        ex.getConstraintViolations().forEach(cv -> errors.add(cv.getMessage()));
+//        ex.getConstraintViolations().forEach(cv -> errors.add(cv.getMessage()));
 
         Map<String, List<String>> result = new HashMap<>();
 
         result.put("errors", errors);
 
-        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.toString(), HttpStatus.NOT_FOUND);
     }
 
     private String prepareErrorJSON(HttpStatus status, Exception ex) {

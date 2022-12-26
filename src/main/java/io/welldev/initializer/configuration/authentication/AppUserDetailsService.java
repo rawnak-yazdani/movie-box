@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 @Component
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class AppUserDetailsService implements UserDetailsService {
      * This method will be called second during login [from authenticationManager.authenticate(authentication)]
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, ResponseStatusException {
         AppUser user = appUserService.findAppUserByUsername(username);
 
         if (user.getRole().equals(AppStrings.USER_ROLE)) {

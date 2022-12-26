@@ -1,18 +1,17 @@
 package io.welldev.initializer.configuration.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import io.welldev.model.constants.Constants.*;
 import io.welldev.model.entity.AppUser;
-import lombok.RequiredArgsConstructor;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,9 +22,19 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
-@RequiredArgsConstructor
+@Component
 public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+
+    public AppUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
+                                                      JwtUtils jwtUtils,
+                                                      AuthenticationFailureHandler authenticationFailureHandler) {
+        super.setAuthenticationManager(authenticationManager);
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
+        super.setAuthenticationFailureHandler(authenticationFailureHandler);
+    }
 
     /**
      * This method will be called first during login [called form doFilter() of AbstractAuthenticationProcessingFilter]
@@ -64,13 +73,7 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         Date dateIat = new Date();
         Date dateExp = calendar.getTime();
 
-        String token = Jwts.builder()
-                .setSubject(authResult.getName())
-                .claim(AppStrings.AUTHORITIES, authResult.getAuthorities())
-                .setIssuedAt(dateIat)
-                .setExpiration(dateExp)
-                .signWith(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
-                .compact();
+        String token = jwtUtils.generateAccessTokenFromUsername(authResult.getName());
 
         JSONObject jsonObjectOfResponseBody = new JSONObject();
 
@@ -90,4 +93,6 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         response.getWriter().write(jsonObjectOfResponseBody.toString());
 //        super.successfulAuthentication(request, response, chain, authResult);
     }
+
+
 }
