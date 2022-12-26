@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtTokenVerifier extends OncePerRequestFilter {
     private final BlackListingService blackListingService;
+
     private final JwtUtils jwtUtils;
 
     /**
