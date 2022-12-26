@@ -4,6 +4,7 @@ public class Constants {
     public static class API {
         public static final String CONTEXT_PATH = "/";
 
+        public static final String AUTH_REFRESH = "/refreshtoken";
         public static final String USERS = "/users";
 
         public static final String ADD_A_USER_BY_ADMIN = "/users";
@@ -48,13 +49,16 @@ public class Constants {
 
         public static final String AUTHORITY = "authority";
 
-        public static final String TOKEN = "TOKEN";
+        public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
+
+        public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
 
         public static final String ISSUED_AT = "issued at";
 
         public static final String EXPIRE_AT = "expire at";
 
         public static final String AUTHORIZATION = "Authorization";
+        public static final String RENEWAUTH = "Renew-auth";
 
         public static final String STATUS = "status";
 

@@ -73,7 +73,8 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         Date dateIat = new Date();
         Date dateExp = calendar.getTime();
 
-        String token = jwtUtils.generateAccessTokenFromUsername(authResult.getName());
+        String accessToken = jwtUtils.generateAccessTokenFromUsername(authResult.getName(), dateIat, dateExp);
+        String refreshToken = jwtUtils.generateRefreshTokenFromUsername(authResult.getName());
 
         JSONObject jsonObjectOfResponseBody = new JSONObject();
 
@@ -85,11 +86,17 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             e.printStackTrace();
         }
 
-        Cookie cookieToken = new Cookie(AppStrings.TOKEN, token);
-        cookieToken.setHttpOnly(true);
-        cookieToken.setSecure(true);
+        Cookie accessCookie = new Cookie(AppStrings.ACCESS_TOKEN, accessToken);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(true);
 
-        response.addCookie(cookieToken);
+        response.addCookie(accessCookie);
+
+        Cookie RefreshCookie = new Cookie(AppStrings.REFRESH_TOKEN, refreshToken);
+        RefreshCookie.setHttpOnly(true);
+        RefreshCookie.setSecure(true);
+
+        response.addCookie(RefreshCookie);
         response.getWriter().write(jsonObjectOfResponseBody.toString());
 //        super.successfulAuthentication(request, response, chain, authResult);
     }

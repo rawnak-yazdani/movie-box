@@ -1,7 +1,9 @@
 package io.welldev.initializer.configuration.authentication;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import io.welldev.model.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +25,17 @@ public class JwtUtils {
 //        return generateTokenFromUsername(userPrincipal.getUsername());
 //    }
 
-    public String generateAccessTokenFromUsername(String username) {
+    public String generateAccessTokenFromUsername(String username, Date dateIat, Date dateExp) {
+        return Jwts.builder().setSubject(username).setIssuedAt(dateIat)
+                .setExpiration(dateExp)
+                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .compact();
+    }
+
+    public String generateRefreshTokenFromUsername(String username) {
         return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)).signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setExpiration(new Date((System.currentTimeMillis() + jwtExpirationMs * 30 * 24 * 60 * 60 * 1000)))
+                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
                 .compact();
     }
 
@@ -35,7 +45,14 @@ public class JwtUtils {
 
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+//            Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken);
+            Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                    .build()
+                    /**
+                     * parseClaimsJws(token) method verifies the token
+                     */
+                    .parseClaimsJws(authToken);
             return true;
         } catch (SignatureException e) {
             logger.error("Invalid JWT signature: {}", e.getMessage());
@@ -50,6 +67,18 @@ public class JwtUtils {
         }
 
         return false;
+    }
+
+    public boolean isExpired(String authToken) {
+        try {
+            Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken);
+            return false;
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
+
     }
 
 }
