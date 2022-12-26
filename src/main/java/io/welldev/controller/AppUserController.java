@@ -40,7 +40,6 @@ public class AppUserController {
 
     @GetMapping(value = API.SHOW_A_USER)
     public ResponseEntity<AppUserOutput> showAUser(@PathVariable("username") String username) {
-//        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
         return ResponseEntity
                 .status(HttpStatus.FOUND)
                 .body(appUserService.showAUser(username));

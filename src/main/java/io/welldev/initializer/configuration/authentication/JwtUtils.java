@@ -7,6 +7,7 @@ import io.welldev.model.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -25,17 +26,23 @@ public class JwtUtils {
 //        return generateTokenFromUsername(userPrincipal.getUsername());
 //    }
 
-    public String generateAccessTokenFromUsername(String username, Date dateIat, Date dateExp) {
-        return Jwts.builder().setSubject(username).setIssuedAt(dateIat)
+    public String generateAccessTokenFromUsername(Authentication authResult, Date dateIat, Date dateExp) {
+        return Jwts.builder()
+                .setSubject(authResult.getName())
+                .claim(Constants.AppStrings.AUTHORITIES, authResult.getAuthorities())
+                .setIssuedAt(dateIat)
                 .setExpiration(dateExp)
-                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .signWith(Keys.hmacShaKeyFor(System.getenv(Constants.AppStrings.TOKEN_SECRET_KEY).getBytes()))
                 .compact();
     }
 
-    public String generateRefreshTokenFromUsername(String username) {
-        return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-                .setExpiration(new Date((System.currentTimeMillis() + jwtExpirationMs * 30 * 24 * 60 * 60 * 1000)))
-                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+    public String generateRefreshTokenFromUsername(Authentication authResult, Date dateIat, Date dateExp) {
+        return Jwts.builder()
+                .setSubject(authResult.getName())
+                .claim(Constants.AppStrings.AUTHORITIES, authResult.getAuthorities())
+                .setIssuedAt(dateIat)
+                .setExpiration(dateExp)
+                .signWith(Keys.hmacShaKeyFor(System.getenv(Constants.AppStrings.TOKEN_SECRET_KEY).getBytes()))
                 .compact();
     }
 

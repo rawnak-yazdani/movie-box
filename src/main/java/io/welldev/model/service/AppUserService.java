@@ -82,7 +82,7 @@ public class AppUserService {
             mapper.map(appUserRepo.save(appUser.get()), appUserOutput);
             return appUserOutput;
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User does not Exist");
+            throw new ItemNotFoundException("User does not exist!");
         }
 
     }
@@ -108,7 +108,7 @@ public class AppUserService {
 
                 return appUserOutput;
             } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+                throw new ItemNotFoundException("User does not exist!");
             }
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
@@ -133,7 +133,7 @@ public class AppUserService {
 
                 return appUserOutput;
             } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+                throw new ItemNotFoundException("User does not exist!");
             }
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
@@ -149,8 +149,8 @@ public class AppUserService {
             return appUserRepo.findByUsername(username);
         else {
 //            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
-            throw new UsernameNotFoundException("Username or Password incorrect");
-//            throw new ItemNotFoundException("User " + username+ " not Exist");
+//            throw new UsernameNotFoundException("Username or Password incorrect");
+            throw new ItemNotFoundException("Username or Password is Wrong. Otherwise the user is needed to sign up.");
         }
     }
 
@@ -163,7 +163,7 @@ public class AppUserService {
             return appUserOutput;
         } else {
 //            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
-            throw new ItemNotFoundException("User does not Exist");
+            throw new ItemNotFoundException("User does not exist!");
         }
     }
 
@@ -187,6 +187,6 @@ public class AppUserService {
         if (appUser.isPresent())
             appUserRepo.delete(appUser.get());
         else
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+            throw new ItemNotFoundException("User does not exist!");
     }
 }

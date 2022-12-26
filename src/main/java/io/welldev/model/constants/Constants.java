@@ -55,7 +55,9 @@ public class Constants {
 
         public static final String ISSUED_AT = "issued at";
 
-        public static final String EXPIRE_AT = "expire at";
+        public static final String EXPIRE_AT_ACCESS_TOKEN = "access token will expire at";
+
+        public static final String EXPIRE_AT_REFRESH_TOKEN = "refresh token will expire at";
 
         public static final String AUTHORIZATION = "Authorization";
         public static final String RENEWAUTH = "Renew-auth";

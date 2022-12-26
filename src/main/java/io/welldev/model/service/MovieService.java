@@ -3,6 +3,7 @@ package io.welldev.model.service;
 import io.welldev.model.datainputobject.MovieInput;
 import io.welldev.model.entity.Genre;
 import io.welldev.model.entity.Movie;
+import io.welldev.model.exception.ItemNotFoundException;
 import io.welldev.model.repository.GenreRepo;
 import io.welldev.model.repository.MovieRepo;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +73,7 @@ public class MovieService {
         try {
             return movieRepo.findById(id).get();
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "This movie does not exist!");
+            throw new ItemNotFoundException("This movie does not exist!");
         }
     }
 

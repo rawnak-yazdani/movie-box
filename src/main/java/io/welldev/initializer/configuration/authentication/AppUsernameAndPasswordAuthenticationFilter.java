@@ -67,37 +67,45 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             HttpServletResponse response,
                                             FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
-        int lifeTime = Integer.parseInt(System.getenv(AppStrings.TOKEN_EXPIRE_TIME));
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, lifeTime);
-        Date dateIat = new Date();
-        Date dateExp = calendar.getTime();
+        int lifeTimeOfAccessToken = Integer.parseInt(System.getenv(AppStrings.TOKEN_EXPIRE_TIME));
+        int lifeTimeOfRefreshToken = lifeTimeOfAccessToken * 84;
 
-        String accessToken = jwtUtils.generateAccessTokenFromUsername(authResult.getName(), dateIat, dateExp);
-        String refreshToken = jwtUtils.generateRefreshTokenFromUsername(authResult.getName());
+        Calendar calendarAccessToken = Calendar.getInstance();
+        calendarAccessToken.add(Calendar.HOUR, lifeTimeOfAccessToken);
+        Date dateExpAccessToken = calendarAccessToken.getTime();
+
+        Calendar calendarRefreshToken = Calendar.getInstance();
+        calendarRefreshToken.add(Calendar.HOUR, lifeTimeOfRefreshToken);
+        Date dateExpRefreshToken = calendarRefreshToken.getTime();
+
+        Date dateIat = new Date();
+
+        String accessToken = jwtUtils.generateAccessTokenFromUsername(authResult, dateIat, dateExpAccessToken);
+        String refreshToken = jwtUtils.generateRefreshTokenFromUsername(authResult, dateIat, dateExpRefreshToken);
 
         JSONObject jsonObjectOfResponseBody = new JSONObject();
 
         try {
             jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIat.toString());
-            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT, dateExp.toString());
+            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT_ACCESS_TOKEN, dateExpAccessToken.toString());
+            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT_REFRESH_TOKEN, dateExpRefreshToken.toString());
 //            jsonObjectOfResponseBody.put(AppStrings.TOKEN, token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Cookie accessCookie = new Cookie(AppStrings.ACCESS_TOKEN, accessToken);
-        accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
-
-        response.addCookie(accessCookie);
-
-        Cookie RefreshCookie = new Cookie(AppStrings.REFRESH_TOKEN, refreshToken);
-        RefreshCookie.setHttpOnly(true);
-        RefreshCookie.setSecure(true);
-
-        response.addCookie(RefreshCookie);
         response.getWriter().write(jsonObjectOfResponseBody.toString());
+
+        Cookie cookieOfAccessToken = new Cookie(AppStrings.ACCESS_TOKEN, accessToken);
+        cookieOfAccessToken.setHttpOnly(true);
+        cookieOfAccessToken.setSecure(true);
+
+        Cookie cookieOfRefreshToken = new Cookie(AppStrings.REFRESH_TOKEN, refreshToken);
+        cookieOfRefreshToken.setHttpOnly(true);
+        cookieOfRefreshToken.setSecure(true);
+
+        response.addCookie(cookieOfAccessToken);
+        response.addCookie(cookieOfRefreshToken);
 //        super.successfulAuthentication(request, response, chain, authResult);
     }
 

@@ -26,7 +26,7 @@ public class AppAuthenticationFailureHandler implements AuthenticationFailureHan
                 Calendar.getInstance().getTime());
         data.put(
                 "exception",
-                "Username or Password is Wrong");
+                "Username or Password is Wrong. Otherwise the user is needed to sign up.");
 
         response.getOutputStream()
                 .println(new ObjectMapper().writeValueAsString(data));
