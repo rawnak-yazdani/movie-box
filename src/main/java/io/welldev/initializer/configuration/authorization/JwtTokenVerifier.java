@@ -103,17 +103,17 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         String accessToken = request.getHeader(AppStrings.AUTHORIZATION);
         String refreshToken = request.getHeader(AppStrings.RENEWAUTH);
 
-        if (Strings.isNullOrEmpty(refreshToken) && Strings.isNullOrEmpty(accessToken)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Access or Refresh Token Assigned");
+        if (Strings.isNullOrEmpty(refreshToken) || Strings.isNullOrEmpty(accessToken)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Access or Refresh Token is Assigned");
         }
         blackListingService.blackListJwt(accessToken);
 
         if (!jwtUtils.validateJwtToken(refreshToken)) {
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Access Token");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Refresh Token is Invalid!");
         }
         String blackListedToken = blackListingService.getJwtBlackList(refreshToken);
         if (blackListedToken != null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Refresh Token invalid");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Refresh Token is Expired!");
         }
         Jws<Claims> claimsJws = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
