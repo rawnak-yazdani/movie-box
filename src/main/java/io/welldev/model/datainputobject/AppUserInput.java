@@ -21,15 +21,15 @@ import java.util.Set;
 @Setter
 public class AppUserInput {
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "Name cannot be blank!")
     @Pattern(regexp = "^[a-zA-Z-\\s]+$", message = "Only alphabetical characters are allowed for name")
     private String name;
 
-    @NotBlank(message = "Username is required")
-    @Pattern(regexp = "^[a-zA-Z0-9]{3,10}", message = "Username length should be minimum 3 characters and maximum 8 characters")
+    @NotBlank(message = "Username cannot be blank!")
+    @Pattern(regexp = "^[a-zA-Z0-9]{3,10}", message = "Username length should be minimum 3 characters and maximum 10 characters")
     private String username;
 
-    @NotBlank(message = "Password is required")
+    @NotBlank(message = "Password cannot be blank!")
     @Pattern(regexp = "^[a-zA-Z0-9]{1,50}", message = "Password cannot be empty or contain more than 50 characters")
     private String password;
 

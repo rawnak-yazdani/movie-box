@@ -68,6 +68,11 @@ public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(jsonObjectOfErrors.toString(), status);
     }
 
+    @ExceptionHandler(ItemNotFoundException.class)
+    public ResponseEntity<Object> itemNotFoundException(ItemNotFoundException ex) {
+        return new ResponseEntity<>(prepareErrorJSON(HttpStatus.NOT_FOUND, ex), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> constraintViolationException(ConstraintViolationException ex, WebRequest request) {
         List<String> errors = new ArrayList<>();

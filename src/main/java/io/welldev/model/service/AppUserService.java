@@ -160,7 +160,8 @@ public class AppUserService {
             mapper.map(requestedAppUser.get(), appUserOutput);
             return appUserOutput;
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+            throw new ItemNotFoundException("User does not Exist");
         }
     }
 
