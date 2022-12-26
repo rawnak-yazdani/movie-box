@@ -37,7 +37,7 @@ public class AdminController {
     }
 
     @PostMapping(API.ADD_A_MOVIE_BY_ADMIN)
-    public ResponseEntity<Movie> addMovie(@RequestBody MovieInput movieInput) {
+    public ResponseEntity<Movie> addMovie(@Valid @RequestBody MovieInput movieInput) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(movieService.addMovie(movieInput));
@@ -45,7 +45,7 @@ public class AdminController {
 
     @PutMapping(API.UPDATE_A_MOVIE_BY_ADMIN)
     public ResponseEntity<Movie> updateMovie(@PathVariable("id") Long id,
-                                             @RequestBody MovieInput movieInput) {
+                                             @Valid @RequestBody MovieInput movieInput) {
         return ResponseEntity
                 .ok()
                 .body(movieService.updateAMovieInfo(id, movieInput));
