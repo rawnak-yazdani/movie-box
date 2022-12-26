@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -39,6 +40,7 @@ public class AppUserController {
 
     @GetMapping(value = API.SHOW_A_USER)
     public ResponseEntity<AppUserOutput> showAUser(@PathVariable("username") String username) {
+//        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
         return ResponseEntity
                 .status(HttpStatus.FOUND)
                 .body(appUserService.showAUser(username));

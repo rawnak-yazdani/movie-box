@@ -86,6 +86,19 @@ public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> constraintViolationException(ResponseStatusException ex, WebRequest request) {
+        List<String> errors = new ArrayList<>();
+
+//        ex.getConstraintViolations().forEach(cv -> errors.add(cv.getMessage()));
+
+        Map<String, List<String>> result = new HashMap<>();
+
+        result.put("errors", errors);
+
+        return new ResponseEntity<>(ex.toString(), HttpStatus.NOT_FOUND);
+    }
+
     private String prepareErrorJSON(HttpStatus status, Exception ex) {
         JSONObject jsonObjectOfErrors = new JSONObject();
 

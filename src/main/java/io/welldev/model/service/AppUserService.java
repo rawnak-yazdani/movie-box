@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,7 +148,8 @@ public class AppUserService {
         if (requestedAppUser.isPresent())
             return appUserRepo.findByUsername(username);
         else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");
+            throw new UsernameNotFoundException("Username or Password incorrect");
 //            throw new ItemNotFoundException("User " + username+ " not Exist");
         }
     }
