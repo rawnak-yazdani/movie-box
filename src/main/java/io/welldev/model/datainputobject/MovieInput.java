@@ -34,6 +34,6 @@ public class MovieInput {
     private Set<GenreInput> genres = new HashSet<GenreInput>();
 
     @Min(1000)
-    @Max(9999)
+    @Max(2030)
     private int year;
 }

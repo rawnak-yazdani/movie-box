@@ -63,6 +63,8 @@ public class Constants {
 
         public static final String AUTHORIZATION = "Authorization";
 
+        public static final String COOKIE = "Cookie";
+
         public static final String RENEW_AUTH = "Renew-auth";
 
         public static final String STATUS = "status";
