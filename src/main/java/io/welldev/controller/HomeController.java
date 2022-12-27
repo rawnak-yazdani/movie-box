@@ -32,14 +32,14 @@ public class HomeController {
     @GetMapping(value = API.SHOW_ALL_MOVIES)
     public ResponseEntity<List<Movie>> getMovies() {
         return ResponseEntity
-                .status(HttpStatus.FOUND)
+                .status(HttpStatus.OK)
                 .body(movieService.findAll());
     }
 
     @GetMapping(value = API.SHOW_A_MOVIE)
     public ResponseEntity<Movie> getMovie(@PathVariable Long id) {
         return ResponseEntity
-                .status(HttpStatus.FOUND)
+                .status(HttpStatus.OK)
                 .body(movieService.findById(id));
     }
 

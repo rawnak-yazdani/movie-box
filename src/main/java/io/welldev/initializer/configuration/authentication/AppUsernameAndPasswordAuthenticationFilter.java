@@ -97,11 +97,11 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         Cookie cookieOfAccessToken = new Cookie(AppStrings.ACCESS_TOKEN, accessToken);
         cookieOfAccessToken.setHttpOnly(true);
-        cookieOfAccessToken.setSecure(true);
+//        cookieOfAccessToken.setSecure(true);
 
         Cookie cookieOfRefreshToken = new Cookie(AppStrings.REFRESH_TOKEN, refreshToken);
         cookieOfRefreshToken.setHttpOnly(true);
-        cookieOfRefreshToken.setSecure(true);
+//        cookieOfRefreshToken.setSecure(true);
 
         response.addCookie(cookieOfAccessToken);
         response.addCookie(cookieOfRefreshToken);

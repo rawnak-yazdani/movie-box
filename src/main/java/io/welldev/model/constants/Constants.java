@@ -29,6 +29,8 @@ public class Constants {
 
         public static final String DELETE_FROM_USER_WATCHLIST = "/{username}/watchlist";
 
+        public static final String DELETE_USER = "/{username}";
+
         public static final String LOGOUT_A_USER = "/logout";
     }
 
