@@ -11,6 +11,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,9 +25,10 @@ public class MovieInput {
     @Pattern(regexp = "^[a-zA-Z0-9-\\s]+$", message = "Only alphabetical characters and numerical values are allowed for movie title")
     private String title;
 
-    @NotBlank(message = "Rating cannot be blank!")
-    @Pattern(regexp = "^[a-zA-Z0-9./]+$", message = "Only alphabetical characters, numerical values, forward slash and period are allowed for rating")
-    private String rating;
+    @DecimalMin(value = "0.0", inclusive = false)
+    @DecimalMax(value = "10.0", inclusive = false)
+    @Digits(integer = 2, fraction = 1)
+    private BigDecimal rating;
 
     @Valid
     private Set<GenreInput> genres = new HashSet<GenreInput>();

@@ -60,12 +60,14 @@ public class MovieService {
         Movie movie = new Movie();
         mapper.map(movieInput, movie);
         movie.setId(findById(id).getId());
+        movie.setRating(movieInput.getRating().toString().concat("/").concat("10"));
         return save(movie);
     }
 
     public Movie addMovie(MovieInput movieInput) {
         Movie movie = new Movie();
         mapper.map(movieInput, movie);
+        movie.setRating(movieInput.getRating().toString().concat("/").concat("10"));
         return save(movie);
     }
 
