@@ -26,6 +26,7 @@ public class HomeController {
     private final AppUserService appUserService;
 
     private final ModelMapper mapper;
+
     private final JwtTokenVerifier jwtTokenVerifier;
 
     @GetMapping(value = API.SHOW_ALL_MOVIES)

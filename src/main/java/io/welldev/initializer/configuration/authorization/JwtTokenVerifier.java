@@ -101,7 +101,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
     public void refreshToken(HttpServletRequest request,
                                        HttpServletResponse response) {
         String accessToken = request.getHeader(AppStrings.AUTHORIZATION);
-        String refreshToken = request.getHeader(AppStrings.RENEWAUTH);
+        String refreshToken = request.getHeader(AppStrings.RENEW_AUTH);
 
         if (Strings.isNullOrEmpty(refreshToken) || Strings.isNullOrEmpty(accessToken)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Access or Refresh Token is Assigned");

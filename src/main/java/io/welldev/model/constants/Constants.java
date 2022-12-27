@@ -4,7 +4,7 @@ public class Constants {
     public static class API {
         public static final String CONTEXT_PATH = "/";
 
-        public static final String AUTH_REFRESH = "/refreshtoken";
+        public static final String AUTH_REFRESH = "/token";
         public static final String USERS = "/users";
 
         public static final String ADD_A_USER_BY_ADMIN = "/users";
@@ -60,7 +60,8 @@ public class Constants {
         public static final String EXPIRE_AT_REFRESH_TOKEN = "refresh token will expire at";
 
         public static final String AUTHORIZATION = "Authorization";
-        public static final String RENEWAUTH = "Renew-auth";
+
+        public static final String RENEW_AUTH = "Renew-auth";
 
         public static final String STATUS = "status";
 

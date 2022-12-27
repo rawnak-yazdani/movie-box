@@ -88,6 +88,7 @@ public class SecurityConfig {
 
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers(HttpMethod.GET,"/movies/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/token").permitAll()
                 .anyRequest()
                 .authenticated();
 //                .antMatchers("/anonymous*")
