@@ -21,12 +21,12 @@ import java.util.Set;
 @Setter
 public class MovieInput {
 
-    @NotBlank(message = "Movie name cannot be blank!")
+    @NotBlank(message = "Movie title cannot be blank!")
     @Pattern(regexp = "^[a-zA-Z0-9-\\s]+$", message = "Only alphabetical characters and numerical values are allowed for movie title")
     private String title;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    @DecimalMax(value = "10.0", inclusive = false)
+    @DecimalMax(value = "10.0")
     @Digits(integer = 2, fraction = 1)
     private BigDecimal rating;
 
