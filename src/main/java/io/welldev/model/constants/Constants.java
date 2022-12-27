@@ -5,6 +5,7 @@ public class Constants {
         public static final String CONTEXT_PATH = "/";
 
         public static final String AUTH_REFRESH = "/token";
+
         public static final String USERS = "/users";
 
         public static final String ADD_A_USER_BY_ADMIN = "/users";
