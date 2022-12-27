@@ -34,14 +34,14 @@ public class AppUserController {
     @GetMapping     // show all users
     public ResponseEntity<List<AppUserOutput>> showAllUsers() {
         return ResponseEntity
-                .status(HttpStatus.FOUND)
+                .status(HttpStatus.OK)
                 .body(appUserService.showAllUsers());
     }
 
     @GetMapping(value = API.SHOW_A_USER)
     public ResponseEntity<AppUserOutput> showAUser(@PathVariable("username") String username) {
         return ResponseEntity
-                .status(HttpStatus.FOUND)
+                .status(HttpStatus.OK)
                 .body(appUserService.showAUser(username));
     }
 

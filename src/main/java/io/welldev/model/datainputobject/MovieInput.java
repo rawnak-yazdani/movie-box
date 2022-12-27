@@ -26,7 +26,7 @@ public class MovieInput {
     private String title;
 
     @DecimalMin(value = "0.0", inclusive = false)
-    @DecimalMax(value = "10.0", inclusive = false)
+    @DecimalMax(value = "10.0")
     @Digits(integer = 2, fraction = 1)
     private BigDecimal rating;
 
