@@ -82,9 +82,9 @@ public class AppUserController {
         return ResponseEntity.ok(null);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Object> deleteAUser(@Valid @RequestBody AppUserInput appUserInput) {
-        appUserService.deleteUser(appUserInput);
+    @DeleteMapping(API.DELETE_USER)
+    public ResponseEntity<Object> deleteAUser(@Valid @PathVariable String username) {
+        appUserService.deleteUser(username);
         String jwtToken = (String) SecurityContextHolder.getContext().getAuthentication().getDetails();
         blackListingService.blackListJwt(jwtToken);
         return ResponseEntity

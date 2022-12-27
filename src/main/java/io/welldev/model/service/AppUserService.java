@@ -73,16 +73,22 @@ public class AppUserService {
     }
 
     public AppUserOutput updateUserInfo(AppUserInput appUserInput) {
-        Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(appUserInput.getUsername()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getName().equals(appUserInput.getUsername())) {
+            Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(appUserInput.getUsername()));
 
-        if (appUser.isPresent()) {
-            mapper.map(appUserInput, appUser);
-            appUser.get().setPassword(passwordEncoder.encode(appUserInput.getPassword()));
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(appUserRepo.save(appUser.get()), appUserOutput);
-            return appUserOutput;
+            if (appUser.isPresent()) {
+                appUser.get().setName(appUserInput.getName());
+                appUser.get().setUsername(appUserInput.getUsername());
+                appUser.get().setPassword(passwordEncoder.encode(appUserInput.getPassword()));
+                AppUserOutput appUserOutput = new AppUserOutput();
+                mapper.map(appUserRepo.save(appUser.get()), appUserOutput);
+                return appUserOutput;
+            } else {
+                throw new ItemNotFoundException("User does not exist!");
+            }
         } else {
-            throw new ItemNotFoundException("User does not exist!");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
         }
 
     }
@@ -181,12 +187,19 @@ public class AppUserService {
         return appUserOutputs;
     }
 
-    public void deleteUser(AppUserInput appUserInput) {
-        Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(appUserInput.getUsername()));
+    public void deleteUser(String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (appUser.isPresent())
-            appUserRepo.delete(appUser.get());
-        else
-            throw new ItemNotFoundException("User does not exist!");
+        if (authentication.getName().equals(username)) {
+            Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(username));
+
+            if (appUser.isPresent())
+                appUserRepo.delete(appUser.get());
+            else
+                throw new ItemNotFoundException("User does not exist!");
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
+        }
+
     }
 }
