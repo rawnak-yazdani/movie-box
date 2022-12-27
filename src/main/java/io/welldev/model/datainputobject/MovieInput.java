@@ -21,7 +21,7 @@ import java.util.Set;
 @Setter
 public class MovieInput {
 
-    @NotBlank(message = "Movie name cannot be blank!")
+    @NotBlank(message = "Movie title cannot be blank!")
     @Pattern(regexp = "^[a-zA-Z0-9-\\s]+$", message = "Only alphabetical characters and numerical values are allowed for movie title")
     private String title;
 
@@ -34,6 +34,6 @@ public class MovieInput {
     private Set<GenreInput> genres = new HashSet<GenreInput>();
 
     @Min(1000)
-    @Max(9999)
+    @Max(2030)
     private int year;
 }

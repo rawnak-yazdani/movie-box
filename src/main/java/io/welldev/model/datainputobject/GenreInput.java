@@ -16,7 +16,7 @@ import javax.validation.constraints.Pattern;
 public class GenreInput {
 
     @NotBlank(message = "Genre name cannot be blank!")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Only alphabetical characters are allowed for genre name")
+    @Pattern(regexp = "^[a-zA-Z\\-]+$", message = "Only alphabetical characters and hyphen are allowed for genre name")
     private String name;
 
 }
