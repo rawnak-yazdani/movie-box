@@ -17,6 +17,7 @@ import java.util.*;
 @RestController
 @RequestMapping(value = API.CONTEXT_PATH, headers = AppStrings.HEADERS_JSON, produces = AppStrings.PRODUCES_JSON)
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class HomeController {
 
     private final MovieService movieService;
@@ -26,7 +27,6 @@ public class HomeController {
     private final AppUserService appUserService;
 
     private final ModelMapper mapper;
-
     private final JwtTokenVerifier jwtTokenVerifier;
 
     @GetMapping(value = API.SHOW_ALL_MOVIES)

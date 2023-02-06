@@ -47,14 +47,16 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 //        String token = request.getHeader(AppStrings.AUTHORIZATION);
-        String[] stringCookie = request.getHeader(AppStrings.COOKIE).split(";");
-        String accessToken = stringCookie[0].replace("ACCESS_TOKEN=", "");
-        String refreshToken = stringCookie[1].replace("REFRESH_TOKEN=", "");
-
-        if (Strings.isNullOrEmpty(accessToken)) {
+        Optional<String> stringRawCookie = Optional.ofNullable(request.getHeader(AppStrings.COOKIE));
+        String[] stringCookie;
+        if (stringRawCookie.isPresent()) {
+            stringCookie = request.getHeader(AppStrings.COOKIE).split(";");
+        } else {
             filterChain.doFilter(request, response);
             return;
         }
+        String accessToken = stringCookie[0].replace("ACCESS_TOKEN=", "");
+        String refreshToken = stringCookie[1].replace("REFRESH_TOKEN=", "");
 
         try {
 
@@ -68,12 +70,12 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     return;
                 }
                 Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
-                    .build()
-                    /**
-                     * parseClaimsJws(token) method verifies the token
-                     */
-                    .parseClaimsJws(accessToken);
+                        .setSigningKey(Keys.hmacShaKeyFor(System.getenv(AppStrings.TOKEN_SECRET_KEY).getBytes()))
+                        .build()
+                        /**
+                         * parseClaimsJws(token) method verifies the token
+                         */
+                        .parseClaimsJws(accessToken);
 
                 Claims body = claimsJws.getBody();
                 String username = body.getSubject();
@@ -96,13 +98,13 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
         } catch (Exception e) {
             throw new IllegalStateException(
-                    String.format("Token %s cannot be trusted!!",accessToken));
+                    String.format("Token %s cannot be trusted!!", accessToken));
         }
         filterChain.doFilter(request, response);
     }
 
     public void refreshToken(HttpServletRequest request,
-                                       HttpServletResponse response) {
+                             HttpServletResponse response) {
         String accessToken = request.getHeader(AppStrings.AUTHORIZATION);
         String refreshToken = request.getHeader(AppStrings.RENEW_AUTH);
 

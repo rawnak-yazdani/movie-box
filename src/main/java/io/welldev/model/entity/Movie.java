@@ -25,6 +25,10 @@ public class Movie {
 
     private String title;
 
+    private String imgSrc;
+
+    private String description;
+
     @ManyToMany/*(fetch = FetchType.EAGER)*/
     @JoinTable(name = "movie_genre",
             joinColumns = {@JoinColumn(name = "movie_id")},

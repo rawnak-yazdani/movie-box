@@ -22,8 +22,19 @@ import java.util.Set;
 public class MovieInput {
 
     @NotBlank(message = "Movie title cannot be blank!")
-    @Pattern(regexp = "^[a-zA-Z0-9-\\s]+$", message = "Only alphabetical characters and numerical values are allowed for movie title")
+    @Pattern(regexp = "^[a-zA-Z0-9-\\s]+$",
+            message = "Only alphabetical characters and numerical values are allowed for movie title")
     private String title;
+
+    @NotBlank(message = "Image Required")
+    @Pattern(regexp = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)",
+            message = "Invalid URL")
+    private String imgSrc;
+
+    @NotBlank(message = "Movie title cannot be blank!")
+    @Pattern(regexp = "^[a-zA-Z0-9-\\s,!.?'/]+$",
+            message = "Description is not descriptive enough")
+    private String description;
 
     @DecimalMin(value = "0.0", inclusive = false)
     @DecimalMax(value = "10.0")

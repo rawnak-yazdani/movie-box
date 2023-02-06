@@ -18,5 +18,4 @@ public class GenreInput {
     @NotBlank(message = "Genre name cannot be blank!")
     @Pattern(regexp = "^[a-zA-Z\\-]+$", message = "Only alphabetical characters and hyphen are allowed for genre name")
     private String name;
-
 }
