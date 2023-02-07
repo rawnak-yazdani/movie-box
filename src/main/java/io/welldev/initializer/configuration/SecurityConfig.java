@@ -23,6 +23,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 
 @AllArgsConstructor
 @EnableWebSecurity
@@ -73,6 +78,9 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .cors()
+                .configurationSource(getCorsConfigurationSource())
+                .and()
                 .addFilter(usernamePasswordAuthenticationFilter(authenticationManager))
                 .addFilterAfter(jwtTokenVerifier, AppUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
@@ -112,5 +120,19 @@ public class SecurityConfig {
     @Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {
         return new AppAuthenticationFailureHandler();
+    }
+
+    public CorsConfigurationSource getCorsConfigurationSource() {
+        return new CorsConfigurationSource() {
+            @Override
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedHeaders(Collections.singletonList("*"));
+                config.setAllowedMethods(Collections.singletonList("*"));
+                config.addAllowedOrigin("http://localhost:4200");
+                config.setAllowCredentials(true);
+                return config;
+            }
+        };
     }
 }

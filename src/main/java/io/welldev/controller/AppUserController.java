@@ -22,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = API.USERS, headers = AppStrings.HEADERS_JSON, produces = AppStrings.PRODUCES_JSON)
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class AppUserController {
     private final AppUserService appUserService;
 
@@ -71,7 +72,7 @@ public class AppUserController {
     @PostMapping    // user sign up
     public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .body(appUserService.userSignUp(appUserInput));
     }
 
