@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
@@ -82,12 +83,25 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 dateIssuedAt, dateExpAccessToken);
         String refreshToken = jwtUtils.generateTokenFromUsername(authResult.getName(), authResult.getAuthorities(),
                 dateIssuedAt, dateExpRefreshToken);
+        String username = authResult.getName();
+        String role = "";
+
+        for (GrantedAuthority s : authResult.getAuthorities()) {
+            if (s.toString().contains("ROLE")) {
+                if (s.toString().matches("ROLE_ADMIN"))
+                    role = "admin";
+                else
+                    role = "user";
+                break;
+            }
+        }
 
         JSONObject jsonObjectOfResponseBody = new JSONObject();
         try {
             jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIssuedAt.toString());
             jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT_ACCESS_TOKEN, dateExpAccessToken.toString());
-            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT_REFRESH_TOKEN, dateExpRefreshToken.toString());
+            jsonObjectOfResponseBody.put(AppStrings.USERNAME, username);
+            jsonObjectOfResponseBody.put(AppStrings.ROLE, role);
 //            jsonObjectOfResponseBody.put(AppStrings.TOKEN, token);
         } catch (JSONException e) {
             e.printStackTrace();

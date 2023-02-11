@@ -62,6 +62,10 @@ public class Constants {
 
         public static final String EXPIRE_AT_REFRESH_TOKEN = "refresh token will expire at";
 
+        public static final String USERNAME = "username";
+
+        public static final String ROLE = "role";
+
         public static final String AUTHORIZATION = "Authorization";
 
         public static final String COOKIE = "Cookie";
