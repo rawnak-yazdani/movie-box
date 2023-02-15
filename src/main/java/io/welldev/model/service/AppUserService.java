@@ -108,7 +108,7 @@ public class AppUserService {
 
             if (createdUser.isPresent()) {
 
-                createdUser.get().getWatchList().addAll(updatedList);
+                createdUser.get().getWatchlist().addAll(updatedList);
                 AppUserOutput appUserOutput = new AppUserOutput();
                 mapper.map(appUserRepo.save(createdUser.get()), appUserOutput);
 
@@ -131,7 +131,7 @@ public class AppUserService {
             if (createdUser.isPresent()) {
                 for (UserMovieInput input :
                         userMovieInputs) {
-                    createdUser.get().getWatchList().remove(movieService.findById(input.getId()));
+                    createdUser.get().getWatchlist().remove(movieService.findById(input.getId()));
                 }
 
                 AppUserOutput appUserOutput = new AppUserOutput();

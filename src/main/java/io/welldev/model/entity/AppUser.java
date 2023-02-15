@@ -40,6 +40,6 @@ public class AppUser {
             joinColumns = {@JoinColumn(name = "app_user_id")},
             inverseJoinColumns = {@JoinColumn(name = "movie_id")})
     @Fetch(value = FetchMode.JOIN)
-    private Set<Movie> watchList = new HashSet<>();
+    private Set<Movie> watchlist = new HashSet<>();
 
 }
