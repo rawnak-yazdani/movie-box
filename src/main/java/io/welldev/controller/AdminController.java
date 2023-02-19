@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping(value = API.ADMIN, headers = AppStrings.HEADERS_JSON, produces = AppStrings.PRODUCES_JSON)
+@RequestMapping(value = API.ADMIN)
 @RequiredArgsConstructor
 public class AdminController {
 
@@ -45,16 +45,16 @@ public class AdminController {
                 .body(appUserService.userSignUp(appUserInput));
     }
 
-    @PostMapping(value = API.ADD_A_MOVIE_BY_ADMIN, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Movie> addMovie(@Valid @RequestPart MovieInput movieInput,
-                                          @RequestPart MultipartFile imgFile) throws IOException {
+    @PostMapping(value = API.ADD_A_MOVIE_BY_ADMIN)
+    public ResponseEntity<Movie> addMovie(@RequestParam("userData") String movieInputString,
+                                          @RequestParam("image") MultipartFile imgFile) throws IOException {
 //        StringBuilder fileNames = new StringBuilder();
         Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, imgFile.getOriginalFilename());
         Files.write(fileNameAndPath, imgFile.getBytes());
-        movieInput.setImgSrc(fileNameAndPath.toString());
+//        MovieInput movieInput = new MovieInput();
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(movieService.addMovie(movieInput));
+                .body(movieService.addMovie(movieInputString, fileNameAndPath.toString()));
     }
 
     @PutMapping(API.UPDATE_A_MOVIE_BY_ADMIN)

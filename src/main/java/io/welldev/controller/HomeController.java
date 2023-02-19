@@ -1,6 +1,7 @@
 package io.welldev.controller;
 
 import io.welldev.initializer.configuration.authorization.JwtTokenVerifier;
+import io.welldev.model.dataoutputobject.MovieOutput;
 import io.welldev.model.entity.*;
 import io.welldev.model.service.*;
 import io.welldev.model.constants.Constants.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -30,7 +32,7 @@ public class HomeController {
     private final JwtTokenVerifier jwtTokenVerifier;
 
     @GetMapping(value = API.SHOW_ALL_MOVIES)
-    public ResponseEntity<List<Movie>> getMovies() {
+    public ResponseEntity<List<MovieOutput>> getMovies() throws IOException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(movieService.findAll());
