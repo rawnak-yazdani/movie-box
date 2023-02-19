@@ -29,8 +29,6 @@ public class AdminController {
 
     private final AppUserService appUserService;
 
-    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/app-photos/movies";
-
     @PostMapping    // other admin signup
     public ResponseEntity<AppUserOutput> addOtherAdmin(@Valid @RequestBody AppUserInput appUserInput) {
         return ResponseEntity
@@ -49,12 +47,12 @@ public class AdminController {
     public ResponseEntity<Movie> addMovie(@RequestParam("userData") String movieInputString,
                                           @RequestParam("image") MultipartFile imgFile) throws IOException {
 //        StringBuilder fileNames = new StringBuilder();
-        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, imgFile.getOriginalFilename());
-        Files.write(fileNameAndPath, imgFile.getBytes());
+//        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, imgFile.getOriginalFilename());
+//        Files.write(fileNameAndPath, imgFile.getBytes());
 //        MovieInput movieInput = new MovieInput();
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(movieService.addMovie(movieInputString, fileNameAndPath.toString()));
+                .body(movieService.addMovie(movieInputString, imgFile));
     }
 
     @PutMapping(API.UPDATE_A_MOVIE_BY_ADMIN)

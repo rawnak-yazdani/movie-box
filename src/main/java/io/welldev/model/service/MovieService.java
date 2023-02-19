@@ -14,10 +14,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +38,8 @@ public class MovieService {
     private final ModelMapper mapper;
 
     private final ObjectMapper objectMapper;
+
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/app-photos/movies";
 
     public Movie save(Movie movie) {
         Set<Genre> genres = movie.getGenres();
@@ -72,11 +78,17 @@ public class MovieService {
         return save(movie);
     }
 
-    public Movie addMovie(String movieInputString, String imgSrc) throws IOException {
+    public Movie addMovie(String movieInputString, MultipartFile imgFile) throws IOException {
         Movie movie = new Movie();
         MovieInput movieInput = objectMapper.readValue(movieInputString, MovieInput.class);
         mapper.map(movieInput, movie);
-        movie.setImgSrc(imgSrc);
+
+        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY,
+                movie.getTitle() + movie.getYear() + imgFile.getOriginalFilename());
+        System.out.println(fileNameAndPath.toString());
+        Files.write(fileNameAndPath, imgFile.getBytes());
+
+        movie.setImgSrc(fileNameAndPath.toString());
         movie.setRating(movieInput.getRating().toString().concat("/").concat("10"));
         return save(movie);
     }
