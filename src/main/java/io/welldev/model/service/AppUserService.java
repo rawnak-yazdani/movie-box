@@ -4,10 +4,12 @@ import io.welldev.model.constants.Constants;
 import io.welldev.model.datainputobject.AppUserInput;
 import io.welldev.model.datainputobject.UserMovieInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
+import io.welldev.model.dataoutputobject.MovieOutput;
 import io.welldev.model.entity.AppUser;
 import io.welldev.model.entity.Movie;
 import io.welldev.model.exception.ItemNotFoundException;
 import io.welldev.model.repository.AppUserRepo;
+import io.welldev.model.repository.MovieRepo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -19,15 +21,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class AppUserService {
     private final AppUserRepo appUserRepo;
+
+    private  final MovieRepo movieRepo;
 
     private final MovieService movieService;
 
@@ -103,7 +106,7 @@ public class AppUserService {
 
             for (UserMovieInput input :
                     userMovieInputs) {
-                updatedList.add(movieService.findById(input.getId()));
+                updatedList.add(movieRepo.findById(input.getId()).get());
             }
 
             if (createdUser.isPresent()) {
@@ -131,7 +134,7 @@ public class AppUserService {
             if (createdUser.isPresent()) {
                 for (UserMovieInput input :
                         userMovieInputs) {
-                    createdUser.get().getWatchlist().remove(movieService.findById(input.getId()));
+                    createdUser.get().getWatchlist().remove(movieRepo.findById(input.getId()).get());
                 }
 
                 AppUserOutput appUserOutput = new AppUserOutput();
@@ -160,12 +163,17 @@ public class AppUserService {
         }
     }
 
-    public AppUserOutput showAUser(String username) {
+    public AppUserOutput showAUser(String username) throws IOException {
         Optional<AppUser> requestedAppUser = Optional.ofNullable(appUserRepo.findByUsername(username));
 
         if (requestedAppUser.isPresent()) {
             AppUserOutput appUserOutput = new AppUserOutput();
+            Set<MovieOutput> movieOutputs = new HashSet<>();
+            for ( Movie movie : requestedAppUser.get().getWatchlist()) {
+                movieOutputs.add(movieService.mapMovie(movie));
+            }
             mapper.map(requestedAppUser.get(), appUserOutput);
+            appUserOutput.setWatchlist(movieOutputs);
             return appUserOutput;
         } else {
 //            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not Exist");

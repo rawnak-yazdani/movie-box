@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -40,7 +41,7 @@ public class AppUserController {
     }
 
     @GetMapping(value = API.SHOW_A_USER)
-    public ResponseEntity<AppUserOutput> showAUser(@PathVariable("username") String username) {
+    public ResponseEntity<AppUserOutput> showAUser(@PathVariable("username") String username) throws IOException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(appUserService.showAUser(username));

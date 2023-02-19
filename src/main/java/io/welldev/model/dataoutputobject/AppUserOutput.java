@@ -18,5 +18,5 @@ public class AppUserOutput {
 
     private String username;
 
-    private Set<Movie> watchlist = new HashSet<>();
+    private Set<MovieOutput> watchlist = new HashSet<>();
 }

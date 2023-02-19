@@ -93,9 +93,9 @@ public class MovieService {
         return save(movie);
     }
 
-    public Movie findById(Long id) {
+    public MovieOutput findById(Long id) {
         try {
-            return movieRepo.findById(id).get();
+            return mapMovie(movieRepo.findById(id).get());
         } catch (Exception ex) {
             throw new ItemNotFoundException("This movie does not exist!");
         }
@@ -104,12 +104,7 @@ public class MovieService {
     public List<MovieOutput> findAll() throws IOException {
         List<MovieOutput> allMovies = new LinkedList<>();
         for (Movie m : movieRepo.findAll()) {
-            File file = new File(m.getImgSrc());
-            String imgSrcB64 = ImageUtils.encodeImageToBase64(file);
-            MovieOutput movieOutput = new MovieOutput();
-            mapper.map(m, movieOutput);
-            movieOutput.setImgSrc(imgSrcB64);
-            allMovies.add(movieOutput);
+            allMovies.add(mapMovie(m));
         }
         return allMovies;
     }
@@ -134,5 +129,15 @@ public class MovieService {
 
     public void deleteAll() {
         movieRepo.deleteAll();
+    }
+
+    public MovieOutput mapMovie(Movie movie) throws IOException {
+        File file = new File(movie.getImgSrc());
+        String imgSrcB64 = ImageUtils.encodeImageToBase64(file);
+        MovieOutput movieOutput = new MovieOutput();
+        mapper.map(movie, movieOutput);
+        movieOutput.setImgSrc(imgSrcB64);
+
+        return movieOutput;
     }
 }

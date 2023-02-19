@@ -39,7 +39,7 @@ public class HomeController {
     }
 
     @GetMapping(value = API.SHOW_A_MOVIE)
-    public ResponseEntity<Movie> getMovie(@PathVariable Long id) {
+    public ResponseEntity<MovieOutput> getMovie(@PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(movieService.findById(id));
