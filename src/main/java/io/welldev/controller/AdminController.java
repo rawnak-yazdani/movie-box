@@ -58,10 +58,11 @@ public class AdminController {
 
     @PutMapping(API.UPDATE_A_MOVIE_BY_ADMIN)
     public ResponseEntity<Movie> updateMovie(@PathVariable("id") Long id,
-                                             @Valid @RequestBody MovieInput movieInput) {
+                                             @RequestParam("userData") String movieInputString,
+                                             @RequestParam("image") MultipartFile imgFile) throws IOException {
         return ResponseEntity
                 .ok()
-                .body(movieService.updateAMovieInfo(id, movieInput));
+                .body(movieService.updateAMovieInfo(id, movieInputString, imgFile));
     }
 
     @DeleteMapping(API.DELETE_A_MOVIE_BY_ADMIN)
