@@ -30,14 +30,15 @@ public class AdminController {
     private final AppUserService appUserService;
 
     @PostMapping    // other admin signup
-    public ResponseEntity<AppUserOutput> addOtherAdmin(@Valid @RequestBody AppUserInput appUserInput) {
+    public ResponseEntity<AppUserOutput> addOtherAdmin(@Valid @RequestBody AppUserInput appUserInput)
+    throws IOException {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(appUserService.adminSignUp(appUserInput));
     }
 
     @PostMapping(value = API.ADD_A_USER_BY_ADMIN)
-    public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
+    public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) throws IOException {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(appUserService.userSignUp(appUserInput));

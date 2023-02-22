@@ -12,6 +12,7 @@ import io.welldev.model.entity.Movie;
 import io.welldev.model.exception.ItemNotFoundException;
 import io.welldev.model.repository.AppUserRepo;
 import io.welldev.model.repository.MovieRepo;
+import io.welldev.model.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,13 +66,12 @@ public class AppUserService {
         }
     }
 
-    public AppUserOutput signUp(AppUserInput appUserInput, String role) {
+    public AppUserOutput signUp(AppUserInput appUserInput, String role) throws IOException {
         AppUser appUser = new AppUser();
         mapper.map(appUserInput, appUser);
 
         try {
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(save(appUser, role), appUserOutput);
+            AppUserOutput appUserOutput = mapAppUser(save(appUser, role));
             return appUserOutput;
         } catch (IllegalArgumentException argumentException) {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
@@ -78,15 +79,15 @@ public class AppUserService {
         }
     }
 
-    public AppUserOutput userSignUp(AppUserInput appUserInput) {
+    public AppUserOutput userSignUp(AppUserInput appUserInput) throws IOException {
         return signUp(appUserInput, Constants.AppStrings.USER_ROLE);
     }
 
-    public AppUserOutput adminSignUp(AppUserInput appUserInput) {
+    public AppUserOutput adminSignUp(AppUserInput appUserInput) throws IOException {
         return signUp(appUserInput, Constants.AppStrings.ADMIN_ROLE);
     }
 
-    public AppUserOutput updateUserInfo(String username, AppUserUpdateInput userUpdateInput) {
+    public AppUserOutput updateUserInfo(String username, AppUserUpdateInput userUpdateInput) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getName().equals(username)) {
             Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(username));
@@ -98,8 +99,7 @@ public class AppUserService {
                 System.out.println(userUpdateInput);
                 mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
                 mapper.map(userUpdateInput, appUser.get());
-                AppUserOutput appUserOutput = new AppUserOutput();
-                mapper.map(appUserRepo.save(appUser.get()), appUserOutput);
+                AppUserOutput appUserOutput = mapAppUser(appUserRepo.save(appUser.get()));
                 return appUserOutput;
             } else {
                 throw new ItemNotFoundException("User does not exist!");
@@ -110,14 +110,15 @@ public class AppUserService {
 
     }
 
-    public AppUser updateUserImage(String username, MultipartFile imageFile) throws IOException {
+    public AppUserOutput updateUserImage(String username, MultipartFile imageFile) throws IOException {
         Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY,
                 username + imageFile.getOriginalFilename());
         System.out.println(fileNameAndPath);
         Files.write(fileNameAndPath, imageFile.getBytes());
         AppUser appUser = findAppUserByUsername(username);
         appUser.setImgSrc(fileNameAndPath.toString());
-        return save(appUser, appUser.getRole());
+        AppUserOutput appUserOutput = mapAppUser(appUserRepo.save(appUser));
+        return appUserOutput;
     }
 
     public void changePassword(String username, ChangePasswordInput changePasswordInput) {
@@ -139,7 +140,8 @@ public class AppUserService {
         }
     }
 
-    public AppUserOutput updateWatchlist(String reqUsername, List<UserMovieInput> userMovieInputs) {
+    public AppUserOutput updateWatchlist(String reqUsername,
+                                         List<UserMovieInput> userMovieInputs) throws IOException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getName().equals(reqUsername)) {
@@ -155,9 +157,7 @@ public class AppUserService {
             if (createdUser.isPresent()) {
 
                 createdUser.get().getWatchlist().addAll(updatedList);
-                AppUserOutput appUserOutput = new AppUserOutput();
-                mapper.map(appUserRepo.save(createdUser.get()), appUserOutput);
-
+                AppUserOutput appUserOutput = mapAppUser(appUserRepo.save(createdUser.get()));
                 return appUserOutput;
             } else {
                 throw new ItemNotFoundException("User does not exist!");
@@ -168,7 +168,8 @@ public class AppUserService {
 
     }
 
-    public AppUserOutput deleteFromWatchlist(String reqUsername, List<UserMovieInput> userMovieInputs) {
+    public AppUserOutput deleteFromWatchlist(String reqUsername,
+                                             List<UserMovieInput> userMovieInputs) throws IOException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getName().equals(reqUsername)) {
@@ -180,9 +181,7 @@ public class AppUserService {
                     createdUser.get().getWatchlist().remove(movieRepo.findById(input.getId()).get());
                 }
 
-                AppUserOutput appUserOutput = new AppUserOutput();
-                mapper.map(appUserRepo.save(createdUser.get()), appUserOutput);
-
+                AppUserOutput appUserOutput = mapAppUser(appUserRepo.save(createdUser.get()));
                 return appUserOutput;
             } else {
                 throw new ItemNotFoundException("User does not exist!");
@@ -210,12 +209,11 @@ public class AppUserService {
         Optional<AppUser> requestedAppUser = Optional.ofNullable(appUserRepo.findByUsername(username));
 
         if (requestedAppUser.isPresent()) {
-            AppUserOutput appUserOutput = new AppUserOutput();
             Set<MovieOutput> movieOutputs = new HashSet<>();
             for ( Movie movie : requestedAppUser.get().getWatchlist()) {
                 movieOutputs.add(movieService.mapMovie(movie));
             }
-            mapper.map(requestedAppUser.get(), appUserOutput);
+            AppUserOutput appUserOutput = mapAppUser(requestedAppUser.get());
             appUserOutput.setWatchlist(movieOutputs);
             return appUserOutput;
         } else {
@@ -224,15 +222,13 @@ public class AppUserService {
         }
     }
 
-    public List<AppUserOutput> showAllUsers() {
+    public List<AppUserOutput> showAllUsers() throws IOException{
         Optional<List<AppUser>> appUsers = Optional.of(appUserRepo.findAll());
         List<AppUserOutput> appUserOutputs = new LinkedList<>();
 
         for (AppUser user :
                 appUsers.get()) {
-            AppUserOutput appUserOutput = new AppUserOutput();
-            mapper.map(user, appUserOutput);
-            appUserOutputs.add(appUserOutput);
+            appUserOutputs.add(mapAppUser(user));
         }
 
         return appUserOutputs;
@@ -252,5 +248,19 @@ public class AppUserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
         }
 
+    }
+
+    public AppUserOutput mapAppUser(AppUser appUser) throws IOException {
+        AppUserOutput appUserOutput = new AppUserOutput();
+        if (appUser.getImgSrc() != null) {
+            File file = new File(appUser.getImgSrc());
+            String imgSrcB64 = ImageUtils.encodeImageToBase64(file);
+            mapper.map(appUser, appUserOutput);
+            appUserOutput.setImgSrc(imgSrcB64);
+        } else {
+            mapper.map(appUser, appUserOutput);
+        }
+
+        return appUserOutput;
     }
 }

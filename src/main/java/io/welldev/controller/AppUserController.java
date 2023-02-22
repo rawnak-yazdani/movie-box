@@ -39,7 +39,7 @@ public class AppUserController {
     private final BlackListingService blackListingService;
 
     @GetMapping     // show all users
-    public ResponseEntity<List<AppUserOutput>> showAllUsers() {
+    public ResponseEntity<List<AppUserOutput>> showAllUsers() throws IOException{
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(appUserService.showAllUsers());
@@ -54,7 +54,8 @@ public class AppUserController {
 
     @PutMapping(value = API.UPDATE_USER_WATCHLIST)
     public ResponseEntity<AppUserOutput> addMovieToWatchList(@PathVariable("username") String reqUsername,
-                                                             @RequestBody List<UserMovieInput> userMovieInputs) {
+                                                             @RequestBody List<UserMovieInput> userMovieInputs)
+    throws IOException {
         return ResponseEntity
                 .ok()
                 .body(appUserService.updateWatchlist(reqUsername, userMovieInputs));
@@ -62,7 +63,8 @@ public class AppUserController {
 
     @DeleteMapping(value = API.DELETE_FROM_USER_WATCHLIST)
     public ResponseEntity<AppUserOutput> deleteMovieFromWatchList(@PathVariable("username") String reqUsername,
-                                                                  @RequestBody List<UserMovieInput> userMovieInputs) {
+                                                                  @RequestBody List<UserMovieInput> userMovieInputs)
+    throws IOException {
         return ResponseEntity
                 .ok()
                 .body(appUserService.deleteFromWatchlist(reqUsername, userMovieInputs));
@@ -70,21 +72,22 @@ public class AppUserController {
 
     @PutMapping (API.UPDATE_A_USER)    // update user info
     public ResponseEntity<AppUserOutput> editUser(@PathVariable("username") String reqUsername,
-                                                  @Valid @RequestBody AppUserUpdateInput appUserUpdateInput) {
+                                                  @Valid @RequestBody AppUserUpdateInput appUserUpdateInput)
+    throws IOException {
         return ResponseEntity
                 .ok()
                 .body(appUserService.updateUserInfo(reqUsername, appUserUpdateInput));
     }
 
     @PostMapping    // user sign up
-    public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) {
+    public ResponseEntity<AppUserOutput> addUser(@Valid @RequestBody AppUserInput appUserInput) throws IOException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(appUserService.userSignUp(appUserInput));
     }
 
     @PutMapping(API.UPDATE_USER_IMAGE)
-    public ResponseEntity<AppUser> updateUserImage(@PathVariable String username,
+    public ResponseEntity<AppUserOutput> updateUserImage(@PathVariable String username,
                                                    @RequestParam("image") MultipartFile imgFile) throws IOException {
 //        StringBuilder fileNames = new StringBuilder();
 //        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, imgFile.getOriginalFilename());
