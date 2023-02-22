@@ -26,7 +26,13 @@ public class Constants {
 
         public static final String SHOW_A_USER = "/{username}";
 
+        public static final String UPDATE_A_USER = "/{username}";
+
         public static final String UPDATE_USER_WATCHLIST = "/{username}/watchlist";
+
+        public static final String UPDATE_USER_IMAGE = "/{username}/image";
+
+        public static final String CHANGE_USER_PASSWORD = "/{username}";
 
         public static final String DELETE_FROM_USER_WATCHLIST = "/{username}/watchlist";
 

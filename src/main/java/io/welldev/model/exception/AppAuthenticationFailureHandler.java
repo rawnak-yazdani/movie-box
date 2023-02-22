@@ -9,10 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AppAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
@@ -22,14 +19,11 @@ public class AppAuthenticationFailureHandler implements AuthenticationFailureHan
             throws IOException, ServletException {
         ArrayList<String> errors = new ArrayList<>();
         response.setStatus(HttpStatus.FORBIDDEN.value());
-        Map<String, Object> data = new HashMap<>();
-        data.put(
-                "timestamp",
-                Calendar.getInstance().getTime()
-        );
+        Map<String, List<String>> data = new HashMap<>();
+        errors.add("Username or Password is Wrong. Otherwise the user is needed to sign up.");
         data.put(
                 "message",
-                errors.add("Username or Password is Wrong. Otherwise the user is needed to sign up.")
+                errors
         );
 
         response.getOutputStream()

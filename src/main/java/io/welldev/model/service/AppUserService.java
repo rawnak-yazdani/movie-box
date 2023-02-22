@@ -2,6 +2,8 @@ package io.welldev.model.service;
 
 import io.welldev.model.constants.Constants;
 import io.welldev.model.datainputobject.AppUserInput;
+import io.welldev.model.datainputobject.AppUserUpdateInput;
+import io.welldev.model.datainputobject.ChangePasswordInput;
 import io.welldev.model.datainputobject.UserMovieInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
 import io.welldev.model.dataoutputobject.MovieOutput;
@@ -11,17 +13,23 @@ import io.welldev.model.exception.ItemNotFoundException;
 import io.welldev.model.repository.AppUserRepo;
 import io.welldev.model.repository.MovieRepo;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -37,6 +45,8 @@ public class AppUserService {
     private final PasswordEncoder passwordEncoder;
 
     private final ModelMapper mapper;
+
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/app-photos/users";
 
     public List<AppUser> findAll() {
         return appUserRepo.findAll();
@@ -63,6 +73,7 @@ public class AppUserService {
             mapper.map(save(appUser, role), appUserOutput);
             return appUserOutput;
         } catch (IllegalArgumentException argumentException) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
         }
     }
@@ -75,15 +86,18 @@ public class AppUserService {
         return signUp(appUserInput, Constants.AppStrings.ADMIN_ROLE);
     }
 
-    public AppUserOutput updateUserInfo(AppUserInput appUserInput) {
+    public AppUserOutput updateUserInfo(String username, AppUserUpdateInput userUpdateInput) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getName().equals(appUserInput.getUsername())) {
-            Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(appUserInput.getUsername()));
+        if (authentication.getName().equals(username)) {
+            Optional<AppUser> appUser = Optional.ofNullable(appUserRepo.findByUsername(username));
 
             if (appUser.isPresent()) {
-                appUser.get().setName(appUserInput.getName());
-                appUser.get().setUsername(appUserInput.getUsername());
-                appUser.get().setPassword(passwordEncoder.encode(appUserInput.getPassword()));
+//                appUser.get().setName(userUpdateInput.getName());
+//                appUser.get().setUsername(username);
+//                appUser.get().setPassword(passwordEncoder.encode(userUpdateInput.getPassword()));
+                System.out.println(userUpdateInput);
+                mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+                mapper.map(userUpdateInput, appUser.get());
                 AppUserOutput appUserOutput = new AppUserOutput();
                 mapper.map(appUserRepo.save(appUser.get()), appUserOutput);
                 return appUserOutput;
@@ -94,6 +108,35 @@ public class AppUserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
         }
 
+    }
+
+    public AppUser updateUserImage(String username, MultipartFile imageFile) throws IOException {
+        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY,
+                username + imageFile.getOriginalFilename());
+        System.out.println(fileNameAndPath);
+        Files.write(fileNameAndPath, imageFile.getBytes());
+        AppUser appUser = findAppUserByUsername(username);
+        appUser.setImgSrc(fileNameAndPath.toString());
+        return save(appUser, appUser.getRole());
+    }
+
+    public void changePassword(String username, ChangePasswordInput changePasswordInput) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getName().equals(username)) {
+            Optional<AppUser> reqUsername = Optional.ofNullable(appUserRepo.findByUsername(username));
+
+            if (passwordEncoder.matches(changePasswordInput.getCurrentPassword(),
+                    reqUsername.get().getPassword())) {
+                String newEncodedPassword = passwordEncoder.encode(changePasswordInput.getNewPassword());
+                reqUsername.get().setPassword(newEncodedPassword);
+                appUserRepo.save(reqUsername.get());
+            } else {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized");
+        }
     }
 
     public AppUserOutput updateWatchlist(String reqUsername, List<UserMovieInput> userMovieInputs) {

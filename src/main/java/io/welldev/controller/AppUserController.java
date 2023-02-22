@@ -3,8 +3,12 @@ package io.welldev.controller;
 import io.welldev.model.constants.Constants.API;
 import io.welldev.model.constants.Constants.AppStrings;
 import io.welldev.model.datainputobject.AppUserInput;
+import io.welldev.model.datainputobject.AppUserUpdateInput;
+import io.welldev.model.datainputobject.ChangePasswordInput;
 import io.welldev.model.datainputobject.UserMovieInput;
 import io.welldev.model.dataoutputobject.AppUserOutput;
+import io.welldev.model.entity.AppUser;
+import io.welldev.model.entity.Movie;
 import io.welldev.model.service.AppUserService;
 import io.welldev.model.service.BlackListingService;
 import io.welldev.model.service.MovieService;
@@ -14,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
@@ -21,7 +26,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = API.USERS, headers = AppStrings.HEADERS_JSON, produces = AppStrings.PRODUCES_JSON)
+@RequestMapping(value = API.USERS)
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
 public class AppUserController {
@@ -63,11 +68,12 @@ public class AppUserController {
                 .body(appUserService.deleteFromWatchlist(reqUsername, userMovieInputs));
     }
 
-    @PutMapping     // update user info
-    public ResponseEntity<AppUserOutput> editUser(@Valid @RequestBody AppUserInput appUserInput) {
+    @PutMapping (API.UPDATE_A_USER)    // update user info
+    public ResponseEntity<AppUserOutput> editUser(@PathVariable("username") String reqUsername,
+                                                  @Valid @RequestBody AppUserUpdateInput appUserUpdateInput) {
         return ResponseEntity
                 .ok()
-                .body(appUserService.updateUserInfo(appUserInput));
+                .body(appUserService.updateUserInfo(reqUsername, appUserUpdateInput));
     }
 
     @PostMapping    // user sign up
@@ -75,6 +81,18 @@ public class AppUserController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(appUserService.userSignUp(appUserInput));
+    }
+
+    @PutMapping(API.UPDATE_USER_IMAGE)
+    public ResponseEntity<AppUser> updateUserImage(@PathVariable String username,
+                                                   @RequestParam("image") MultipartFile imgFile) throws IOException {
+//        StringBuilder fileNames = new StringBuilder();
+//        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, imgFile.getOriginalFilename());
+//        Files.write(fileNameAndPath, imgFile.getBytes());
+//        MovieInput movieInput = new MovieInput();
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(appUserService.updateUserImage(username, imgFile));
     }
 
     @PutMapping(API.LOGOUT_A_USER)
@@ -91,6 +109,15 @@ public class AppUserController {
         blackListingService.blackListJwt(jwtToken);
         return ResponseEntity
                 .noContent()
+                .build();
+    }
+
+    @PatchMapping(API.CHANGE_USER_PASSWORD)
+    public ResponseEntity<Object> changePassword(@PathVariable String username,
+                                                 @Valid @RequestBody ChangePasswordInput changePasswordInput) {
+        appUserService.changePassword(username, changePasswordInput);
+        return ResponseEntity
+                .ok()
                 .build();
     }
 

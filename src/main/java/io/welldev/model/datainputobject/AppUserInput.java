@@ -30,7 +30,8 @@ public class AppUserInput {
     private String username;
 
     @NotBlank(message = "Password cannot be blank!")
-    @Pattern(regexp = "^[a-zA-Z0-9]{1,50}", message = "Password cannot be empty or contain more than 50 characters")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$&*%^])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,20}$",
+            message = "Password cannot be empty or contain more than 50 characters")
     private String password;
 
 }

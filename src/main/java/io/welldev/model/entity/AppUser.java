@@ -33,6 +33,8 @@ public class AppUser {
 
     private String role;
 
+    private String imgSrc;
+
     private java.sql.Timestamp userCreationDate = java.sql.Timestamp.valueOf(LocalDateTime.now());
 
     @ManyToMany
