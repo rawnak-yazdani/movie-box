@@ -70,11 +70,14 @@ public class MovieService {
         movieRepo.saveAllAndFlush(moviesList);
     }
 
-    public Movie updateAMovieInfo(Long id, MovieInput movieInput) {
+    public Movie updateAMovieInfo(Long id, String movieInputString, MultipartFile imgFile) throws IOException {
         Movie movie = new Movie();
+        MovieInput movieInput = objectMapper.readValue(movieInputString, MovieInput.class);
         mapper.map(movieInput, movie);
         movie.setId(findById(id).getId());
-        movie.setRating(movieInput.getRating().toString().concat("/").concat("10"));
+        movie.setImgSrc(findMovieById(id).getImgSrc());
+        movie.setRating(movieInput.getRating().toString().concat("/10"));
+
         return save(movie);
     }
 
@@ -96,6 +99,14 @@ public class MovieService {
     public MovieOutput findById(Long id) {
         try {
             return mapMovie(movieRepo.findById(id).get());
+        } catch (Exception ex) {
+            throw new ItemNotFoundException("This movie does not exist!");
+        }
+    }
+
+    public Movie findMovieById(Long id) {
+        try {
+            return movieRepo.findById(id).get();
         } catch (Exception ex) {
             throw new ItemNotFoundException("This movie does not exist!");
         }
