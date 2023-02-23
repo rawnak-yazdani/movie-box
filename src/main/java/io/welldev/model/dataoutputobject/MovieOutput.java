@@ -32,5 +32,5 @@ public class MovieOutput {
 
     private String rating;
 
-    private int year;
+    private Integer year;
 }

@@ -20,6 +20,8 @@ public class Constants {
 
         public static final String UPDATE_A_MOVIE_BY_ADMIN = "/movies/{id}";
 
+        public static final String UPDATE_A_MOVIE_IMAGE_BY_ADMIN = "movies/{id}/image";
+
         public static final String DELETE_A_MOVIE_BY_ADMIN = "/movies/{id}";
 
         public static final String GET_ALL_GENRES = "/genres";

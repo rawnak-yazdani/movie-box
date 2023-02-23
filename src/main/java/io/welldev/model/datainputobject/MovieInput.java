@@ -46,5 +46,5 @@ public class MovieInput {
 
     @Min(1000)
     @Max(2030)
-    private int year;
+    private Integer year;
 }

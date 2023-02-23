@@ -10,6 +10,7 @@ import io.welldev.model.repository.GenreRepo;
 import io.welldev.model.repository.MovieRepo;
 import io.welldev.model.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -68,16 +69,19 @@ public class MovieService {
         movieRepo.saveAllAndFlush(moviesList);
     }
 
-    public Movie updateAMovieInfo(Long id, String movieInputString, MultipartFile imgFile) throws IOException {
-        Movie movie = new Movie();
-        MovieInput movieInput = objectMapper.readValue(movieInputString, MovieInput.class);
+    public MovieOutput updateAMovieInfo(Long id, MovieInput movieInput) throws IOException{
+        Movie movie = findMovieById(id);
+        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         mapper.map(movieInput, movie);
-        movie.setId(findById(id).getId());
+
+        return mapMovie(save(movie));
+    }
+
+    public MovieOutput updateMovieImage(Long id, MultipartFile imgFile) throws IOException {
+        Movie movie = findMovieById(id);
         ImageUtils.deleteFile(movie.getImgSrc());
         movie.setImgSrc(ImageUtils.writeMovieImageFile(movie, imgFile));
-        movie.setRating(movieInput.getRating().toString().concat("/10"));
-
-        return save(movie);
+        return mapMovie(movie);
     }
 
     public Movie addMovie(String movieInputString, MultipartFile imgFile) throws IOException {

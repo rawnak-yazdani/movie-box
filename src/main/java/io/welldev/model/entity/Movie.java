@@ -38,7 +38,7 @@ public class Movie {
 
     private String rating;
 
-    private int year;
+    private Integer year;
 }
 
 //drop table movie, genre, app_user, movie_app_user, movie_genre;
