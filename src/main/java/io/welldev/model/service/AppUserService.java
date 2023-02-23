@@ -111,12 +111,10 @@ public class AppUserService {
     }
 
     public AppUserOutput updateUserImage(String username, MultipartFile imageFile) throws IOException {
-        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY,
-                username + imageFile.getOriginalFilename());
-        System.out.println(fileNameAndPath);
-        Files.write(fileNameAndPath, imageFile.getBytes());
         AppUser appUser = findAppUserByUsername(username);
-        appUser.setImgSrc(fileNameAndPath.toString());
+        Optional<File> oldImageFile = Optional.of(new File(appUser.getImgSrc()));
+        oldImageFile.ifPresent(File::delete);
+        appUser.setImgSrc(ImageUtils.writeUserImageFile(username, imageFile));
         AppUserOutput appUserOutput = mapAppUser(appUserRepo.save(appUser));
         return appUserOutput;
     }

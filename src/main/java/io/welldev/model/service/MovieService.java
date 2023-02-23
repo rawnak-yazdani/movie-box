@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @RequiredArgsConstructor
@@ -75,7 +73,8 @@ public class MovieService {
         MovieInput movieInput = objectMapper.readValue(movieInputString, MovieInput.class);
         mapper.map(movieInput, movie);
         movie.setId(findById(id).getId());
-        movie.setImgSrc(findMovieById(id).getImgSrc());
+        ImageUtils.deleteFile(movie.getImgSrc());
+        movie.setImgSrc(ImageUtils.writeMovieImageFile(movie, imgFile));
         movie.setRating(movieInput.getRating().toString().concat("/10"));
 
         return save(movie);
@@ -85,13 +84,8 @@ public class MovieService {
         Movie movie = new Movie();
         MovieInput movieInput = objectMapper.readValue(movieInputString, MovieInput.class);
         mapper.map(movieInput, movie);
-
-        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY,
-                movie.getTitle() + movie.getYear() + imgFile.getOriginalFilename());
-        System.out.println(fileNameAndPath.toString());
-        Files.write(fileNameAndPath, imgFile.getBytes());
-
-        movie.setImgSrc(fileNameAndPath.toString());
+        ImageUtils.writeMovieImageFile(movie, imgFile);
+        movie.setImgSrc(ImageUtils.writeMovieImageFile(movie, imgFile));
         movie.setRating(movieInput.getRating().toString().concat("/").concat("10"));
         return save(movie);
     }
@@ -121,7 +115,8 @@ public class MovieService {
     }
 
     public void deleteById(Long id) {
-        findById(id);
+        Movie movie = movieRepo.findById(id).get();
+        ImageUtils.deleteFile(movie.getImgSrc());
         movieRepo.deleteUserAndMovieAssociation(id);
         movieRepo.deleteById(id);
     }
