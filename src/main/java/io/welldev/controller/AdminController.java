@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = API.ADMIN)
@@ -26,6 +27,8 @@ import java.nio.file.Paths;
 public class AdminController {
 
     private final MovieService movieService;
+
+    private final GenreService genreService;
 
     private final AppUserService appUserService;
 
@@ -71,5 +74,12 @@ public class AdminController {
         return ResponseEntity
                 .noContent()
                 .build();
+    }
+
+    @GetMapping(API.GET_ALL_GENRES)
+    public ResponseEntity<List<Genre>> getAllGenres() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(genreService.findAll());
     }
 }

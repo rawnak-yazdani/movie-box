@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "genre", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 public class Genre {
     @Id
     @Column(name = "id", nullable = false)

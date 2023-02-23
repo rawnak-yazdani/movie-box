@@ -1,11 +1,13 @@
 package io.welldev.model.service;
 
 import io.welldev.model.entity.Genre;
+import io.welldev.model.exception.ItemNotFoundException;
 import io.welldev.model.repository.GenreRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -39,7 +41,12 @@ public class GenreService {
     }
 
     public List<Genre> findAll() {
-        return genreRepo.findAll();
+        Optional<List<Genre>> optionalGenres = Optional.ofNullable(genreRepo.findAll());
+        if (optionalGenres.isPresent()) {
+            return optionalGenres.get();
+        } else {
+            throw new ItemNotFoundException("No Genre has been added");
+        }
     }
 
     public void deleteById(Long id) {
