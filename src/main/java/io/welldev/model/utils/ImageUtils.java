@@ -44,7 +44,9 @@ public class ImageUtils {
     }
 
     public static void deleteFile(String srcPath) {
-        Optional<File> oldImageFile = Optional.of(new File(srcPath));
-        oldImageFile.ifPresent(File::delete);
+        File file = new File(srcPath);
+        if (file.exists()) {
+         file.delete();
+        }
     }
 }

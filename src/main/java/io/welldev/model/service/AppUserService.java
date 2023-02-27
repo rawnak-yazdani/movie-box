@@ -112,11 +112,11 @@ public class AppUserService {
 
     public AppUserOutput updateUserImage(String username, MultipartFile imageFile) throws IOException {
         AppUser appUser = findAppUserByUsername(username);
-        Optional<File> oldImageFile = Optional.of(new File(appUser.getImgSrc()));
-        oldImageFile.ifPresent(File::delete);
+        if (appUser.getImgSrc() != null) {
+            ImageUtils.deleteFile(appUser.getImgSrc());
+        }
         appUser.setImgSrc(ImageUtils.writeUserImageFile(username, imageFile));
-        AppUserOutput appUserOutput = mapAppUser(appUserRepo.save(appUser));
-        return appUserOutput;
+        return mapAppUser(appUserRepo.save(appUser));
     }
 
     public void changePassword(String username, ChangePasswordInput changePasswordInput) {

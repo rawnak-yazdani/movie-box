@@ -66,11 +66,11 @@ public class Constants {
 
         public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
 
-        public static final String ISSUED_AT = "issued at";
+        public static final String ISSUED_AT = "issued_at";
 
-        public static final String EXPIRE_AT_ACCESS_TOKEN = "access token will expire at";
+        public static final String EXPIRE_AT_ACCESS_TOKEN = "access_token_expiration";
 
-        public static final String EXPIRE_AT_REFRESH_TOKEN = "refresh token will expire at";
+        public static final String EXPIRE_AT_REFRESH_TOKEN = "refresh_token_expiration";
 
         public static final String USERNAME = "username";
 

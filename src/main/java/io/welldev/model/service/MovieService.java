@@ -38,7 +38,7 @@ public class MovieService {
 
     public Movie save(MovieInput movieInput, Movie movie) {
         Set<Genre> genres = movie.getGenres();
-
+        mapper.map(movieInput, movie);
 //        genreService.saveAll(genres);
 //        Iterator<Genre> genreIterator = genres.iterator();
         movie.setGenres(
@@ -82,7 +82,7 @@ public class MovieService {
         Movie movie = findMovieById(id);
         ImageUtils.deleteFile(movie.getImgSrc());
         movie.setImgSrc(ImageUtils.writeMovieImageFile(movie, imgFile));
-        return mapMovie(movie);
+        return mapMovie(movieRepo.save(movie));
     }
 
     public Movie addMovie(String movieInputString, MultipartFile imgFile) throws IOException {
