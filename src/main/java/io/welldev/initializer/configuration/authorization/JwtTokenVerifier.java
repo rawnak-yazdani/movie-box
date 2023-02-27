@@ -49,7 +49,15 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 //        String token = request.getHeader(AppStrings.AUTHORIZATION);
         Optional<String> stringRawCookie = Optional.ofNullable(request.getHeader(AppStrings.COOKIE));
         String[] stringCookie;
-        if (stringRawCookie.isPresent()) {
+        String userPublicURI = "POST/movie-box/users";
+        String moviePublicURI = "GET/movie-box/movies";
+        String tokenPublicURI = "GET/movie-box/token";
+        String requestedURI = request.getMethod() + request.getRequestURI();
+        boolean isPublic = (requestedURI.equals(userPublicURI))
+                || (requestedURI.equals(moviePublicURI) || (requestedURI.equals(tokenPublicURI))
+        );
+
+        if (stringRawCookie.isPresent() && !isPublic) {
             stringCookie = request.getHeader(AppStrings.COOKIE).split(";");
         } else {
             filterChain.doFilter(request, response);
@@ -57,6 +65,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         }
         String accessToken = stringCookie[0].replace("ACCESS_TOKEN=", "");
         String refreshToken = stringCookie[1].replace("REFRESH_TOKEN=", "");
+//        System.out.println(requestedURI + isPublic);
 
         try {
 

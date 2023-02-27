@@ -10,19 +10,13 @@ import io.welldev.model.repository.GenreRepo;
 import io.welldev.model.repository.MovieRepo;
 import io.welldev.model.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -42,12 +36,15 @@ public class MovieService {
 
     public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/app-photos/movies";
 
-    public Movie save(Movie movie) {
+    public Movie save(MovieInput movieInput, Movie movie) {
         Set<Genre> genres = movie.getGenres();
-        Set<Genre> updatedGenre = new HashSet<>();
+
 //        genreService.saveAll(genres);
 //        Iterator<Genre> genreIterator = genres.iterator();
-        genreService.saveWithoutDuplicate(genres);
+        movie.setGenres(
+                genreService.saveGenreInputs(movieInput.getGenres())
+        );
+
 //        movie.setGenres(updatedGenre);
 //        genreRepo.findByName("Action");
 //        return movie;
@@ -73,12 +70,12 @@ public class MovieService {
     public MovieOutput updateAMovieInfo(Long id, MovieInput movieInput) throws IOException{
         Movie movie = findMovieById(id);
 //        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
-        mapper.map(movieInput, movie);
+//        mapper.map(movieInput, movie);
 //        if (movieInput.getGenres() != null) {
 //            movie.setGenres(movieInput.getGenres());
 //        }
 
-        return mapMovie(save(movie));
+        return mapMovie(save(movieInput, movie));
     }
 
     public MovieOutput updateMovieImage(Long id, MultipartFile imgFile) throws IOException {
@@ -95,7 +92,7 @@ public class MovieService {
         ImageUtils.writeMovieImageFile(movie, imgFile);
         movie.setImgSrc(ImageUtils.writeMovieImageFile(movie, imgFile));
         movie.setRating(movieInput.getRating().toString().concat("/").concat("10"));
-        return save(movie);
+        return save(movieInput, movie);
     }
 
     public MovieOutput findById(Long id) {

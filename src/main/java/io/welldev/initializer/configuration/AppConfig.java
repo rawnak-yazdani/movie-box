@@ -1,6 +1,9 @@
 package io.welldev.initializer.configuration;
 
+import io.welldev.model.datainputobject.MovieInput;
+import io.welldev.model.entity.Movie;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -65,7 +68,14 @@ public class AppConfig {
 
     @Bean
     public ModelMapper getModelMapper() {
-        return new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<MovieInput, Movie>() {
+            @Override
+            protected void configure() {
+                skip(destination.getGenres());
+            }
+        });
+        return modelMapper;
     }
 
     @Bean

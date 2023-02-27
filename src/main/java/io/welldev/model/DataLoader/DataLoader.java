@@ -1,5 +1,6 @@
 package io.welldev.model.DataLoader;
 
+import io.welldev.model.datainputobject.GenreInput;
 import io.welldev.model.entity.Genre;
 import io.welldev.model.repository.GenreRepo;
 import io.welldev.model.service.GenreService;
@@ -48,14 +49,13 @@ public class DataLoader implements CommandLineRunner {
                 "Western"
         ));
 
-        Set<Genre> genres = new HashSet<>();
+        Set<GenreInput> genreInputs = new HashSet<>();
 
         for (String genreName : movieGenres) {
-            Genre genre = new Genre();
-            genre.setName(genreName);
-            genres.add(genre);
+            GenreInput genreInput = new GenreInput(genreName);
+            genreInputs.add(genreInput);
         }
-        genreService.saveWithoutDuplicate(genres);
+        genreService.saveGenreInputs(genreInputs);
 
     }
 }

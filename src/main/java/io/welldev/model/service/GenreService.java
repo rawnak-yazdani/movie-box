@@ -1,11 +1,14 @@
 package io.welldev.model.service;
 
+import io.welldev.model.datainputobject.GenreInput;
 import io.welldev.model.entity.Genre;
 import io.welldev.model.exception.ItemNotFoundException;
 import io.welldev.model.repository.GenreRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,16 +23,22 @@ public class GenreService {
         genreRepo.save(genre);
     }
 
-    public void saveWithoutDuplicate(Set<Genre> genres) {
-        for (Genre genre :
-                genres) {
-            String genreName = genre.getName();
+    public Set<Genre> saveGenreInputs(Set<GenreInput> genreInputs) {
+        Set<Genre> updatedGenre = new HashSet<>();
+        for (GenreInput genreInput :
+                genreInputs) {
+            String genreName = genreInput.getName();
 //            Genre existingGenre = genreRepo.findByName(genre.getName());
             if (genreRepo.findByName(genreName) != null) {
-                genre.setId(genreRepo.findByName(genreName).getId());
+                updatedGenre.add(genreRepo.findByName(genreName));
 //                genre = existingGenre;
-            } else genreRepo.save(genre);
+            } else {
+                Genre newGenre = new Genre();
+                newGenre.setName(genreName);
+                updatedGenre.add(genreRepo.save(newGenre));
+            }
         }
+        return updatedGenre;
     }
 
     public void flush() {
