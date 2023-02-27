@@ -42,7 +42,7 @@ public class MovieInput {
     private BigDecimal rating;
 
     @Valid
-    private Set<GenreInput> genres = new HashSet<GenreInput>();
+    private Set<Genre> genres = new HashSet<Genre>();
 
     @Min(1000)
     @Max(2030)

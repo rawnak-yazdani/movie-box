@@ -20,6 +20,18 @@ public class GenreService {
         genreRepo.save(genre);
     }
 
+    public void saveWithoutDuplicate(Set<Genre> genres) {
+        for (Genre genre :
+                genres) {
+            String genreName = genre.getName();
+//            Genre existingGenre = genreRepo.findByName(genre.getName());
+            if (genreRepo.findByName(genreName) != null) {
+                genre.setId(genreRepo.findByName(genreName).getId());
+//                genre = existingGenre;
+            } else genreRepo.save(genre);
+        }
+    }
+
     public void flush() {
         genreRepo.flush();
     }

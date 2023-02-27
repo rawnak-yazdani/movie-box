@@ -34,6 +34,8 @@ public class MovieService {
 
     private final GenreRepo genreRepo;
 
+    private final GenreService genreService;
+
     private final ModelMapper mapper;
 
     private final ObjectMapper objectMapper;
@@ -42,14 +44,13 @@ public class MovieService {
 
     public Movie save(Movie movie) {
         Set<Genre> genres = movie.getGenres();
+        Set<Genre> updatedGenre = new HashSet<>();
+//        genreService.saveAll(genres);
 //        Iterator<Genre> genreIterator = genres.iterator();
-        for (Genre genre :
-                genres) {
-            Genre existingGenre = genreRepo.findByName(genre.getName());
-            if (existingGenre != null) {
-                genre.setId(existingGenre.getId());
-            } else genreRepo.save(genre);
-        }
+        genreService.saveWithoutDuplicate(genres);
+//        movie.setGenres(updatedGenre);
+//        genreRepo.findByName("Action");
+//        return movie;
         return movieRepo.save(movie);
     }
 
@@ -71,8 +72,11 @@ public class MovieService {
 
     public MovieOutput updateAMovieInfo(Long id, MovieInput movieInput) throws IOException{
         Movie movie = findMovieById(id);
-        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+//        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         mapper.map(movieInput, movie);
+//        if (movieInput.getGenres() != null) {
+//            movie.setGenres(movieInput.getGenres());
+//        }
 
         return mapMovie(save(movie));
     }

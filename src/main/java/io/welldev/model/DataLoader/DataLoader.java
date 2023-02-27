@@ -1,5 +1,6 @@
 package io.welldev.model.DataLoader;
 
+import io.welldev.model.entity.Genre;
 import io.welldev.model.repository.GenreRepo;
 import io.welldev.model.service.GenreService;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +48,14 @@ public class DataLoader implements CommandLineRunner {
                 "Western"
         ));
 
+        Set<Genre> genres = new HashSet<>();
+
         for (String genreName : movieGenres) {
-            genreRepo.addGenresOnStartUp(genreName);
+            Genre genre = new Genre();
+            genre.setName(genreName);
+            genres.add(genre);
         }
+        genreService.saveWithoutDuplicate(genres);
 
     }
 }
