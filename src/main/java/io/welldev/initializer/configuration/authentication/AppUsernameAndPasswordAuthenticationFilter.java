@@ -1,6 +1,7 @@
 package io.welldev.initializer.configuration.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.welldev.initializer.configuration.authorization.JwtTokenVerifier;
 import io.welldev.model.constants.Constants.*;
 import io.welldev.model.entity.AppUser;
 import org.codehaus.jettison.json.JSONException;
@@ -96,21 +97,9 @@ public class AppUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             }
         }
 
-        JSONObject jsonObjectOfResponseBody = new JSONObject();
-        try {
-            jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIssuedAt.toString());
-            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT_ACCESS_TOKEN, dateExpAccessToken.toString());
-            jsonObjectOfResponseBody.put(AppStrings.USERNAME, username);
-            jsonObjectOfResponseBody.put(AppStrings.ROLE, role);
-//            jsonObjectOfResponseBody.put(AppStrings.TOKEN, token);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        response.getWriter().write(jsonObjectOfResponseBody.toString());
-
-        Cookie cookieOfAccessToken = new Cookie(AppStrings.ACCESS_TOKEN, accessToken);
-        cookieOfAccessToken.setHttpOnly(true);
+        Cookie cookieOfAccessToken = JwtTokenVerifier.writeJwtResponse(
+                response, username, role, dateExpAccessToken, dateIssuedAt, accessToken
+        );
 //        cookieOfAccessToken.setSecure(true);
 
         Cookie cookieOfRefreshToken = new Cookie(AppStrings.REFRESH_TOKEN, refreshToken);

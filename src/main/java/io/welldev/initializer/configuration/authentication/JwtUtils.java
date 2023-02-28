@@ -39,20 +39,20 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getUserNameFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    public Jws<Claims> getJwsClaims(String authToken) {
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .build()
+                /**
+                 * parseClaimsJws(token) method verifies the token
+                 */
+                .parseClaimsJws(authToken);
     }
 
     public boolean validateJwtToken(String authToken) {
         try {
 //            Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken);
-            Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
-                    .build()
-                    /**
-                     * parseClaimsJws(token) method verifies the token
-                     */
-                    .parseClaimsJws(authToken);
+            getJwsClaims(authToken);
             return true;
         } catch (SignatureException e) {
             logger.error("Invalid JWT signature: {}", e.getMessage());
@@ -84,7 +84,7 @@ public class JwtUtils {
 
     public Date getTokenExpireDate(int lifetimeOfToken) {
         Calendar calendarAccessToken = Calendar.getInstance();
-        calendarAccessToken.add(Calendar.MINUTE, lifetimeOfToken);
+        calendarAccessToken.add(Calendar.HOUR, lifetimeOfToken);
         return calendarAccessToken.getTime();
     }
 }
