@@ -47,7 +47,7 @@ public class HomeController {
 
     @GetMapping(value = API.AUTH_REFRESH)
     public void getAccessToken(HttpServletRequest request,
-                               HttpServletResponse response) {
+                               HttpServletResponse response) throws IOException {
         jwtTokenVerifier.refreshToken(request, response);
     }
 

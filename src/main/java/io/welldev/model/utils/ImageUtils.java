@@ -1,11 +1,13 @@
 package io.welldev.model.utils;
 
 import io.welldev.model.entity.Movie;
+import io.welldev.model.exception.ItemNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,6 +28,8 @@ public class ImageUtils {
             byte[] bytes = new byte[(int) file.length()];
             fis.read(bytes);
             return Base64.getEncoder().encodeToString(bytes);
+        } catch (FileNotFoundException e) {
+            return "";
         }
     }
 

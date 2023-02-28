@@ -1,5 +1,6 @@
 package io.welldev.model.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.welldev.model.constants.Constants.*;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -95,6 +96,16 @@ public class MovieBoxExceptionHandler extends ResponseEntityExceptionHandler {
         result.put("errors", errors);
 
         return new ResponseEntity<>(result, ex.getStatus());
+    }
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<Object> jwtExpiredException(ResponseStatusException ex, WebRequest request) {
+        List<String> errors = new ArrayList<>();
+        Map<String, List<String>> result = new HashMap<>();
+
+        errors.add(ex.getReason());
+        result.put("errors", errors);
+
+        return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
     }
 
     private String prepareErrorJSON(HttpStatus status, Exception ex) {

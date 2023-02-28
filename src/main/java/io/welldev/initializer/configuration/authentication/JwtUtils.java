@@ -60,6 +60,7 @@ public class JwtUtils {
             logger.error("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
             logger.error("JWT token is expired: {}", e.getMessage());
+            throw e;
         } catch (UnsupportedJwtException e) {
             logger.error("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -83,7 +84,7 @@ public class JwtUtils {
 
     public Date getTokenExpireDate(int lifetimeOfToken) {
         Calendar calendarAccessToken = Calendar.getInstance();
-        calendarAccessToken.add(Calendar.HOUR, lifetimeOfToken);
+        calendarAccessToken.add(Calendar.MINUTE, lifetimeOfToken);
         return calendarAccessToken.getTime();
     }
 }

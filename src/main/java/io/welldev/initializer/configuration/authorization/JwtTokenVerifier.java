@@ -2,6 +2,7 @@ package io.welldev.initializer.configuration.authorization;
 
 import com.google.common.base.Strings;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -9,10 +10,13 @@ import io.welldev.initializer.configuration.authentication.JwtUtils;
 import io.welldev.model.constants.Constants.*;
 import io.welldev.model.service.BlackListingService;
 import lombok.RequiredArgsConstructor;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -56,7 +60,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         boolean isPublic = (requestedURI.equals(userPublicURI))
                 || (requestedURI.equals(moviePublicURI) || (requestedURI.equals(tokenPublicURI))
         );
-
+        System.out.println(requestedURI + ' ' + isPublic);
         if (stringRawCookie.isPresent() && !isPublic) {
             stringCookie = request.getHeader(AppStrings.COOKIE).split(";");
         } else {
@@ -70,7 +74,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         try {
 
             if (!jwtUtils.validateJwtToken(accessToken)) {
-                throw new Exception();
+
             } else {
                 String blackListedToken = blackListingService.getJwtBlackList(accessToken);
                 if (blackListedToken != null) {
@@ -105,17 +109,30 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
-        } catch (Exception e) {
+        filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+            // Write the error message to the response body
+            response.getWriter().write(e.getMessage());
+        }
+
+        catch (Exception e) {
             throw new IllegalStateException(
                     String.format("Token %s cannot be trusted!!", accessToken));
         }
-        filterChain.doFilter(request, response);
     }
 
     public void refreshToken(HttpServletRequest request,
-                             HttpServletResponse response) {
-        String accessToken = request.getHeader(AppStrings.AUTHORIZATION);
-        String refreshToken = request.getHeader(AppStrings.RENEW_AUTH);
+                             HttpServletResponse response) throws IOException {
+
+        Optional<String> stringRawCookie = Optional.ofNullable(request.getHeader(AppStrings.COOKIE));
+        String[] stringCookie = new String[3];
+        if (stringRawCookie.isPresent()) {
+            stringCookie = request.getHeader(AppStrings.COOKIE).split(";");
+        }
+        String accessToken = stringCookie[0].replace("ACCESS_TOKEN=", "");
+        String refreshToken = stringCookie[1].replace("REFRESH_TOKEN=", "");
 
         if (Strings.isNullOrEmpty(refreshToken) || Strings.isNullOrEmpty(accessToken)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No Access or Refresh Token is Assigned");
@@ -137,19 +154,43 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                  */
                 .parseClaimsJws(refreshToken);
         Claims body = claimsJws.getBody();
+        String username = body.getSubject();
         List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
         Set<SimpleGrantedAuthority> grantedAuthorities = authorities.stream()
                 .map(m -> new SimpleGrantedAuthority(m.get(AppStrings.AUTHORITY)))
                 .collect(Collectors.toSet());
+        String role = "";
+        for (GrantedAuthority s : grantedAuthorities) {
+            if (s.toString().contains("ROLE")) {
+                if (s.toString().matches("ROLE_ADMIN"))
+                    role = "admin";
+                else
+                    role = "user";
+                break;
+            }
+        }
         int lifeTimeOfToken = Integer.parseInt(jwtExpireTime);
         Date dateExpAccessToken = jwtUtils.getTokenExpireDate(lifeTimeOfToken);
         Date dateExpRefreshToken = jwtUtils.getTokenExpireDate(lifeTimeOfToken * 84);
 
-        Date dateIat = new Date();
+        Date dateIssuedAt = new Date();
         String newAccessToken = jwtUtils.generateTokenFromUsername(body.getSubject(), grantedAuthorities,
-                dateIat, dateExpAccessToken);
+                dateIssuedAt, dateExpAccessToken);
         String newRefreshToken = jwtUtils.generateTokenFromUsername(body.getSubject(), grantedAuthorities,
-                dateIat, dateExpRefreshToken);
+                dateIssuedAt, dateExpRefreshToken);
+
+        JSONObject jsonObjectOfResponseBody = new JSONObject();
+        try {
+            jsonObjectOfResponseBody.put(AppStrings.ISSUED_AT, dateIssuedAt.toString());
+            jsonObjectOfResponseBody.put(AppStrings.EXPIRE_AT_ACCESS_TOKEN, dateExpAccessToken.toString());
+            jsonObjectOfResponseBody.put(AppStrings.USERNAME, username);
+            jsonObjectOfResponseBody.put(AppStrings.ROLE, role);
+//            jsonObjectOfResponseBody.put(AppStrings.TOKEN, token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        response.getWriter().write(jsonObjectOfResponseBody.toString());
 
         Cookie accessCookie = new Cookie(AppStrings.ACCESS_TOKEN, newAccessToken);
         accessCookie.setHttpOnly(true);
