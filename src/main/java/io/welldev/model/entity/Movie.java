@@ -27,6 +27,7 @@ public class Movie {
 
     private String imgSrc;
 
+    @Column(columnDefinition="text", length = 2000)
     private String description;
 
     @ManyToMany/*(fetch = FetchType.EAGER)*/

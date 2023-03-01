@@ -31,9 +31,9 @@ public class MovieInput {
 //            message = "Invalid URL")
 //    private String imgSrc;
 
-    @NotBlank(message = "Movie title cannot be blank!")
-    @Pattern(regexp = "^[a-zA-Z0-9-\\s,!.?'/]+$",
-            message = "Description is not descriptive enough")
+    @NotBlank(message = "Movie description cannot be blank!")
+//    @Pattern(regexp = "^[a-zA-Z0-9-\\s,!.?'/]+$",
+//            message = "Description is not descriptive enough")
     private String description;
 
     @DecimalMin(value = "0.0", inclusive = false)
