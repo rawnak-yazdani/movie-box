@@ -34,11 +34,10 @@ public class MovieService {
 
     private final ObjectMapper objectMapper;
 
-    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/app-photos/movies";
-
     public Movie save(MovieInput movieInput, Movie movie) {
         Set<Genre> genres = movie.getGenres();
         mapper.map(movieInput, movie);
+        movie.setRating(movieInput.getRating().toString().concat("/").concat("10"));
 //        genreService.saveAll(genres);
 //        Iterator<Genre> genreIterator = genres.iterator();
         movie.setGenres(
@@ -88,10 +87,9 @@ public class MovieService {
     public Movie addMovie(String movieInputString, MultipartFile imgFile) throws IOException {
         Movie movie = new Movie();
         MovieInput movieInput = objectMapper.readValue(movieInputString, MovieInput.class);
-        mapper.map(movieInput, movie);
-        ImageUtils.writeMovieImageFile(movie, imgFile);
+//        mapper.map(movieInput, movie);
+//        ImageUtils.writeMovieImageFile(movie, imgFile);
         movie.setImgSrc(ImageUtils.writeMovieImageFile(movie, imgFile));
-        movie.setRating(movieInput.getRating().toString().concat("/").concat("10"));
         return save(movieInput, movie);
     }
 
