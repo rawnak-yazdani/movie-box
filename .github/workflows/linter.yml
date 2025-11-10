@@ -1,0 +1,25 @@
+name: linter movie box
+
+on:
+  push:
+      branches-ignore:
+        - main
+  pull_request: null
+
+jobs:
+  build:
+    name: Lint code base
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Lint Code base
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_JAVA: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
