@@ -125,8 +125,7 @@ public class AppUserService {
         if (authentication.getName().equals(username)) {
             Optional<AppUser> reqUsername = Optional.ofNullable(appUserRepo.findByUsername(username));
 
-            if (passwordEncoder.matches(changePasswordInput.getCurrentPassword(),
-                    reqUsername.get().getPassword())) {
+            if (passwordEncoder.matches(changePasswordInput.getCurrentPassword(), reqUsername.get().getPassword())) {
                 String newEncodedPassword = passwordEncoder.encode(changePasswordInput.getNewPassword());
                 reqUsername.get().setPassword(newEncodedPassword);
                 appUserRepo.save(reqUsername.get());
@@ -138,8 +137,7 @@ public class AppUserService {
         }
     }
 
-    public AppUserOutput updateWatchlist(String reqUsername,
-                                         List<UserMovieInput> userMovieInputs) throws IOException{
+    public AppUserOutput updateWatchlist(String reqUsername, List<UserMovieInput> userMovieInputs) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getName().equals(reqUsername)) {
@@ -147,8 +145,7 @@ public class AppUserService {
 
             List<Movie> updatedList = new LinkedList<>();
 
-            for (UserMovieInput input :
-                    userMovieInputs) {
+            for (UserMovieInput input : userMovieInputs) {
                 updatedList.add(movieRepo.findById(input.getId()).get());
             }
 

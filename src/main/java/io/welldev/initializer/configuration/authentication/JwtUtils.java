@@ -30,19 +30,11 @@ public class JwtUtils {
 
     public String generateTokenFromUsername(String username, Collection<? extends GrantedAuthority> authorities,
                                             Date dateIat, Date dateExp) {
-        return Jwts.builder()
-                .setSubject(username)
-                .claim(Constants.AppStrings.AUTHORITIES, authorities)
-                .setIssuedAt(dateIat)
-                .setExpiration(dateExp)
-                .signWith(Keys.hmacShaKeyFor(System.getenv(Constants.AppStrings.TOKEN_SECRET_KEY).getBytes()))
-                .compact();
+        return Jwts.builder().setSubject(username).claim(Constants.AppStrings.AUTHORITIES, authorities).setIssuedAt(dateIat).setExpiration(dateExp).signWith(Keys.hmacShaKeyFor(System.getenv(Constants.AppStrings.TOKEN_SECRET_KEY).getBytes())).compact();
     }
 
     public Jws<Claims> getJwsClaims(String authToken) {
-        return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
-                .build()
+        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build()
                 /**
                  * parseClaimsJws(token) method verifies the token
                  */
