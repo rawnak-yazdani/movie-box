@@ -21,5 +21,6 @@ jobs:
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
-          VALIDATE_JAVA: true
+          VALIDATE_GOOGLE_JAVA_FORMAT: true
+          FIX_GOOGLE_JAVA_FORMAT: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
