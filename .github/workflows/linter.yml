@@ -48,6 +48,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Set your fix mode variables to true
+          VALIDATE_GOOGLE_JAVA_FORMAT: true
           FIX_GOOGLE_JAVA_FORMAT: true
           # To reuse the same Super-linter configuration that you use in the
           # lint job without duplicating it, see
