@@ -6,9 +6,6 @@ on: # yamllint disable-line rule:truthy
       - main
   pull_request: null
 
-permissions:
-  contents: read
-
 jobs:
   lint:
     runs-on: ubuntu-latest
